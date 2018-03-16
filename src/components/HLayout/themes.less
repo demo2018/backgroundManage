@@ -1,0 +1,144 @@
+@white: #ffffff;
+
+@bg-color-blue: #2f4050;
+@logo-color-blue: #445b71;
+@menu-bg-blue: #2f3e53;
+@menu-dark-bg-blue: #253042;
+@menu-light-bg-blue: #2bb1ee;
+@menu-link-color-blue: #748398;
+
+@bg-color-dark: #404040;
+@logo-color-dark: #404040;
+@menu-bg-dark: #404040;
+@menu-dark-bg-dark: #333;
+@menu-light-bg-dark: #2bb1ee;
+@menu-link-color-dark: #748398;
+
+@bg-color-purple: #3e2c42;
+@logo-color-purple: #3e2c42;
+@menu-bg-purple: #3e2c42;
+@menu-dark-bg-purple: #38283c;
+@menu-light-bg-purple: #2bb1ee;
+@menu-link-color-purple: #748398;
+
+:global {
+  .hlayout-content-theme-white {
+    background: #fff !important;
+    .logo-theme-white {
+      background: #ededed;
+    }
+  }
+
+  /* 创建主题的函数 */
+  .layout-theme(@theme, @bg-color, @logo-color, @menu-bg, @menu-light-bg, @menu-dark-bg, @menu-link-color) {
+    .hlayout-content-theme-@{theme} {
+      background: @bg-color !important;
+      .logo-theme-@{theme} {
+        color: @white;
+        background: @logo-color;
+      }
+    }
+    .ant-menu-@{theme}.ant-menu {
+      background-color: @menu-bg;
+      color: hsla(0,0%,100%,.67);
+      border-right: 0;
+      .ant-menu-sub {
+        color: hsla(0,0%,100%,.67);
+        background: @menu-bg;
+      }
+      .ant-menu-inline.ant-menu-sub {
+        background: @menu-dark-bg;
+      }
+      .ant-menu-item {
+        color: hsla(0,0%,100%,.67);
+      }
+      .ant-menu-item>a {
+        color: hsla(0,0%,100%,.67);
+      }
+      .ant-menu-item-selected {
+        border-right: 0;
+        color: @white;
+      }
+      .ant-menu-item-selected>a {
+        color: @white;
+        &:hover {
+          color: @white;
+        }
+      }
+      .ant-menu-horizontal {
+        border-bottom-color: @menu-bg;
+      }
+      .ant-menu-horizontal>.ant-menu-item {
+        border-bottom: 0;
+        border-color: @menu-bg;
+        top: 0;
+      }
+      .ant-menu-horizontal>.ant-menu-submenu {
+        border-bottom: 0;
+        border-color: @menu-bg;
+        top: 0;
+      }
+      .ant-menu-inline {
+        border-right: 0;
+        .ant-menu-item {
+          border-right: 0;
+          left: 0;
+          margin-left: 0;
+        }
+        .ant-menu-item-selected {
+          background-color: @menu-light-bg !important;
+        }
+      }
+      .ant-menu-vertical {
+        border-right: 0;
+        .ant-menu-item {
+          border-right: 0;
+          left: 0;
+          margin-left: 0;
+        }
+        .ant-menu-item-selected {
+          background-color: @menu-light-bg !important;
+        }
+      }
+      .ant-menu-item:hover,
+      .ant-menu-item-active,
+      .ant-menu-submenu-active,
+      .ant-menu-submenu-selected,
+      .ant-menu-submenu:hover,
+      .ant-menu-submenu-title:hover {
+        background-color: transparent;
+        color: @white;
+      }
+      .ant-menu-item:hover>a,
+      .ant-menu-item-active>a,
+      .ant-menu-submenu-active>a,
+      .ant-menu-submenu-selected>a,
+      .ant-menu-submenu:hover>a,
+      .ant-menu-submenu-title:hover>a {
+        color: @white;
+      }
+      .ant-menu-vertical>.ant-menu-item,
+      .ant-menu-inline>.ant-menu-item,
+      .ant-menu-item-group-list>.ant-menu-item,
+      .ant-menu-vertical>.ant-menu-submenu>.ant-menu-submenu-title,
+      .ant-menu-inline>.ant-menu-submenu>.ant-menu-submenu-title,
+      .ant-menu-item-group-list>.ant-menu-submenu>.ant-menu-submenu-title {
+        padding: 0px 16px 0 24px;
+      }
+    }
+    .fold .ant-menu-@{theme} >.ant-menu-submenu-selected {
+      color: @white;
+      background-color: @menu-light-bg;
+    }
+    .ant-menu-@{theme}.ant-menu:not(.ant-menu-horizontal) {
+      .ant-menu-item-selected {
+        background-color: @menu-light-bg;
+      }
+    }
+  }
+
+  .layout-theme(blue, @bg-color-blue, @logo-color-blue, @menu-bg-blue, @menu-light-bg-blue, @menu-dark-bg-blue, @menu-link-color-blue);
+  .layout-theme(dark, @bg-color-dark, @logo-color-dark, @menu-bg-dark, @menu-light-bg-dark, @menu-dark-bg-dark, @menu-link-color-dark);
+  .layout-theme(purple, @bg-color-purple, @logo-color-purple, @menu-bg-purple, @menu-light-bg-purple, @menu-dark-bg-purple, @menu-link-color-purple);
+}
+

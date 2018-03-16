@@ -1,0 +1,74 @@
+.doctorDetail {
+  :global {
+    .part {
+      margin-top: -1px;
+      font-size: 14px;
+      border: 1px solid #dedede;
+      .title {
+        padding: 10px 20px;
+        border-left: none;
+        border-bottom: 1px solid #dedede;
+        h3 {
+          color: #108ee9;
+          font-size: 16px;
+          padding-left: 10px;
+          border-left: 3px solid #108ee9;
+        }
+      }
+      .imgWraper {
+        display: inline-block;
+        text-align: center;
+        margin-right: 60px;
+        img {
+          width: 160px;
+          height: 160px;
+        }
+      }
+      .filedItem {
+        display: inline-block;
+        min-width: 300px;
+        margin-bottom: 20px;
+        .filedName {
+          display: inline-block;
+          min-width: 100px;
+          text-align: right;
+          &::after {
+            content: ':';
+            padding: 0 5px 0 2px;
+          }
+        }
+      }
+      .ant-form-item {
+        min-width: 400px;
+        margin-bottom: 24px;
+        .ant-form-item-label {
+          min-width: 100px;
+        }
+        .ant-input, .ant-input-number, .ant-select {
+          min-width: 220px;
+        }
+      }
+    }
+    .baseInfo {
+      .content {
+        display: flex;
+        padding: 20px;
+      }
+    }
+    .auditInfo {
+      .content {
+        padding: 20px;
+      }
+    }
+    .audit{
+      padding-top: 20px;
+    }
+    .btnGroup {
+      padding: 30px 0 30px 250px;
+      text-align: center;
+      button {
+        margin: 0 10px;
+      }
+    }
+  }
+}

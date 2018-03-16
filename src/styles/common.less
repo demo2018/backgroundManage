@@ -1,0 +1,148 @@
+:global {
+  #root {
+    width: 100%;
+    height: 100%;
+  }
+  .actions {
+    margin-bottom: 10px;
+    button {
+      margin-right: 5px;
+    }
+  }
+  .pagination {
+    float: right;
+    margin-top: 10px;
+  }
+  .btnGroup {
+    button {
+      margin: 0 10px 10px 0;
+      vertical-align: middle;
+    }
+  }
+  //图片弹框
+  .imgPreviewModal {
+    margin: 0 auto;
+    .ant-modal-content {
+      display: inline-block;
+    }
+    .ant-modal-close-x {
+      width: 15px;
+      height: 25px;
+      line-height: 25px;
+    }
+  }
+  //查询框
+  .searchBar {
+    padding: 10px;
+    border: 1px solid #dedede;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    label {
+      font-size: 14px;
+    }
+    .ant-form-inline {
+      .ant-form-item {
+        margin: 0 20px 10px 0;
+        vertical-align: middle;
+      }
+      .ant-input, .ant-select {
+        width: 210px;
+      }
+      .ant-form-item-label {
+        min-width: 120px;
+      }
+    }
+    .btnGroup {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .dateBtns {
+      position: relative;
+      left: -20px;
+      display: inline-block;
+      vertical-align: top;
+      z-index: 10;
+      button {
+        display: inline-block;
+        margin: 4px 6px;
+        vertical-align: middle;
+      }
+      .resetBtn {
+        border: 1px solid #4f95ff;
+        color: #4f95ff;
+      }
+    }
+  }
+  //表格
+  .ant-table-content {
+    table {
+      font-size: 14px;
+      tr:nth-child(even) {
+        background-color: #fff;
+      }
+      tr:nth-child(odd) {
+        background-color: #fbfbfb;
+      }
+      .ant-radio-wrapper {
+        margin-right: 0;
+      }
+    }
+    .ant-table-thead > tr > th, td {
+      text-align: center;
+    }
+    .ant-table-thead > tr > th {
+      background-color: #fff;
+      font-weight: bold;
+    }
+    .ant-table-thead, .ant-table-tbody {
+      th, td {
+        padding: 10px 8px;
+      }
+    }
+  }
+  // tabs样式
+  .tabsContent {
+    .ant-tabs-tab {
+      font-weight: bold;
+      color: #1e2227;
+    }
+    .ant-tabs-nav .ant-tabs-tab-active {
+      color: #4F95FF;
+    }
+    .ant-tabs-ink-bar {
+      background-color: #4F95FF;
+    }
+    .ant-tabs-nav .ant-tabs-tab:hover {
+      color: #4F95FF;
+    }
+  }
+  //弹框
+  .pickerModal {
+    min-height: 400px;
+    font-size: 14px;
+    .ant-table-placeholder {
+      min-height: 300px;
+      line-height: 200px;
+    }
+  }
+  // 重写button样式
+  .ant-btn-primary {
+    background-color: #4f95ff !important;
+  }
+  // 重写面包屑样式
+  .ant-breadcrumb a {
+    color: #4f95ff !important;
+  }
+  // 表格title
+  .ant-table.ant-table-bordered .ant-table-title {
+    background: #f7f7f7;
+    padding: 8px;
+  }
+  .title{
+    padding: 0px 20px;
+    margin-bottom: 15px;
+    color: #108ee9;
+    font-size: 16px;
+    border-left: 3px solid #108ee9;
+  }
+}

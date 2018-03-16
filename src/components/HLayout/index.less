@@ -1,0 +1,150 @@
+:global {
+  .h-HLayout-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hlayout-wrapper {
+    position: relative;
+    min-width: 800px;
+    height: 100%;
+    overflow: auto;
+    background: ~"url('./shattered.png')";
+  }
+  .hlayout-content {
+    background: #2f4050;
+    margin: 0 auto;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.75);
+  }
+  // 侧边栏固定
+  .aside-fixed-wrapper {
+    overflow: visible;
+    .hlayout-content {
+      height: 100%;
+      aside {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+      }
+      .hlayout-page-wrapper {
+        height: 100%;
+        overflow: auto;
+      }
+    }
+  }
+  // 侧边栏不固定
+  .hlayout-content {
+    aside {
+      float: left;
+      width: 220px;
+      transition: all 0.5s ease;
+    }
+  }
+  .hlayout-fold {
+    aside {
+      width: 64px;
+    }
+    .hlayout-page-wrapper {
+      margin-left: 64px;
+    }
+  }
+  // boxed 布局
+  .hlayout-boxed {
+    max-width: 1000px;
+  }
+  // primary 布局
+  .hlayout-content-primary {
+    width: 100%;
+  }
+  // normal 布局
+  .hlayout-content-normal {
+    .hlayout-logo-wrapper {
+      width: 220px;
+      float: left;
+    }
+    .hlayout-header-wrapper {
+      margin-left: 220px;
+    }
+    .hlayout-page-wrapper {
+      margin-left: 0;
+    }
+  }
+  /* 系统名称和图标 */
+  .hlayout-logo-wrapper {
+    height: 48px;
+    background: #fff;
+    font-size: 14px;
+  }
+  // .hlayout-logo {
+  //   width: 60px;
+  //   height: 25px;
+  //   display: inline-block;
+  //   background: ~"url('./logo.gif') no-repeat";
+  // }
+  .hlayout-title {
+    margin-left: 5px;
+    word-break: keep-all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* 页面 */
+  .hlayout-page-wrapper {
+    min-height: 434px;
+    margin-left: 220px;
+    overflow: hidden;
+    position: relative !important;
+    background: #f3f3f4;
+    transition: all 0.6s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+  /* 头部 */
+  .hlayout-header-wrapper {
+    height: 48px;
+    background: #fff;
+    position: relative;
+    :global {
+      .ant-menu-horizontal {
+        .ant-menu-submenu-title > span {
+          margin-right: 14px;
+        }
+        .anticon-undefined {
+          display: none !important;
+        }
+      }
+    }
+  }
+  /* 面包屑 */
+  .hlayout-breadcrumb {
+    margin: 7px 0 0 24px;
+  }
+  /* 页面主题内容 */
+  .hlayout-container {
+    margin: 8px 16px 16px;
+    padding: 24px;
+    background: #fff;
+    box-shadow: 4px 4px 20px 0 rgba(0, 0, 0, 0.01);
+  }
+  // 切换状态栏
+  .hlayout-affix {
+    position: absolute;
+    background: #fff;
+    width: 240px;
+    top: 60px;
+    right: 0;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, .3);
+    .color {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      float: left;
+      margin-right: 10px;
+      border: 4px solid #fff;
+      &:hover {
+        border-color: #00bbff;
+      }
+    }
+    .color-active {
+      border-color: #00bbff;
+    }
+  }
+}

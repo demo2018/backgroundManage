@@ -1,0 +1,88 @@
+import Model from 'utils/model';
+import services from 'services';
+import { fields } from './fields';
+import { PAGE_SIZE } from 'configs/constants';
+import { formatFormData } from 'utils/common';
+
+const initialSearch = {
+  name: '', // 类型名称
+  status: '', // 状态
+  startTime: '', // 开始时间
+  endTime: '', // 结束时间
+  pn: 1,
+  ps: PAGE_SIZE,
+  sortField: 'status', // 排序字段
+  ordination: 'DESC' // 排序方式
+};
+
+export default Model.extend({
+  namespace: 'labelList',
+
+  state: {
+    fields,
+    search: initialSearch,
+    datas: [],
+    total: 0,
+    types: [],
+    selected: [],
+    selecteRecord: {},
+    assessModalVisible: false,
+    visitModalVisible: false,
+  },
+
+  subscriptions: {
+    setupSubscriber({ listen, dispatch }) {
+      listen('/label/list', ({ query }) => {
+        const { notResetState } = query;
+        if (notResetState !== 'true') {
+          dispatch({ type: 'resetState' });
+          dispatch({ type: 'resetSearch' });
+        }
+        dispatch({ type: 'fetchDatas' });
+      });
+    }
+  },
+
+  effects: {
+    // 获取列表数据
+    * fetchDatas({ payload }, { select, update, callWithLoading }) {
+      const { search } = yield select(({ labelList }) => labelList);
+      const { data: { content, totalElements } } = yield callWithLoading(services.label.getDatas, formatFormData(search));
+      yield update({ datas: content, total: totalElements });
+    },
+    // 新增
+    * doAdd({ payload: { param } }, { put, update, callWithLoading }) {
+      yield callWithLoading(services.label.doAdd, param, { successMsg: '操作成功' });
+      yield update({ selecteRecord: {}, addModalVisible: false });
+      yield put({ type: 'fetchDatas' });
+    },
+    // 编辑
+    * doEdit({ payload: { param, id } }, { put, update, callWithLoading }) {
+      yield callWithLoading(services.label.doEdit, { param, id }, { successMsg: '操作成功' });
+      yield update({ selecteRecord: {}, addModalVisible: false });
+      yield put({ type: 'fetchDatas' });
+    },
+    // 删除
+    * doDelete({ param }, { update, put, callWithLoading }) {
+      yield callWithLoading(services.label.doDelete, param, { successMsg: '操作成功' });
+      yield update({ selecteRecord: {}, addModalVisible: false });
+      yield put({ type: 'fetchDatas' });
+    },
+  },
+
+  reducers: {
+    // 如果改变查询条件(非切换分页), 则将pn重置为1
+    updateSearch(state, { payload: { search } }) {
+      return {
+        ...state,
+        search: { ...state.search, pn: 1, ...search }
+      };
+    },
+    resetSearch(state) {
+      return {
+        ...state,
+        search: { ...initialSearch }
+      };
+    },
+  }
+});
