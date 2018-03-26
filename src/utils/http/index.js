@@ -8,8 +8,11 @@ let hasErrorModal = false;
 export default Http.create({
   servers: getServer(),
   contentType: 'json',
-  header: {
-    Authorization: 'aaaa',
+  header() {
+    return {
+      Authorization: cookie.get('seesionid'),
+      // Authorization: 'aaaa',
+    };
   },
   authorityFailureHash: '/login',
   responseErrorHandler(_responseError, _request) {

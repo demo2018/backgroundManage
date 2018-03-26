@@ -1,19 +1,19 @@
 import Model from 'utils/model';
 import services from 'services';
-import { fields } from './fields';
+import { getFields } from './fields';
 import { PAGE_SIZE } from 'configs/constants';
 import { formatFormData } from 'utils/common';
 
 const initialSearch = {
   customerName: '', // 患者姓名
   phone: '', // 手机号
-  treatmentItem: '', // 项目ID
+  itemClassId: '', // 项目ID
   doctorName: '', // 医生姓名
-  orgName: '', // 单位名称
+  customerOrg: '', // 单位名称
   hospitalName: '', // 诊所名称
   status: '', // 就诊状态
-  startDate: '', // 开始时间
-  endDate: '', // 结束时间
+  startTime: '', // 开始时间
+  endTime: '', // 结束时间
   age: '', // 年龄
   type: '', // 初复诊
   pn: 1,
@@ -26,7 +26,7 @@ export default Model.extend({
   namespace: 'treatmentList',
 
   state: {
-    fields,
+    getFields,
     search: initialSearch,
     datas: [],
     total: 0,
@@ -35,6 +35,11 @@ export default Model.extend({
     selecteRecord: {},
     assessModalVisible: false,
     visitModalVisible: false,
+    visitInfo: {},
+    visitList: [],
+    managerList: [],
+    itemList: [],
+    tagList: []
   },
 
   subscriptions: {
@@ -45,42 +50,64 @@ export default Model.extend({
           dispatch({ type: 'resetState' });
           dispatch({ type: 'resetSearch' });
         }
+        dispatch({ type: 'fetchEnums' });
         dispatch({ type: 'fetchDatas' });
       });
     }
   },
 
   effects: {
+    // 获取枚举值
+    * fetchEnums({ payload }, { update, callWithLoading }) {
+      const { data: { content } } = yield callWithLoading(services.treatment.getItems, { type: 1, status: 1 });
+      yield update({ itemList: content || [] });
+    },
     // 获取列表数据
     * fetchDatas({ payload }, { select, update, callWithLoading }) {
       const { search } = yield select(({ treatmentList }) => treatmentList);
       const { data: { content, totalElements } } = yield callWithLoading(services.treatment.getDatas, formatFormData(search));
       yield update({ datas: content, total: totalElements });
     },
-    // 发送信息提醒
-    * sendMsg({ payload }, { select, callWithLoading }) {
-      const { selected } = yield select(({ treatmentList }) => treatmentList);
-      yield callWithLoading(services.treatment.sendMsg, { selected: selected.join(',') });
+    // 删除就诊
+    * doDelete({ param }, { put, callWithLoading }) {
+      yield callWithLoading(services.treatment.doDelete, param, { successMsg: '操作成功' });
+      yield put({ type: 'fetchDatas' });
     },
     // 评价
-    * doAssess({ payload: { param } }, { update, callWithLoading }) {
-      yield callWithLoading(services.treatment.doAssess, { ...param });
-      yield update({ selecteRecord: {}, assessModalVisible: false });
+    * getComment({ param }, { update, callWithLoading }) {
+      const { data: { content } } = yield callWithLoading(services.treatment.getComment, { appointmentId: param });
+      yield update({ tagList: content });
     },
-    // 回访
-    * doVisit({ payload: { param } }, { update, callWithLoading }) {
-      yield callWithLoading(services.treatment.doVisit, { ...param });
+    // 获取随访相关数据
+    * getManager({ param }, { update, callWithLoading }) {
+      const { data } = yield callWithLoading(services.treatment.getVisit, param);
+      const { data: { content } } = yield callWithLoading(services.treatment.getManager);
+      yield update({ visitList: data, managerList: content });
+    },
+    // 添加回访
+    * addVisit({ payload: { param } }, { update, callWithLoading }) {
+      yield callWithLoading(services.treatment.addVisit, { ...param }, { successMsg: '操作成功' });
       yield update({ selecteRecord: {}, visitModalVisible: false });
     },
-    // 删除
-    * doDelete({ payload: { param } }, { put, callWithLoading }) {
-      yield callWithLoading(services.treatment.doDelete, { ...param }, { successMsg: '操作成功' });
-      yield put({ type: 'fetchDatas' });
+    // 更新回访
+    * editVisit({ payload: { param, id } }, { update, callWithLoading }) {
+      yield callWithLoading(services.treatment.editVisit, { param, id }, { successMsg: '操作成功' });
+      yield update({ selecteRecord: {}, visitModalVisible: false });
+    },
+    // 删除回访
+    * delVisit({ param }, { update, callWithLoading }) {
+      yield callWithLoading(services.treatment.delVisit, param, { successMsg: '操作成功' });
+      yield update({ selecteRecord: {}, visitModalVisible: false });
     },
     // 导出
     * downFile({ payload }, { select, callWithLoading }) {
       const { selected } = yield select(({ treatmentList }) => treatmentList);
       yield callWithLoading(services.treatment.downFile, { selected: selected.join(',') });
+    },
+    // 发送信息提醒
+    * sendMsg({ payload }, { select, callWithLoading }) {
+      const { selected } = yield select(({ treatmentList }) => treatmentList);
+      yield callWithLoading(services.treatment.sendMsg, { selected: selected.join(',') });
     },
   },
 

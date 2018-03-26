@@ -1,6 +1,7 @@
 import { Table, Button, Popconfirm } from 'antd';
 import tableUtil from 'utils/tableUtil';
 import SearchBar from './SearchBar.js';
+import FollowModal from './modal/FollowModal.js';
 import { ORDER_SUFFIX } from 'configs/constants';
 
 const { getColumns } = tableUtil;
@@ -13,9 +14,9 @@ class FeedbackList extends React.Component {
     };
   }
   getInitalColumns(fields) {
-    const { toDetail, onDelete, search: { sortField, ordination } } = this.props;
+    const { onDelete, search: { sortField, ordination } } = this.props;
     const popconfirmProps = {
-      title: '确认删除该预约?',
+      title: '确认删除该意见反馈?',
       okText: '确定',
       cancelText: '取消',
     };
@@ -27,11 +28,11 @@ class FeedbackList extends React.Component {
       }, {
         key: 'option',
         name: '操作',
-        render: (value, { id }) => {
+        render: (value, record) => {
           return (<div>
-            <a onClick={() => { toDetail(id); }}>编辑</a>
+            <a onClick={() => { this.toFollow({ selecteRecord: record, followModalVisible: true }); }}>跟进</a>
             <span className="ant-divider"></span>
-            <Popconfirm {...popconfirmProps} onConfirm={() => { onDelete({ id }); }}>
+            <Popconfirm {...popconfirmProps} onConfirm={() => { onDelete(record.id); }}>
               <a>删除</a>
             </Popconfirm>
           </div>);
@@ -46,6 +47,12 @@ class FeedbackList extends React.Component {
   }
   handleMoreOperation() {
     alert('更多操作！');
+  }
+  // 触发随访记录
+  toFollow(state) {
+    const { getManager } = this.props;
+    getManager(state.selecteRecord.id);
+    this.props.onUpdateState({ ...state });
   }
   handleTableSortChange({ current }, sort, { field, order }) {
     const { onSearch, search } = this.props;
@@ -64,7 +71,8 @@ class FeedbackList extends React.Component {
   }
 
   render() {
-    const { fields, types, datas, total, search, loading, onSearch, onReset, selected = [] } = this.props;
+    const { fields, types, datas, total, search, loading, onSearch, onReset,
+       onUpdateState, followModalVisible, selecteRecord, addFollow, editFollow, followList, managerList, delFollow, selected = [] } = this.props;
     const { pn, ps } = search;
     const columns = this.getInitalColumns(fields);
 
@@ -83,6 +91,7 @@ class FeedbackList extends React.Component {
         this.props.onUpdateState({ selected: selectedRowKeys });
       },
     };
+
     const tableProps = {
       dataSource: datas,
       columns,
@@ -103,6 +112,18 @@ class FeedbackList extends React.Component {
       onReset,
     };
 
+    const followModalProps = {
+      selecteRecord,
+      onOK: addFollow,
+      onEdit: editFollow,
+      onCancel: () => {
+        onUpdateState({ selecteRecord: {}, followModalVisible: false });
+      },
+      followList,
+      managerList,
+      delFollow,
+    };
+
     return (
       <div>
         <SearchBar {...searchBarProps} />
@@ -110,6 +131,7 @@ class FeedbackList extends React.Component {
           <Button onClick={() => { this.handleMoreOperation(); }}>更多操作</Button>
         </div>
         <Table {...tableProps} />
+        {followModalVisible && <FollowModal {...followModalProps} />}
       </div>
     );
   }

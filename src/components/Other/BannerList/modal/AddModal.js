@@ -1,13 +1,20 @@
-import { Form, Row, Input, Modal, Radio } from 'antd';
+import { Form, Row, Input, Modal, Radio, Upload, Button, Icon, message } from 'antd';
 import styles from './AddModal.less';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
+function getBase64(img, callback) {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
+  reader.readAsDataURL(img);
+}
 
 class AddModal extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      loading: false,
+    };
     this.handleOk = this.handleOk.bind(this);
   }
   handleOk() {
@@ -21,6 +28,19 @@ class AddModal extends React.Component {
       }
     });
   }
+  handleChange = (info) => {
+    if (info.file.status === 'uploading') {
+      this.setState({ loading: true });
+      return;
+    }
+    if (info.file.status === 'done') {
+      // Get this url from response in real world.
+      getBase64(info.file.originFileObj, imageUrl => this.setState({
+        imageUrl,
+        loading: false,
+      }));
+    }
+  }
   render() {
     const { form, onCancel, selecteRecord } = this.props;
     const { getFieldDecorator } = form;
@@ -31,7 +51,13 @@ class AddModal extends React.Component {
       onOk: this.handleOk,
       onCancel,
     };
-
+    const uploadButton = (
+      <div>
+        <Icon type={this.state.loading ? 'loading' : 'plus'} />
+        <div className="ant-upload-text">Upload</div>
+      </div>
+    );
+    const imageUrl = this.state.imageUrl;
     return (
       <Modal {...modalOpts} className={styles.addModal}>
         <Form layout="inline">
@@ -45,6 +71,19 @@ class AddModal extends React.Component {
               })(
                 <Input />
                 )}
+            </FormItem>
+            <FormItem label="标题" className="imgUpload">
+              <Upload
+                name="avatar"
+                listType="picture-card"
+                className="avatar-uploader"
+                showUploadList={false}
+                action="//jsonplaceholder.typicode.com/posts/"    //  上传地址
+                onChange={this.handleChange}
+              >
+                {imageUrl ? <img src={imageUrl} alt="" /> : uploadButton}
+              </Upload>
+              <p>支持扩展名：.png.jpg...</p>
             </FormItem>
             <FormItem label="链接" >
               {getFieldDecorator('link', {

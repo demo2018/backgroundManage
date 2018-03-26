@@ -3,8 +3,8 @@ import cookie from 'js-cookie';
 import pages from './pages';
 
 const isLogin = (nextState, replace) => {
-  if (!cookie.get('sid') || !cookie.get('st')) {
-    // replace('/login');
+  if (!cookie.get('seesionid')) {
+    replace('/login');
   }
 };
 
@@ -32,8 +32,8 @@ export default function ({ history }) {
         <Route path="/doctor/add" component={pages.DoctorDetail} breadcrumbName="新增医生" />
         <Route path="/doctor/detail/:id" component={pages.DoctorDetail} breadcrumbName="医生详情" />
         <Route path="/doctor/audits/:id" component={pages.DoctorAudits} breadcrumbName="医生审核" />
-        <Route path="/doctor/progress/:id" component={pages.DoctorProgress} breadcrumbName="邀请进程" />
         <Route path="/doctor/plans/:id" component={pages.DoctorPlans} breadcrumbName="医生安排" />
+        <Route path="/doctor/progress/:id" component={pages.DoctorProgress} breadcrumbName="邀请进程" />
       </Route>
 
       <Route path="" breadcrumbName="病历管理" >
@@ -79,10 +79,17 @@ export default function ({ history }) {
       <Route path="" breadcrumbName="内容管理" >
         <Route path="/banner/list" component={pages.BannerList} breadcrumbName="banner管理" />
         <Route path="/label/list" component={pages.LabelList} breadcrumbName="标签管理" />
+        <Route path="/tag/list" component={pages.TagList} breadcrumbName="子标签管理" />
       </Route>
 
-      <Route path="/feedback/list" component={pages.FeedbackList} breadcrumbName="意见反馈" >
-        <Route path="/feedback/detail/:id" component={pages.FeedbackDetail} breadcrumbName="反馈处理" />
+      <Route path="/feedback/list" component={pages.FeedbackList} breadcrumbName="意见反馈" />
+
+      <Route path="" breadcrumbName="系统设置" >
+        <Route path="/member/list" component={pages.MemberList} breadcrumbName="成员设置" />
+        <Route path="/role/list" component={pages.RoleList} breadcrumbName="角色管理" />
+        <Route path="/role/add" component={pages.RoleDetail} breadcrumbName="新增角色" />
+        <Route path="/role/detail/:id" component={pages.RoleDetail} breadcrumbName="角色详情" />
+        <Route path="/award/set" component={pages.AwardSet} breadcrumbName="奖励设置" />
       </Route>
     </Route>
   </Router>);

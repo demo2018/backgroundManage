@@ -23,6 +23,8 @@ app.model(require('./models/customer/customerDetail'));
 app.model(require('./models/doctor/doctorList'));
 app.model(require('./models/doctor/doctorDetail'));
 app.model(require('./models/doctor/doctorAudits'));
+app.model(require('./models/doctor/doctorPlans'));
+app.model(require('./models/doctor/doctorProgress'));
 
 app.model(require('./models/case/reportList'));
 app.model(require('./models/case/reportDetail'));
@@ -47,9 +49,14 @@ app.model(require('./models/clinic/clinicDetail'));
 
 app.model(require('./models/Other/bannerList'));
 app.model(require('./models/Other/labelList'));
+app.model(require('./models/Other/tagList'));
 
 app.model(require('./models/Feedback/feedbackList'));
-app.model(require('./models/Feedback/feedbackDetail'));
+
+app.model(require('./models/System/memberList'));
+app.model(require('./models/System/roleList'));
+app.model(require('./models/System/roleDetail'));
+app.model(require('./models/System/awardSet'));
 // 4. Router
 app.router(require('./router'));
 

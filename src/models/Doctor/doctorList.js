@@ -31,6 +31,7 @@ export default Model.extend({
     total: 0,
     types: [],
     selected: [],
+    adeptList: [],
   },
 
   subscriptions: {
@@ -41,12 +42,18 @@ export default Model.extend({
           dispatch({ type: 'resetState' });
           dispatch({ type: 'resetSearch' });
         }
+        dispatch({ type: 'fetchEnums' });
         dispatch({ type: 'fetchDatas' });
       });
     }
   },
 
   effects: {
+    // 获取枚举值
+    * fetchEnums({ payload }, { update, callWithLoading }) {
+      const { data: { content } } = yield callWithLoading(services.doctor.getAdept, { typeId: 3 });
+      yield update({ adeptList: content || [] });
+    },
     * fetchDatas({ payload }, { select, update, callWithLoading }) {
       const { search } = yield select(({ doctorList }) => doctorList);
       const { data: { content, totalElements } } = yield callWithLoading(services.doctor.getDatas, formatFormData(search));

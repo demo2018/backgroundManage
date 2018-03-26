@@ -10,6 +10,8 @@ import * as clinic from './clinic';
 import * as banner from './banner';
 import * as label from './label';
 import * as feedback from './feedback';
+import * as tag from './tag';
+import * as system from './system';
 
 export default {
   layout,
@@ -23,5 +25,7 @@ export default {
   clinic,
   banner,
   label,
-  feedback
+  feedback,
+  tag,
+  system
 };

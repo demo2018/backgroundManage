@@ -68,7 +68,7 @@ class SearchBar extends React.Component {
           <Form layout="inline">
             <Row>
               <FormItem label="分类名称">
-                <Input value={search.className} onChange={(value) => { this.handleChange('className', value); }} placeholder="请输入" />
+                <Input value={search.name} onChange={(value) => { this.handleChange('name', value); }} placeholder="请输入" />
               </FormItem>
               <FormItem label="状态">
                 <Select value={`${search.status}`} onChange={(value) => { this.handleChange('status', value); }} placeholder="请选择" >

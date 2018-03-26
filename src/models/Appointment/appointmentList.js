@@ -1,6 +1,6 @@
 import Model from 'utils/model';
 import services from 'services';
-import { fields } from './fields';
+import { getFields } from './fields';
 import { PAGE_SIZE } from 'configs/constants';
 import { formatFormData } from 'utils/common';
 
@@ -9,14 +9,14 @@ const initialSearch = {
   customerName: '', // 姓名
   itemClassId: '', // 预约项目ID
   doctorName: '', // 医生名字
-  orgName: '', // 机构名称
+  customerOrg: '', // 机构名称
   hospitalName: '', // 医院名称
   status: '', // 预约状态
   time: '', // 预约就诊时间
   phone: '', // 手机号
   source: '', // 来源
-  startDate: '', // 开始时间
-  endDate: '', // 结束时间
+  startTime: '', // 开始时间
+  endTime: '', // 结束时间
   pn: 1,
   ps: PAGE_SIZE,
   sortField: 'appointId', // 排序字段
@@ -27,12 +27,13 @@ export default Model.extend({
   namespace: 'appointmentList',
 
   state: {
-    fields,
+    getFields,
     search: initialSearch,
     datas: [],
     total: 0,
     types: [],
     selected: [],
+    itemList: []
   },
 
   subscriptions: {
@@ -43,12 +44,18 @@ export default Model.extend({
           dispatch({ type: 'resetState' });
           dispatch({ type: 'resetSearch' });
         }
+        dispatch({ type: 'fetchEnums' });
         dispatch({ type: 'fetchDatas' });
       });
     }
   },
 
   effects: {
+    // 获取枚举值
+    * fetchEnums({ payload }, { update, callWithLoading }) {
+      const { data: { content } } = yield callWithLoading(services.transaction.getItems, { type: 1, status: 1 });
+      yield update({ itemList: content || [] });
+    },
     // 获取列表信息
     * fetchDatas({ payload }, { select, update, callWithLoading }) {
       const { search } = yield select(({ appointmentList }) => appointmentList);

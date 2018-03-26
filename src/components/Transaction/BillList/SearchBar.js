@@ -1,5 +1,5 @@
 import { Form, Button, Row, Input, Select, DatePicker } from 'antd';
-import { treatmentStatus } from 'configs/constants';
+import { payType, payStatus, saleType } from 'configs/constants';
 import { formatDate, getDateRangeValue } from 'utils/common';
 
 const { RangePicker } = DatePicker;
@@ -49,6 +49,7 @@ class SearchBar extends React.Component {
   }
   // 页面渲染
   render() {
+    const { itemList = [] } = this.props;
     const search = this.state;
     return (
       <div className="searchBar">
@@ -75,25 +76,25 @@ class SearchBar extends React.Component {
             <FormItem label="按项目">
               <Select value={`${search.itemName}`} onChange={(value) => { this.handleChange('itemName', value); }} placeholder="请选择" >
                 <Option value="">全部</Option>
-                {treatmentStatus.map(({ label, value }) => (<Option key={value} value={`${value}`}>{label}</Option>))}
+                {itemList.map(({ id, className }) => (<Option key={id} value={`${id}`}>{className}</Option>))}
               </Select>
             </FormItem>
             <FormItem label="按状态">
               <Select value={`${search.status}`} onChange={(value) => { this.handleChange('status', value); }} placeholder="请选择" >
                 <Option value="">全部</Option>
-                {treatmentStatus.map(({ label, value }) => (<Option key={value} value={`${value}`}>{label}</Option>))}
+                {payStatus.map(({ label, value }) => (<Option key={value} value={`${value}`}>{label}</Option>))}
               </Select>
             </FormItem>
             <FormItem label="支付方式">
               <Select value={`${search.payType}`} onChange={(value) => { this.handleChange('payType', value); }} placeholder="请选择" >
                 <Option value="">全部</Option>
-                {treatmentStatus.map(({ label, value }) => (<Option key={value} value={`${value}`}>{label}</Option>))}
+                {payType.map(({ label, value }) => (<Option key={value} value={`${value}`}>{label}</Option>))}
               </Select>
             </FormItem>
             <FormItem label="优惠情况">
               <Select value={`${search.isOnSale}`} onChange={(value) => { this.handleChange('isOnSale', value); }} placeholder="请选择" >
                 <Option value="">全部</Option>
-                {treatmentStatus.map(({ label, value }) => (<Option key={value} value={`${value}`}>{label}</Option>))}
+                {saleType.map(({ label, value }) => (<Option key={value} value={`${value}`}>{label}</Option>))}
               </Select>
             </FormItem>
             <div className="btnGroup">

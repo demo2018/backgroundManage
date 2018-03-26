@@ -5,7 +5,7 @@ import { PAGE_SIZE } from 'configs/constants';
 import { formatFormData } from 'utils/common';
 
 const initialSearch = {
-  className: '', // 项目名称
+  name: '', // 项目名称
   status: '', // 状态
   pn: 1,
   ps: PAGE_SIZE,

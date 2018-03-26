@@ -1,16 +1,57 @@
 .visitModal {
   :global {
-    .ant-row {
+    .ant-form-item {
+      display: block;
       margin-bottom: 15px;
     }
-    .checkBoxTag {
-      border: 1px solid #dedede;
-      height: 30px;
-      line-height: 30px;
-      margin: 5px 10px 5px 0 ;
+    .ant-form-item-label {
+      min-width: 100px;
     }
-    .ant-tag-checkable-checked{
-      border: 1px solid #108ee9;
+    .ant-form-item-control-wrapper {
+      vertical-align: middle;
+      min-width: 340px;
+    }
+    .textAreaWraper {
+      .ant-form-item-label {
+        vertical-align: top;
+      }
+      textarea {
+        min-height: 100px;
+      }
+    }
+    .viewSteps{
+      text-align: right;
+      color: #108ee9;
+    }
+  }
+}
+.visit {
+  max-height: 400px;
+  overflow-y: auto;
+  :global{
+    .visitStep{
+      position: relative;
+      margin: 10px 0;
+      padding: 15px 0;
+      border: 1px solid #ddd;
+      .ant-form-item-label {
+        min-width: 100px;
+      }
+      .onStep{
+        position: absolute;
+        bottom: 14px;
+        right: 20px;
+        display: inline-block;
+        line-height: 32px;
+        a{
+          margin-left: 10px;
+        }
+        .delete{color: red;}
+      }
+    }
+    .visitStep.noVisit{text-indent: 2em;}
+    .stepTime{
+      text-align: right;
     }
   }
 }

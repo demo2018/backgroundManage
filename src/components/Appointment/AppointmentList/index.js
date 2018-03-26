@@ -19,7 +19,6 @@ class AppointmentList extends React.Component {
       okText: '确定',
       cancelText: '取消',
     };
-
     const extraFields = [
       {
         key: sortField,
@@ -38,7 +37,6 @@ class AppointmentList extends React.Component {
         },
       }
     ];
-
     return getColumns(fields).enhance(extraFields).values();
   }
   // 列表清空事件
@@ -68,8 +66,9 @@ class AppointmentList extends React.Component {
   }
   // 页面渲染
   render() {
-    const { fields, types, datas, total, search, loading, toAdd, onSearch, onReset, selected = [] } = this.props;
+    const { types, datas, total, search, loading, toAdd, onSearch, onReset, itemList, selected = [], getFields } = this.props;
     const { pn, ps } = search;
+    const fields = getFields(itemList); // 这样fileds就是动态生成的
     const columns = this.getInitalColumns(fields);
 
     const pagination = {
@@ -87,6 +86,7 @@ class AppointmentList extends React.Component {
         this.props.onUpdateState({ selected: selectedRowKeys });
       },
     };
+
     const tableProps = {
       dataSource: datas,
       columns,
@@ -102,6 +102,7 @@ class AppointmentList extends React.Component {
 
     const searchBarProps = {
       search,
+      itemList,
       types,
       onSearch,
       onReset,

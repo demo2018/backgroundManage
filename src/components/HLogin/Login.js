@@ -106,7 +106,7 @@ class LoginForm extends React.Component {
     }, 1000);
   }
   renderLoginForm() {
-    const { siteName, content, loading, form, type = 'password', theme = 'NORMAL', formBgRender } = this.props;
+    const { siteName, content, loading, form, type = 'password', theme = 'NORMAL' } = this.props;
 
     const { countNum, seconds } = this.state;
     const { getFieldDecorator } = form;
@@ -118,9 +118,6 @@ class LoginForm extends React.Component {
       <div className="h-login-form">
         <div className="h-login-logo">
           <span>{siteName}</span>
-        </div>
-        <div className="h-login-form-overlay">
-          {formBgRender ? formBgRender() : ''}
         </div>
         <form>
           {type == 'password' ?
@@ -188,7 +185,7 @@ class LoginForm extends React.Component {
       );
   }
   render() {
-    const { theme = 'normal', siteName, title, subTitle, logoRender, bgRender } = this.props;
+    const { theme = 'normal', siteName, title, subTitle, logoRender } = this.props;
     const themeClassName = LoginTheme[theme];
 
     return (
@@ -199,11 +196,6 @@ class LoginForm extends React.Component {
               <span>{siteName}</span><span className="h-login-welcome">欢迎您</span>
             </div>
           )}
-        </div>
-        <div className="h-login-overlay">
-          {
-            bgRender ? bgRender() : ''
-          }
         </div>
         <div className="h-login-outer-title">
           <h1>{title}</h1>

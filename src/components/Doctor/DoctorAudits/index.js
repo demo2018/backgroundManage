@@ -1,16 +1,49 @@
-import { Row, Form, Input, Select, Button, Tag } from 'antd';
+import { Row, Form, Input, Select, Button, Tag, Modal } from 'antd';
+import { getServer } from 'utils/common';
 import styles from './doctorAudit.less';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-class CustomerDetail extends React.Component {
+class DoctorAudits extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
+      previewVisible: false,
+      previewImage: '',
     };
     this.handleAudit = this.handleAudit.bind(this);
   }
+  // 渲染擅长项目
+  getAdepts() {
+    const { details, adeptList } = this.props;
+    const adeptslist = adeptList
+      .filter(({ id }) => {
+        return details.adepts && details.adepts.includes(`${id}`);
+      })
+      .map(({ name }) => {
+        return name;
+      });
+    return adeptslist.map((index) => {
+      return <Tag key={index}>{index}</Tag>;
+    });
+  }
+  // 渲染服务项目
+  getItems() {
+    const { details, itemLists } = this.props;
+    const itemslist = itemLists
+      .filter(({ id }) => {
+        return details.serviceItems && details.serviceItems.includes(`${id}`);
+      })
+      .map(({ className }) => {
+        return className;
+      });
+    return itemslist.map((index) => {
+      return <Tag key={index}>{index}</Tag>;
+    });
+  }
+  // 触发提交审核
   handleAudit() {
     const { form, toAudit, details } = this.props;
     const { validateFieldsAndScroll } = form;
@@ -20,18 +53,35 @@ class CustomerDetail extends React.Component {
       }
     });
   }
+  handleCancel = () => this.setState({ previewVisible: false })
+  // 点击预览图片
+  handlePreview = (file) => {
+    const { disease } = getServer();
+    this.setState({
+      previewImage: `${disease}/bhyy/core/image/${file}`,
+      previewVisible: true,
+    });
+  }
+  // 处理图片地址
+  renderImage(imageUrlKey) {
+    const { details } = this.props;
+    const { disease } = getServer();
+    return details[imageUrlKey] ? <img src={`${disease}/bhyy/core/image/${details[imageUrlKey]}`} alt="" onClick={() => this.handlePreview(details[imageUrlKey])} /> : <img src="" alt="" />;
+  }
+  // 渲染页面
   render() {
     const { form, details, goback } = this.props;
+    const { previewVisible, previewImage, } = this.state;
     const { getFieldDecorator } = form;
     return (
-      <div className={styles.doctorDetail}>
+      <div className={styles.doctorAudit}>
         <div className="baseInfo part">
           <div className="title">
             <h3>基本信息</h3>
           </div>
           <div className="content">
             <div className="imgWraper">
-              <img className="doctorImg" src="{details.icon}" alt="" />
+              {this.renderImage('icon')}
               <h4>医生头像</h4>
             </div>
             <div className="filedsWraper">
@@ -71,29 +121,34 @@ class CustomerDetail extends React.Component {
                     <span className="filedName">第一执业机构</span>
                     <span className="filedValue">{details.age}</span>
                   </div>
-                  <div className="filedItem">
+                  {/* <div className="filedItem">
                     <span className="filedName">职称</span>
                     <span className="filedValue">{details.title}</span>
-                  </div>
-                </Row>
-                <Row>
+                  </div> */}
                   <div className="filedItem">
                     <span className="filedName">执业年限</span>
                     <span className="filedValue">{details.workYear}年</span>
                   </div>
+                </Row>
+                <Row>
                   <div className="filedItem">
                     <span className="filedName">擅长领域</span>
-                    <span className="filedValue">{details.adept}</span>
+                    <span className="filedValue">
+                      {this.getAdepts()}
+                    </span>
                   </div>
                 </Row>
                 <Row>
                   <div className="filedItem">
                     <span className="filedName">科室</span>
                     <span className="filedValue">
-                      <Tag>内科</Tag>
-                      <Tag>种植科</Tag>
-                      <Tag>正畸科</Tag>
-                      <Tag>修复科</Tag>
+                      {(details.departments || [])
+                        .map((index) => {
+                          return (<Tag
+                            key={index}
+                          > {index}
+                          </Tag>);
+                        })}
                     </span>
                   </div>
                 </Row>
@@ -101,10 +156,7 @@ class CustomerDetail extends React.Component {
                   <div className="filedItem">
                     <span className="filedName">服务项目</span>
                     <span className="filedValue">
-                      <Tag>内科</Tag>
-                      <Tag>种植科</Tag>
-                      <Tag>正畸科</Tag>
-                      <Tag>修复科</Tag>
+                      {this.getItems()}
                     </span>
                   </div>
                 </Row>
@@ -128,19 +180,29 @@ class CustomerDetail extends React.Component {
           <div className="title"><h3>认证信息</h3></div>
           <div className="content">
             <div className="imgWraper">
-              <img className="doctorImg" src="" alt="" />
-              <h4>身份证</h4>
+              {this.renderImage('idIcon')}
+              <h4>身份证正面照</h4>
             </div>
             <div className="imgWraper">
-              <img className="doctorImg" src="" alt="" />
-              <h4>执业资格证</h4>
+              {this.renderImage('jobIcon1')}
+              <h4>执业资格证(第1页)</h4>
             </div>
             <div className="imgWraper">
-              <img className="doctorImg" src="" alt="" />
+              {this.renderImage('jobIcon2')}
+              <h4>执业资格证(第2页)</h4>
+            </div>
+            <div className="imgWraper">
+              {this.renderImage('doctorIcon')}
               <h4>医师资格证</h4>
             </div>
           </div>
         </div>
+
+
+        <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+          <img alt="example" style={{ width: '100%' }} src={previewImage} />
+        </Modal>
+
         <div className="audit part">
           <Form layout="inline">
             <FormItem
@@ -157,7 +219,7 @@ class CustomerDetail extends React.Component {
                   <Option value="1">审核成功</Option>
                   <Option value="2">审核失败</Option>
                 </Select>
-                )}
+              )}
             </FormItem>
             <FormItem label="原因" >
               {getFieldDecorator('failureReason', {
@@ -167,7 +229,7 @@ class CustomerDetail extends React.Component {
                 }],
               })(
                 <Input />
-                )}
+              )}
             </FormItem>
           </Form>
           <div className="btnGroup">
@@ -180,4 +242,4 @@ class CustomerDetail extends React.Component {
   }
 }
 
-export default Form.create()(CustomerDetail);
+export default Form.create()(DoctorAudits);

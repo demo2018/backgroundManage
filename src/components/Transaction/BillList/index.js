@@ -1,4 +1,4 @@
-import { Table, Button, Popconfirm, Modal } from 'antd';
+import { Table, Button, Modal } from 'antd';
 import tableUtil from 'utils/tableUtil';
 import SearchBar from './SearchBar.js';
 import AddModal from './modal/AddModal.js';
@@ -14,13 +14,7 @@ class ProjectClassify extends React.Component {
     };
   }
   getInitalColumns(fields) {
-    const { onUpdateState, onDelete, search: { sortField, ordination } } = this.props;
-
-    const popconfirmProps = {
-      title: '确认删除该折扣?',
-      okText: '确定',
-      cancelText: '取消',
-    };
+    const { search: { sortField, ordination } } = this.props;
 
     const extraFields = [
       {
@@ -32,16 +26,18 @@ class ProjectClassify extends React.Component {
         width: 200,
         render: (value, record) => {
           return (<div>
-            <a onClick={() => { onUpdateState({ selecteRecord: record, addModalVisible: true }); }}>明细</a>
-            <span className="ant-divider"></span>
-            <Popconfirm {...popconfirmProps} onConfirm={() => { onDelete({ id: record.id }); }}>
-              <a>删除</a>
-            </Popconfirm>
+            <a onClick={() => { this.getBill({ selecteRecord: record, addModalVisible: true }); }}>明细</a>
           </div >);
         }
       }];
 
     return getColumns(fields).enhance(extraFields).values();
+  }
+  // 触发随访记录
+  getBill(state) {
+    const { getBillinfo } = this.props;
+    getBillinfo(state.selecteRecord.id);
+    this.props.onUpdateState({ ...state });
   }
   // 判断是否选中医生
   handleVerify(handleFn) {
@@ -79,8 +75,9 @@ class ProjectClassify extends React.Component {
   }
   // 页面渲染
   render() {
-    const { fields, types, datas, total, search, loading, addModalVisible, downFile, onUpdateState, tabKey, onTabChange, onAdd, onSearch, onReset, selecteRecord, selected = [] } = this.props;
+    const { types, datas, total, search, loading, addModalVisible, downFile, onUpdateState, tabKey, onTabChange, onSearch, onReset, selecteRecord, itemList, getFields, selected = [], billInfo = [] } = this.props;
     const { pn, ps } = search;
+    const fields = getFields(itemList); // 这样fileds就是动态生成的
     const columns = this.getInitalColumns(fields);
 
     const pagination = {
@@ -112,6 +109,7 @@ class ProjectClassify extends React.Component {
     };
 
     const searchBarProps = {
+      itemList,
       tabKey,
       onTabChange,
       search,
@@ -122,10 +120,10 @@ class ProjectClassify extends React.Component {
 
     const addModalProps = {
       selecteRecord,
-      onOK: onAdd,
       onCancel: () => {
         onUpdateState({ selecteRecord: {}, addModalVisible: false });
-      }
+      },
+      billInfo,
     };
     return (
       <div>

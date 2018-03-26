@@ -31,6 +31,9 @@ function mapDispatchToProps(dispatch) {
     onDelete(param) {
       dispatch({ type: 'labelList/doDelete', param });
     },
+    toTag(search) {
+      dispatch(routerRedux.push('/tag/list'), search);
+    },
   };
 }
 

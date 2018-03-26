@@ -33,7 +33,7 @@ function Layout({
     header: {
       boxList,
       onLogout: () => {
-        dispatch(routerRedux.push('/login'));
+        dispatch({ type: 'layout/logout' });
       }
     },
     renderBreadcrumb: () => {

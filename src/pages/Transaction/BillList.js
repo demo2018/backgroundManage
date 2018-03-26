@@ -1,5 +1,4 @@
 import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
 import { createNestPage } from 'utils/common';
 import BillList from 'components/Transaction/BillList';
 
@@ -22,15 +21,9 @@ function mapDispatchToProps(dispatch) {
       dispatch({ type: 'billList/resetSearch' });
       dispatch({ type: 'billList/fetchDatas' });
     },
-    onAdd(param) {
-      dispatch({ type: 'billList/doAdd', payload: { param } });
-    },
-    onEdit(param) {
-      dispatch({ type: 'billList/doEdit', payload: { param } });
-    },
-    onDelete(param) {
-      dispatch({ type: 'billList/doDelete', payload: { param } });
-    },
+    getBillinfo(param) {
+      dispatch({ type: 'billList/getBillinfo', param });
+    }
   };
 }
 

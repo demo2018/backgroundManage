@@ -7,6 +7,8 @@ export default Model.extend({
   state: {
     id: '',
     details: {},
+    adeptList: [],
+    itemLists: []
   },
 
   subscriptions: {
@@ -16,6 +18,8 @@ export default Model.extend({
           const id = params[0];
           dispatch({ type: 'resetState' });
           dispatch({ type: 'updateState', payload: { id } });
+          dispatch({ type: 'fetchAdept' });
+          dispatch({ type: 'fetchItem' });
           dispatch({ type: 'fetchDetail' });
         },
       });
@@ -23,6 +27,16 @@ export default Model.extend({
   },
 
   effects: {
+    // 获取擅长项目
+    * fetchAdept({ payload }, { update, callWithLoading }) {
+      const { data: { content } } = yield callWithLoading(services.doctor.getAdept, { typeId: 3 });
+      yield update({ adeptList: content || [] });
+    },
+    // 获取服务项目
+    * fetchItem({ payload }, { update, callWithLoading }) {
+      const { data: { content } } = yield callWithLoading(services.doctor.getItems, { type: 1, status: 1 });
+      yield update({ itemLists: content || [] });
+    },
     // 获取医生详情
     * fetchDetail({ payload }, { select, update, callWithLoading }) {
       const { id } = yield select(({ doctorAudits }) => doctorAudits);

@@ -7,7 +7,7 @@ const { del } = http.create('disease');
 
 // 项目分类列表接口
 export function itemDatas(param) {
-  return get(`/bhyy/core/itemClass?type=${param.tabKey}`, param.search);
+  return get(`/bhyy/core/itemClass/type?type=${param.tabKey}`, param.search);
 }
 // 新增项目分类接口
 export function doAdd(param) {

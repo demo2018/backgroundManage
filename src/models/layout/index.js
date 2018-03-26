@@ -18,18 +18,23 @@ export default Model.extend({
 
   effects: {
     *login({ payload }, { call, put }) {
-      // const result = yield call(services.layout.login, { ...payload });
-      yield put(routerRedux.push('/'));
-      const expires = { expires: 1 };
-      cookie.set('username', payload.username, expires);
-      // cookie.set('st', result.token, expires);
+      const result = yield call(services.layout.login, { ...payload });
+      if (result.status) {
+        const expires = { expires: 1 };
+        cookie.set('username', result.data.username, expires);
+        cookie.set('userid', result.data.id, expires);
+        cookie.set('seesionid', result.data.sessionId, expires);
+        yield put(routerRedux.push('/'));
+      }
     },
-    *logout({ payload }, { put }) {
-      cookie.remove('username');
-      cookie.remove('userid');
-      cookie.remove('sid');
-      cookie.remove('st');
-      yield put(routerRedux.push('/login'));
+    *logout({ payload }, { call, put }) {
+      const result = yield call(services.layout.logout);
+      if (result.status) {
+        cookie.remove('username');
+        cookie.remove('userid');
+        cookie.remove('seesionid');
+        yield put(routerRedux.push('/login'));
+      }
     },
     *updateNavState({ payload }) {
       if (payload.selectedKey) {

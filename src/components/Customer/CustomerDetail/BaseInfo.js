@@ -55,27 +55,36 @@ class BaseInfo extends React.Component {
       <div className="searchBar">
         <h3 className="title">基本信息</h3>
         <Form layout="inline">
-          <FormItem label="用户头像">
-            <img src={search.icon} alt="" />
-          </FormItem>
-          <FormItem label="用户名">
-            <Input value={search.nickName} onChange={(value) => { this.handleChange('nickName', value); }} placeholder="选填" />
-          </FormItem>
-          <FormItem label="姓名">
-            <Input value={search.realName} onChange={(value) => { this.handleChange('realName', value); }} placeholder="选填" />
-          </FormItem>
-          <FormItem label="年龄">
-            <Input value={search.age} onChange={(value) => { this.handleChange('age', value); }} placeholder="选填" />
-          </FormItem>
-          <FormItem label="性别">
-            {/* 下拉组件只支持字符串类型，需要手动将数字类型转换为字符串类型 */}
-            <Select value={`${search.gender}`} onChange={(value) => { this.handleChange('gender', value); }} placeholder="请选择" >
-              {genderType.map(({ label, value }) => (<Option key={`${value}`} value={`${value}`}>{label}</Option>))}
-            </Select>
-          </FormItem>
-          <FormItem label="出生日期">
-            <DatePicker value={search.birthday} onChange={(value) => { this.handleChange('birthday', value); }} />
-          </FormItem>
+          <div>
+            <div className="searchWrap">
+              <FormItem label="用户头像" className="avatars">
+                <img src={search.icon} alt="" />
+              </FormItem>
+              <FormItem label="用户名">
+                <Input value={search.nickName} onChange={(value) => { this.handleChange('nickName', value); }} placeholder="选填" />
+              </FormItem>
+            </div>
+            <div className="searchWrap">
+              <FormItem label="姓名" className="firstLine">
+                <Input value={search.realName} onChange={(value) => { this.handleChange('realName', value); }} placeholder="选填" />
+              </FormItem>
+              <FormItem label="性别">
+                {/* 下拉组件只支持字符串类型，需要手动将数字类型转换为字符串类型 */}
+                <Select value={`${search.gender}`} onChange={(value) => { this.handleChange('gender', value); }} placeholder="请选择" >
+                  {genderType.map(({ label, value }) => (<Option key={`${value}`} value={`${value}`}>{label}</Option>))}
+                </Select>
+              </FormItem>
+            </div>
+            <div className="searchWrap">
+              <FormItem label="年龄" className="firstLine">
+                <Input value={search.age} onChange={(value) => { this.handleChange('age', value); }} placeholder="选填" />
+              </FormItem>
+              <FormItem label="出生日期">
+                <DatePicker value={search.birthday} onChange={(value) => { this.handleChange('birthday', value); }} />
+              </FormItem>
+            </div>
+          </div>
+
           <FormItem label="来源">
             <Select value={`${search.source}`} onChange={(value) => { this.handleChange('source', value); }} placeholder="请选择" >
               {sourceStatus.map(({ label, value }) => (<Option key={`${value}`} value={`${value}`}>{label}</Option>))}

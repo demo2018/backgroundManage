@@ -2,7 +2,7 @@ import { Table, Button, Popconfirm } from 'antd';
 import tableUtil from 'utils/tableUtil';
 import SearchBar from './SearchBar.js';
 import AddModal from './modal/AddModal.js';
-import { ORDER_SUFFIX } from 'configs/constants';
+import { ORDER_SUFFIX, PAGE_SIZE } from 'configs/constants';
 
 const { getColumns } = tableUtil;
 
@@ -14,7 +14,7 @@ class LabelList extends React.Component {
     };
   }
   getInitalColumns(fields) {
-    const { onUpdateState, onDelete, search: { sortField, ordination } } = this.props;
+    const { onUpdateState, onDelete, search: { sortField, ordination }, toTag } = this.props;
 
     const popconfirmProps = {
       title: '确认删除该标签?',
@@ -32,6 +32,8 @@ class LabelList extends React.Component {
         width: 200,
         render: (value, record) => {
           return (<div>
+            <a onClick={() => { toTag({ typeId: record.id, pn: 1, ps: PAGE_SIZE, sortField: 'status', ordination: 'DESC' }); }}>查看子列表</a>
+            <span className="ant-divider"></span>
             <a onClick={() => { onUpdateState({ selecteRecord: record, addModalVisible: true }); }}>编辑</a>
             <span className="ant-divider"></span>
             <Popconfirm {...popconfirmProps} onConfirm={() => { onDelete(record.id); }}>

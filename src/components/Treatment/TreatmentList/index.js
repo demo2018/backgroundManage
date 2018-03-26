@@ -7,7 +7,6 @@ import MessageModal from './modal/MessageModal.js';
 import { ORDER_SUFFIX } from 'configs/constants';
 
 const { getColumns } = tableUtil;
-
 // 页面参数初始化
 class TreatmentList extends React.Component {
   constructor(props) {
@@ -16,8 +15,9 @@ class TreatmentList extends React.Component {
       modalVisible: false,
     };
   }
+
   getInitalColumns(fields) {
-    const { toAppointmentDetail, onDelete, search: { sortField, ordination } } = this.props;
+    const { toTreatmentDetail, onDelete, search: { sortField, ordination } } = this.props;
 
     const popconfirmProps = {
       title: '确认删除该就诊?',
@@ -35,11 +35,11 @@ class TreatmentList extends React.Component {
         width: 200,
         render: (value, record) => {
           return (<div>
-            <a onClick={() => { toAppointmentDetail(record.id); }}>编辑</a>
+            <a onClick={() => { toTreatmentDetail(record.id); }}>编辑</a>
             <span className="ant-divider"></span>
-            <a onClick={() => { this.handleModal({ selecteRecord: record, assessModalVisible: true }); }}>评价</a>
+            <a onClick={() => { this.toAssess({ selecteRecord: record, assessModalVisible: true }); }}>评价</a>
             <span className="ant-divider"></span>
-            <a onClick={() => { this.handleModal({ selecteRecord: record, visitModalVisible: true }); }}>随访</a>
+            <a onClick={() => { this.toVisit({ selecteRecord: record, visitModalVisible: true }); }}>随访</a>
             <span className="ant-divider"></span>
             <Popconfirm {...popconfirmProps} onConfirm={() => { onDelete(record.id); }}>
               <a>删除</a>
@@ -47,9 +47,9 @@ class TreatmentList extends React.Component {
           </div >);
         }
       }];
-
     return getColumns(fields).enhance(extraFields).values();
   }
+  // 列表清空事件
   handleClear() {
     this.props.onUpdateState({ selected: [] });
   }
@@ -79,7 +79,23 @@ class TreatmentList extends React.Component {
       this.props.onUpdateState({ messageModalVisible: true });
     }
   }
-  handleModal(state) {
+  // 触发查看评价
+  toAssess(state) {
+    if (state.selecteRecord.comment) {
+      const { getComment } = this.props;
+      getComment(state.selecteRecord.id);
+      this.props.onUpdateState({ ...state });
+    } else {
+      Modal.warning({
+        title: '抱歉！',
+        content: '该就诊暂无评价！',
+      });
+    }
+  }
+  // 触发随访记录
+  toVisit(state) {
+    const { getManager } = this.props;
+    getManager(state.selecteRecord.id);
     this.props.onUpdateState({ ...state });
   }
   // 页面排序监听事件
@@ -92,6 +108,7 @@ class TreatmentList extends React.Component {
       });
     }
   }
+
   renderTableTitle() {
     const { selected = [] } = this.props;
     return (<p>已选择<span style={{ color: 'red', padding: '0 4px' }}>{selected.length}</span>项
@@ -100,9 +117,10 @@ class TreatmentList extends React.Component {
   }
   // 页面渲染
   render() {
-    const { fields, types, datas, total, search, loading, assessModalVisible, visitModalVisible, messageModalVisible,
-      msgList, onSendMsg, onUpdateState, downFile, onAssess, onVisit, onSearch, onReset, selecteRecord, selected = [] } = this.props;
+    const { getFields, types, datas, total, search, loading, assessModalVisible, visitModalVisible, messageModalVisible, itemList, tagList,
+      msgList, onSendMsg, onUpdateState, downFile, addVisit, delVisit, editVisit, onSearch, onReset, selecteRecord, selected = [], visitList, managerList } = this.props;
     const { pn, ps } = search;
+    const fields = getFields(itemList); // 这样fileds就是动态生成的
     const columns = this.getInitalColumns(fields);
 
     const pagination = {
@@ -144,6 +162,7 @@ class TreatmentList extends React.Component {
 
     const searchBarProps = {
       search,
+      itemList,
       types,
       onSearch,
       onReset,
@@ -151,7 +170,10 @@ class TreatmentList extends React.Component {
 
     const assessModalProps = {
       selecteRecord,
-      onOK: onAssess,
+      tagList,
+      onOK: () => {
+        onUpdateState({ selecteRecord: {}, assessModalVisible: false });
+      },
       onCancel: () => {
         onUpdateState({ selecteRecord: {}, assessModalVisible: false });
       }
@@ -159,11 +181,16 @@ class TreatmentList extends React.Component {
 
     const visitModalProps = {
       selecteRecord,
-      onOK: onVisit,
+      onOK: addVisit,
+      onEdit: editVisit,
       onCancel: () => {
         onUpdateState({ selecteRecord: {}, visitModalVisible: false });
-      }
+      },
+      visitList,
+      managerList,
+      delVisit,
     };
+
     return (
       <div>
         <SearchBar {...searchBarProps} />
@@ -172,7 +199,6 @@ class TreatmentList extends React.Component {
           <Button onClick={() => { this.handleSendMsg(); }}>发送健康提醒</Button>
         </div>
         <Table {...tableProps} />
-
         {assessModalVisible && <AssessModal {...assessModalProps} />}
         {visitModalVisible && <VisitModal {...visitModalProps} />}
         {messageModalVisible && <MessageModal {...modalProps} />}

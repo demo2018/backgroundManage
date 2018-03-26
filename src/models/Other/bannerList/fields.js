@@ -12,7 +12,8 @@ export const fields = [
   },
   {
     key: 'image',
-    name: '图片'
+    name: '图片',
+    render: (text) => <img src={text} /> // 把后台有的banner存成一个数组 取数组里得img，设置img的src={text.img}
   },
   {
     key: 'rank',

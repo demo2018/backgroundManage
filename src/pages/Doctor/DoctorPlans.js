@@ -1,20 +1,23 @@
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import { createNestPage } from 'utils/common';
-import DoctorProgress from 'components/Doctor/DoctorProgress';
+import DoctorPlans from 'components/Doctor/DoctorPlans';
 
-function mapStateToProps({ doctorDetail }) {
+function mapStateToProps({ doctorPlans }) {
   return {
-    ...doctorDetail,
+    ...doctorPlans,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     onUpdateState(payload) {
-      dispatch({ type: 'doctorDetail/updateState', payload: { ...payload } });
+      dispatch({ type: 'doctorPlans/updateState', payload: { ...payload } });
+    },
+    toPlans(param) {
+      dispatch({ type: 'doctorPlans/toPlans', param });
     },
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DoctorProgress);
+export default connect(mapStateToProps, mapDispatchToProps)(DoctorPlans);

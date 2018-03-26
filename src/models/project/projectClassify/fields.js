@@ -17,7 +17,7 @@ export const fields = [
     sorter: true,
   },
   {
-    key: 'number',
+    key: 'childCount',
     name: '关联项目数',
     sorter: true,
   },

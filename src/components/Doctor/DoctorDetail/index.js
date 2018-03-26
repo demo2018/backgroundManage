@@ -19,29 +19,6 @@ const options = [
   { label: '牙周科', value: '牙周科' },
   { label: '儿童口腔科', value: '儿童口腔科' },
 ];
-const itemoptions = [
-  { label: '洗牙', value: '洗牙' },
-  { label: '美白', value: '美白' },
-  { label: '拔牙', value: '拔牙' },
-  { label: '补牙', value: '补牙' },
-  { label: '种牙', value: '种牙' },
-  { label: '正畸', value: '正畸' },
-  { label: '镶牙', value: '镶牙' },
-  { label: '儿童口腔', value: '儿童口腔' },
-  { label: '口腔检查', value: '口腔检查' },
-  { label: '根管治疗', value: '根管治疗' },
-  { label: '冠修复', value: '冠修复' },
-  { label: '拆线', value: '拆线' },
-  { label: '刮治', value: '刮治' },
-  { label: '种植修复', value: '种植修复' },
-  { label: '冲洗', value: '冲洗' },
-  { label: '换药', value: '换药' },
-  { label: '瓷贴面', value: '瓷贴面' },
-  { label: '根尖手术', value: '根尖手术' },
-  { label: '小手术', value: '小手术' },
-  { label: '拍片采印', value: '拍片采印' },
-  { label: '全口涂氟', value: '全口涂氟' },
-];
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -51,7 +28,7 @@ function getBase64(img, callback) {
 
 const imgTypeReg = /\/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/;
 // 页面参数初始化
-class CustomerDetail extends React.Component {
+class DoctorDetail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -100,24 +77,28 @@ class CustomerDetail extends React.Component {
     validateFieldsAndScroll((err, values) => {
       const { birthday } = values;
       if (!err && details.id) {
-        updateDatas({ ...values,
+        updateDatas({
+          ...values,
           birthday: birthday ? toString(birthday, 'YYYY-MM-DD') : '',
           icon: imageUrl.icon ? imageUrl.icon : details.icon,
           idIcon: imageUrl.idIcon ? imageUrl.idIcon : details.idIcon,
           jobIcon1: imageUrl.jobIcon1 ? imageUrl.jobIcon1 : details.jobIcon1,
           jobIcon2: imageUrl.jobIcon2 ? imageUrl.jobIcon2 : details.jobIcon2,
           doctorIcon: imageUrl.doctorIcon ? imageUrl.doctorIcon : details.doctorIcon,
-          assistantQr: imageUrl.assistantQr ? imageUrl.assistantQr : details.assistantQr }, details.id);
+          assistantQr: imageUrl.assistantQr ? imageUrl.assistantQr : details.assistantQr
+        }, details.id);
       }
       if (!err && !details.id) {
-        addDatas({ ...values,
+        addDatas({
+          ...values,
           birthday: birthday ? toString(birthday, 'YYYY-MM-DD') : '',
           icon: imageUrl.icon ? imageUrl.icon : details.icon,
           idIcon: imageUrl.idIcon ? imageUrl.idIcon : details.idIcon,
           jobIcon1: imageUrl.jobIcon1 ? imageUrl.jobIcon1 : details.jobIcon1,
           jobIcon2: imageUrl.jobIcon2 ? imageUrl.jobIcon2 : details.jobIcon2,
           doctorIcon: imageUrl.doctorIcon ? imageUrl.doctorIcon : details.doctorIcon,
-          assistantQr: imageUrl.assistantQr ? imageUrl.assistantQr : details.assistantQr });
+          assistantQr: imageUrl.assistantQr ? imageUrl.assistantQr : details.assistantQr
+        });
       }
     });
   }
@@ -175,7 +156,7 @@ class CustomerDetail extends React.Component {
   }
   // 页面渲染
   render() {
-    const { form, details, goback } = this.props;
+    const { form, details, goback, itemoptions, adeptList } = this.props;
     const { getFieldDecorator } = form;
     return (
       <div className={styles.doctorDetail}>
@@ -193,7 +174,7 @@ class CustomerDetail extends React.Component {
                   beforeUpload={this.beforeUpload('icon')}
                   onChange={this.handleUploadChange('icon')}
                 >
-                {this.renderImage('icon')}
+                  {this.renderImage('icon')}
                 </Upload>
                 <h4>医生头像</h4>
               </div>
@@ -211,7 +192,7 @@ class CustomerDetail extends React.Component {
                       }],
                     })(
                       <Input />
-                      )}
+                    )}
                   </FormItem>
                   <FormItem
                     label="手机号码"
@@ -223,7 +204,7 @@ class CustomerDetail extends React.Component {
                       }],
                     })(
                       <InputNumber />
-                      )}
+                    )}
                   </FormItem>
                 </Row>
                 <Row>
@@ -240,7 +221,7 @@ class CustomerDetail extends React.Component {
                         <Radio value={1}>男</Radio>
                         <Radio value={0}>女</Radio>
                       </RadioGroup>
-                      )}
+                    )}
                   </FormItem>
                   <FormItem
                     label="学历"
@@ -252,12 +233,13 @@ class CustomerDetail extends React.Component {
                       }],
                     })(
                       <Select >
+                        <Option value="专科">专科</Option>
                         <Option value="本科">本科</Option>
                         <Option value="研究生">研究生</Option>
                         <Option value="硕士">硕士</Option>
                         <Option value="博士">博士</Option>
                       </Select>
-                      )}
+                    )}
                   </FormItem>
                 </Row>
                 <Row>
@@ -271,7 +253,7 @@ class CustomerDetail extends React.Component {
                       }],
                     })(
                       <DatePicker />
-                      )}
+                    )}
                   </FormItem>
                   <FormItem
                     label="年龄"
@@ -283,7 +265,7 @@ class CustomerDetail extends React.Component {
                       }],
                     })(
                       <InputNumber min={0} max={150} />
-                      )}
+                    )}
                   </FormItem>
                 </Row>
                 <Row>
@@ -297,9 +279,9 @@ class CustomerDetail extends React.Component {
                       }],
                     })(
                       <Input />
-                      )}
+                    )}
                   </FormItem>
-                  <FormItem
+                  {/* <FormItem
                     label="职称"
                   >
                     {getFieldDecorator('title', {
@@ -315,7 +297,7 @@ class CustomerDetail extends React.Component {
                         <Option value="高级职称">高级职称</Option>
                       </Select>
                       )}
-                  </FormItem>
+                  </FormItem> */}
                 </Row>
                 <Row>
                   <FormItem
@@ -328,24 +310,19 @@ class CustomerDetail extends React.Component {
                       }],
                     })(
                       <InputNumber min={0} max={150} />
-                      )}
+                    )}
                   </FormItem>
                   <FormItem
                     label="擅长领域"
                   >
-                    {getFieldDecorator('adept', {
-                      initialValue: `${details.adept}`,
+                    {getFieldDecorator('adepts', {
+                      initialValue: details.adepts || [],
                       rules: [{
                         required: true, message: '请选择擅长领域！',
                       }],
                     })(
-                      <Select >
-                        <Option value="美白">美白</Option>
-                        <Option value="拔牙">拔牙</Option>
-                        <Option value="正畸">正畸</Option>
-                        <Option value="补牙">补牙</Option>
-                      </Select>
-                      )}
+                      <CheckboxGroup options={adeptList.map(({ id, name }) => ({ value: `${id}`, label: name }))} />
+                  )}
                   </FormItem>
                 </Row>
                 <Row>
@@ -359,7 +336,7 @@ class CustomerDetail extends React.Component {
                       }],
                     })(
                       <CheckboxGroup options={options} />
-                      )}
+                    )}
                   </FormItem>
                 </Row>
                 <Row>
@@ -372,8 +349,8 @@ class CustomerDetail extends React.Component {
                         required: true, message: '请选择服务项目！',
                       }],
                     })(
-                      <CheckboxGroup options={itemoptions} />
-                      )}
+                      <CheckboxGroup className="serviceProject" options={itemoptions.map(({ id, className }) => ({ value: `${id}`, label: className }))} />
+                    )}
                   </FormItem>
                 </Row>
                 <Row className="textArea">
@@ -384,7 +361,7 @@ class CustomerDetail extends React.Component {
                       initialValue: details.intro,
                     })(
                       <TextArea />
-                      )}
+                    )}
                   </FormItem>
                 </Row>
                 <Row>
@@ -395,7 +372,7 @@ class CustomerDetail extends React.Component {
                       initialValue: details.recommendId,
                     })(
                       <Input />
-                      )}
+                    )}
                   </FormItem>
                 </Row>
                 <Row>
@@ -409,7 +386,7 @@ class CustomerDetail extends React.Component {
                         <Radio value={1}>是</Radio>
                         <Radio value={0}>否</Radio>
                       </RadioGroup>
-                      )}
+                    )}
                   </FormItem>
                 </Row>
               </Form>
@@ -502,7 +479,7 @@ class CustomerDetail extends React.Component {
                   {getFieldDecorator('doctor1', {
                   })(
                     <Input />
-                    )}
+                  )}
                 </FormItem>
                 <FormItem
                   label="推荐医生1"
@@ -510,7 +487,7 @@ class CustomerDetail extends React.Component {
                   {getFieldDecorator('doctor2', {
                   })(
                     <Input />
-                    )}
+                  )}
                 </FormItem>
               </Row>
               <Row>
@@ -520,7 +497,7 @@ class CustomerDetail extends React.Component {
                   {getFieldDecorator('doctor3', {
                   })(
                     <Input />
-                    )}
+                  )}
                 </FormItem>
                 <FormItem
                   label="推荐医生4"
@@ -528,7 +505,7 @@ class CustomerDetail extends React.Component {
                   {getFieldDecorator('doctor4', {
                   })(
                     <Input />
-                    )}
+                  )}
                 </FormItem>
               </Row>
               <Row>
@@ -538,7 +515,7 @@ class CustomerDetail extends React.Component {
                   {getFieldDecorator('doctor5', {
                   })(
                     <Input />
-                    )}
+                  )}
                 </FormItem>
               </Row>
               <Row>
@@ -552,7 +529,7 @@ class CustomerDetail extends React.Component {
                       <Radio value={1}>是</Radio>
                       <Radio value={0}>否</Radio>
                     </RadioGroup>
-                    )}
+                  )}
                 </FormItem>
               </Row>
             </Form>
@@ -567,4 +544,4 @@ class CustomerDetail extends React.Component {
   }
 }
 
-export default Form.create()(CustomerDetail);
+export default Form.create()(DoctorDetail);

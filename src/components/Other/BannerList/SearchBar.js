@@ -3,6 +3,7 @@ import { formatDate, getDateRangeValue } from 'utils/common';
 import { itemStatus } from 'configs/constants';
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 const { RangePicker } = DatePicker;
 // 处理起止时间格式
 const getStateBySearch = (search = {}) => {

@@ -7,10 +7,10 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 const getStateBySearch = (search = {}) => {
-  const { createStartTime, createEndTime } = search;
+  const { startTime, endTime } = search;
   return {
     ...search,
-    addDate: getDateRangeValue(createStartTime, createEndTime),
+    addDate: getDateRangeValue(startTime, endTime),
   };
 };
 
@@ -29,10 +29,10 @@ class SearchBar extends React.Component {
   handleSearch() {
     const { onSearch } = this.props;
     const values = this.state;
-    values.createStartTime = formatDate(values.addDate[0]);
-    values.createEndTime = formatDate(values.addDate[1]);
+    values.startTime = formatDate(values.addDate[0]);
+    values.endTime = formatDate(values.addDate[1]);
     delete values.addDate;
-    onSearch({ ...values, pn: 1 });
+    onSearch({ ...values, adept: values.adept == [''] ? '' : [values.adept], pn: 1 });
   }
   handleReset() {
     const { onReset } = this.props;
@@ -45,6 +45,7 @@ class SearchBar extends React.Component {
     this.setState({ [key]: value });
   }
   render() {
+    const { adeptList } = this.props;
     const search = this.state;
     return (
       <div>
@@ -64,7 +65,7 @@ class SearchBar extends React.Component {
                 <Input value={search.id} onChange={(value) => { this.handleChange('id', value); }} placeholder="请输入" />
               </FormItem>
               <FormItem label="来源">
-                <Select value={search.source} onChange={(value) => { this.handleChange('source', value); }} placeholder="请选择" >
+                <Select value={`${search.source}`} onChange={(value) => { this.handleChange('source', value); }} placeholder="请选择" >
                   <Option value="">全部</Option>
                   {doctorSource.map(({ label, value }) => (<Option key={value} value={`${value}`}>{label}</Option>))}
                 </Select>
@@ -73,10 +74,13 @@ class SearchBar extends React.Component {
                 <Input value={search.hospitalName} onChange={(value) => { this.handleChange('hospitalName', value); }} placeholder="请输入" />
               </FormItem>
               <FormItem label="擅长项目">
-                <Input value={search.adept} onChange={(value) => { this.handleChange('adept', value); }} placeholder="请输入" />
+                <Select value={`${search.adept}`} onChange={(value) => { this.handleChange('adept', value); }} placeholder="请选择" >
+                  <Option value="">全部</Option>
+                  {adeptList.map(({ id, name }) => (<Option key={id} value={`${id}`}>{name}</Option>))}
+                </Select>
               </FormItem>
               <FormItem label="状态">
-                <Select value={search.status} onChange={(value) => { this.handleChange('status', value); }} placeholder="请选择" >
+                <Select value={`${search.status}`} onChange={(value) => { this.handleChange('status', value); }} placeholder="请选择" >
                   <Option value="">全部</Option>
                   {doctorStatus.map(({ label, value }) => (<Option key={value} value={`${value}`}>{label}</Option>))}
                 </Select>

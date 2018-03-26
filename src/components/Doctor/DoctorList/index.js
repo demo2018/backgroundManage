@@ -87,7 +87,7 @@ class DoctorList extends React.Component {
   }
   // 页面渲染
   render() {
-    const { fields, types, datas, total, search, loading, toAdd, downFile, onSearch, onReset, msgList, messageModalVisible, onSendMsg, onUpdateState, downReport, selected = [] } = this.props;
+    const { fields, types, datas, total, search, loading, toAdd, downFile, onSearch, onReset, msgList, messageModalVisible, onSendMsg, onUpdateState, downReport, adeptList, selected = [] } = this.props;
     const { pn, ps } = search;
     const columns = this.getInitalColumns(fields);
 
@@ -121,6 +121,7 @@ class DoctorList extends React.Component {
 
     const searchBarProps = {
       search,
+      adeptList,
       types,
       onSearch,
       onReset,

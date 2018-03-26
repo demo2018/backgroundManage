@@ -40,9 +40,14 @@ import ClinicDetail from './Clinic/ClinicDetail';
 
 import BannerList from './Other/BannerList';
 import LabelList from './Other/LabelList';
+import TagList from './Other/TagList';
 
 import FeedbackList from './Feedback/FeedbackList';
-import FeedbackDetail from './Feedback/FeedbackDetail';
+
+import MemberList from './System/MemberList';
+import RoleList from './System/RoleList';
+import RoleDetail from './System/RoleDetail';
+import AwardSet from './System/AwardSet';
 export default {
   Login,
   Layout,
@@ -75,6 +80,10 @@ export default {
   ClinicDetail,
   BannerList,
   LabelList,
+  TagList,
   FeedbackList,
-  FeedbackDetail
+  MemberList,
+  RoleList,
+  RoleDetail,
+  AwardSet
 };

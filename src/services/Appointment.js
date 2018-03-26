@@ -7,7 +7,7 @@ const { del } = http.create('disease');
 
 // 预约列表接口
 export function getDatas(param) {
-  return post('/bhyy/core/appointment/search', param);
+  return post(`/bhyy/core/appointment/search?page=${param.page}&size=${param.size}&sort=${param.sort}`, param);
 }
 // 预约详情接口
 export function getInfo(param) {
@@ -15,7 +15,7 @@ export function getInfo(param) {
 }
 // 编辑预约详情接口
 export function editInfo(param) {
-  return put(`/bhyy/core/appointment/${param.id}`, param);
+  return put(`/bhyy/core/appointment/${param.id}`, param.param);
 }
 // 新增预约详情接口
 export function addInfo(param) {
@@ -35,15 +35,15 @@ export function getPatientList(param) {
 }
 // 查询医生列表
 export function getDoctorList(param) {
-  return get('/bhyy/core/doctorConfig/name', { ...param });
+  return post('/bhyy/core/doctor/search', { ...param });
 }
 // 查询全部医生列表
 export function getAllDoctorList() {
   return get('/bhyy/core/doctor', { page: 0, size: 1000, type: 1 });
 }
 // 查询医生日期
-export function getDoctorDates({ id, date }) {
-  return get('/bhyy/core/doctorConfig', { date });
+export function getDoctorDates(param) {
+  return get('/bhyy/core/doctorConfig', param);
 }
 // 查询医生时间
 export function getDoctorTimes({ id, date }) {

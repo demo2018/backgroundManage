@@ -15,7 +15,26 @@
         width: 100%;
       }
     }
-    .uploadWrapper img{ width: 100%;}
+    .imgWraper{
+      display: inline-block;
+      margin-right: 20px;
+      .uploadWrapper{
+        text-align: center;
+        img{ width: 100%; height: 100%;}
+        .ant-upload{
+          margin-right: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+      .ant-upload.ant-upload-select-picture-card > .ant-upload{
+        padding: 0;
+      }
+    }
+    .leftimgWraper{
+      margin-left: 150px;
+    }
     .btnGroup{
       padding-left: 255px;
     }

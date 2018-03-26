@@ -5,7 +5,7 @@ const { put } = http.create('disease');
 const { del } = http.create('disease');
 
 export function getDatas(param) {
-  return post('/bhyy/core/commentTagType/search', param);
+  return post(`/bhyy/core/commentTagType/search?page=${param.page}&size=${param.size}&sort=${param.sort}`, param);
 }
 export function doDelete(param) {
   return del(`/bhyy/core/commentTagType/${param}`);

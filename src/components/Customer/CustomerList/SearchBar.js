@@ -1,5 +1,5 @@
 import { Form, Button, Row, Input, Select, DatePicker } from 'antd';
-import { sourceStatus, genderType } from 'configs/constants';
+import { sourceStatus, genderType, ageType } from 'configs/constants';
 import { formatDate, getDateRangeValue } from 'utils/common';
 
 const { RangePicker } = DatePicker;
@@ -8,10 +8,10 @@ const Option = Select.Option;
 
 // 处理起止时间格式
 const getStateBySearch = (search = {}) => {
-  const { createStartTime, createEndTime } = search;
+  const { startTime, endTime } = search;
   return {
     ...search,
-    createTime: getDateRangeValue(createStartTime, createEndTime),
+    createTime: getDateRangeValue(startTime, endTime),
   };
 };
 // 搜索框初始化
@@ -31,8 +31,8 @@ class SearchBar extends React.Component {
   handleSearch() {
     const { onSearch } = this.props;
     const values = this.state;
-    values.createStartTime = formatDate(values.createTime[0]);
-    values.createEndTime = formatDate(values.createTime[1]);
+    values.startTime = formatDate(values.createTime[0]);
+    values.endTime = formatDate(values.createTime[1]);
     delete values.createTime;
     onSearch({ ...values, pn: 1 });
   }
@@ -78,7 +78,10 @@ class SearchBar extends React.Component {
                 </Select>
               </FormItem>
               <FormItem label="年龄阶段">
-                <Input value={search.age} onChange={(value) => { this.handleChange('age', value); }} placeholder="请输入" />
+                <Select value={`${search.age}`} onChange={(value) => { this.handleChange('age', value); }} placeholder="请选择" >
+                  <Option value="">全部</Option>
+                  {ageType.map(({ label, value }) => (<Option key={value} value={`${value}`}>{label}</Option>))}
+                </Select>
               </FormItem>
               <FormItem label="注册时间">
                 <RangePicker value={search.createTime} onChange={(value) => { this.handleChange('createTime', value); }} />

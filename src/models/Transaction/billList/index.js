@@ -1,6 +1,6 @@
 import Model from 'utils/model';
 import services from 'services';
-import { fields } from './fields';
+import { getFields } from './fields';
 import { PAGE_SIZE } from 'configs/constants';
 import { formatFormData } from 'utils/common';
 
@@ -26,7 +26,7 @@ export default Model.extend({
   namespace: 'billList',
 
   state: {
-    fields,
+    getFields,
     search: initialSearch,
     datas: [],
     total: 0,
@@ -35,6 +35,7 @@ export default Model.extend({
     selecteRecord: {},
     assessModalVisible: false,
     visitModalVisible: false,
+    itemList: []
   },
 
   subscriptions: {
@@ -45,33 +46,29 @@ export default Model.extend({
           dispatch({ type: 'resetState' });
           dispatch({ type: 'resetSearch' });
         }
+        dispatch({ type: 'fetchEnums' });
         dispatch({ type: 'fetchDatas' });
       });
     }
   },
 
   effects: {
+    // 获取枚举值
+    * fetchEnums({ payload }, { update, callWithLoading }) {
+      const { data: { content } } = yield callWithLoading(services.transaction.getItems, { type: 1, status: 1 });
+      yield update({ itemList: content || [] });
+    },
     // 获取列表数据
     * fetchDatas({ payload }, { select, update, callWithLoading }) {
       const { search } = yield select(({ billList }) => billList);
       const { data: { content, totalElements } } = yield callWithLoading(services.transaction.getDatas, formatFormData(search));
       yield update({ datas: content, total: totalElements });
     },
-    // 新增
-    * doAdd({ payload: { param } }, { update, callWithLoading }) {
-      yield callWithLoading(services.transaction.doVisit, { ...param });
-      yield update({ selecteRecord: {}, addModalVisible: false });
-    },
-    // 编辑
-    * doEdit({ payload: { param } }, { update, callWithLoading }) {
-      yield callWithLoading(services.transaction.doVisit, { ...param });
-      yield update({ selecteRecord: {}, addModalVisible: false });
-    },
-    // 删除
-    * doDelete({ payload: { param } }, { put, callWithLoading }) {
-      yield callWithLoading(services.transaction.doDelete, { ...param }, { successMsg: '操作成功' });
-      yield put({ type: 'fetchDatas' });
-    },
+    // 获取账单详情
+    * getBillinfo({ param }, { update, callWithLoading }) {
+      const { data } = yield callWithLoading(services.transaction.getBillinfo, param);
+      yield update({ billInfo: data.items });
+    }
   },
 
   reducers: {

@@ -4,16 +4,19 @@ export const ORDER_SUFFIX = 'end';
 export const treatmentStatus = [
   {
     value: 0,
-    label: '待查看'
+    label: '待核实'
   }, {
     value: 1,
-    label: '已查看'
+    label: '未开始'
   }, {
     value: 2,
-    label: '待检查'
+    label: '就诊中'
   }, {
     value: 3,
-    label: '已检查'
+    label: '已完成'
+  }, {
+    value: 4,
+    label: '已取消'
   }
 ];
 
@@ -34,6 +37,25 @@ export const genderType = [
   }, {
     value: 1,
     label: '男'
+  }
+];
+
+export const ageType = [
+  {
+    value: 0,
+    label: '0～5岁'
+  }, {
+    value: 1,
+    label: '6～14岁'
+  }, {
+    value: 2,
+    label: '15～30岁'
+  }, {
+    value: 3,
+    label: '30～60岁'
+  }, {
+    value: 4,
+    label: '60岁以上'
   }
 ];
 
@@ -95,6 +117,9 @@ export const doctorStatus = [
   }, {
     value: 3,
     label: '停诊中'
+  }, {
+    value: 4,
+    label: '待审核'
   }
 ];
 
@@ -179,6 +204,69 @@ export const typeStatus = [
   }, {
     value: 1,
     label: '患者'
+  }
+];
+
+export const followType = [
+  {
+    value: 0,
+    label: '电话跟进'
+  }, {
+    value: 1,
+    label: '微信跟进'
+  }
+];
+
+export const followStatus = [
+  {
+    value: 0,
+    label: '未跟进'
+  }, {
+    value: 1,
+    label: '已跟进'
+  }
+];
+
+export const visitType = [
+  {
+    value: 0,
+    label: '电话随访'
+  }, {
+    value: 1,
+    label: '微信随访'
+  }
+];
+
+export const payStatus = [
+  {
+    value: 0,
+    label: '未支付'
+  }, {
+    value: 1,
+    label: '已支付'
+  }
+];
+
+export const payType = [
+  {
+    value: 0,
+    label: '微信支付'
+  }, {
+    value: 1,
+    label: '其它支付'
+  }
+];
+
+export const saleType = [
+  {
+    value: 0,
+    label: '无折扣'
+  }, {
+    value: 1,
+    label: '有折扣'
+  }, {
+    value: 2,
+    label: '有优惠券'
   }
 ];
 

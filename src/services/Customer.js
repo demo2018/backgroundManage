@@ -8,7 +8,7 @@ const { del } = http.create('disease');
 
 // 客户列表接口
 export function getDatas(param) {
-  return get('/bhyy/core/customer', param);
+  return post(`/bhyy/core/customer/search?page=${param.page}&size=${param.size}&sort=${param.sort}`, param);
 }
 // 客户详情接口
 export function getInfo(param) {

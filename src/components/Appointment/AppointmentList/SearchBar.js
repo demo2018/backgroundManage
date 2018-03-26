@@ -1,5 +1,5 @@
 import { Form, Button, Row, Input, Select, DatePicker } from 'antd';
-import { appointmentStatus, sourceStatus } from 'configs/constants';
+import { appointmentStatus, appointmentSource } from 'configs/constants';
 import { formatDate, getDateRangeValue } from 'utils/common';
 
 const { RangePicker } = DatePicker;
@@ -7,10 +7,10 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 // 处理起止时间格式
 const getStateBySearch = (search = {}) => {
-  const { startDate, endDate } = search;
+  const { startTime, endTime } = search;
   return {
     ...search,
-    time: getDateRangeValue(startDate, endDate),
+    time: getDateRangeValue(startTime, endTime),
   };
 };
 // 搜索框初始化
@@ -30,8 +30,8 @@ class SearchBar extends React.Component {
   handleSearch() {
     const { onSearch } = this.props;
     const values = this.state;
-    values.startDate = formatDate(values.time[0]);
-    values.endDate = formatDate(values.time[1]);
+    values.startTime = formatDate(values.time[0]);
+    values.endTime = formatDate(values.time[1]);
     delete values.time;
     onSearch({ ...values, pn: 1 });
   }
@@ -49,6 +49,7 @@ class SearchBar extends React.Component {
   }
   // 页面渲染
   render() {
+    const { itemList } = this.props;
     const search = this.state;
     return (
       <div>
@@ -62,13 +63,16 @@ class SearchBar extends React.Component {
                 <Input value={search.customerName} onChange={(value) => { this.handleChange('customerName', value); }} placeholder="请输入" />
               </FormItem>
               <FormItem label="预约项目">
-                <Input value={search.itemClassId} onChange={(value) => { this.handleChange('itemClassId', value); }} placeholder="请输入" />
+                <Select value={`${search.itemClassId}`} onChange={(value) => { this.handleChange('itemClassId', value); }} placeholder="请选择" >
+                  <Option value="">全部</Option>
+                  {itemList.map(({ id, className }) => (<Option key={id} value={`${id}`}>{className}</Option>))}
+                </Select>
               </FormItem>
               <FormItem label="医生">
                 <Input value={search.doctorName} onChange={(value) => { this.handleChange('doctorName', value); }} placeholder="请输入" />
               </FormItem>
               <FormItem label="机构名称">
-                <Input value={search.orgName} onChange={(value) => { this.handleChange('orgName', value); }} placeholder="请输入" />
+                <Input value={search.customerOrg} onChange={(value) => { this.handleChange('customerOrg', value); }} placeholder="请输入" />
               </FormItem>
               <FormItem label="诊所名称">
                 <Input value={search.hospitalName} onChange={(value) => { this.handleChange('hospitalName', value); }} placeholder="请输入" />
@@ -88,7 +92,7 @@ class SearchBar extends React.Component {
               <FormItem label="预约来源">
                 <Select value={search.source} onChange={(value) => { this.handleChange('source', value); }} placeholder="请选择" >
                   <Option value="">全部</Option>
-                  {sourceStatus.map(({ label, value }) => (<Option key={value} value={`${value}`}>{label}</Option>))}
+                  {appointmentSource.map(({ label, value }) => (<Option key={value} value={`${value}`}>{label}</Option>))}
                 </Select>
               </FormItem>
               <div className="btnGroup">
@@ -102,4 +106,5 @@ class SearchBar extends React.Component {
     );
   }
 }
+
 export default Form.create()(SearchBar);

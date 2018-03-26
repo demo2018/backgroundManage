@@ -15,8 +15,8 @@ function mapDispatchToProps(dispatch) {
       dispatch({ type: 'appointmentDetail/updateState', payload: { param } });
     },
     // 更新预约
-    updateAppointment(param) {
-      dispatch({ type: 'appointmentDetail/updateDatas', payload: { param } });
+    updateAppointment(param, id) {
+      dispatch({ type: 'appointmentDetail/updateDatas', payload: { param, id } });
     },
     // 新增预约
     addAppointment(param) {

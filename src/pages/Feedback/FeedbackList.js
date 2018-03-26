@@ -22,24 +22,28 @@ function mapDispatchToProps(dispatch) {
       dispatch({ type: 'feedbackList/resetSearch' });
       dispatch({ type: 'feedbackList/fetchDatas' });
     },
-    onSendMsg() {
-      dispatch({ type: 'feedbackList/sendMsg' });
+    // 触发随访事件
+    getManager(param) {
+      dispatch({ type: 'feedbackList/getManager', param });
+    },
+    // 新增随访事件
+    addFollow(param) {
+      dispatch({ type: 'feedbackList/addFollow', payload: { param } });
+    },
+    // 更新随访事件
+    editFollow(param, id) {
+      dispatch({ type: 'feedbackList/editFollow', payload: { param, id } });
+    },
+    // 删除随访事件
+    delFollow(param) {
+      dispatch({ type: 'feedbackList/delFollow', param });
     },
     onDelete(param) {
-      dispatch({ type: 'feedbackList/doDelete', payload: { param } });
-    },
-    appraise(param) {
-      dispatch({ type: 'feedbackList/appraise', payload: { param } });
+      dispatch({ type: 'feedbackList/doDelete', param });
     },
     downFile() {
       dispatch({ type: 'feedbackList/downFile' });
-    },
-    toDetail(id) {
-      dispatch(routerRedux.push(`/feedback/detail/${id}`));
-    },
-    toAdd() {
-      dispatch(routerRedux.push('/feedback/add'));
-    },
+    }
   };
 }
 

@@ -23,8 +23,10 @@ const projectTimes = [
   },
 ];
 
-const numToStr = (num = '') => {
-  return `${num}`;
+const formatSelectValue = (value) => {
+  if (value || value === 0) {
+    return `${value}`;
+  }
 };
 // 页面参数初始化
 class AppointmentDetail extends React.Component {
@@ -40,6 +42,7 @@ class AppointmentDetail extends React.Component {
     this.handleDateChange = this.handleDateChange.bind(this);
     this.handleTimeChange = this.handleTimeChange.bind(this);
   }
+
   componentWillReceiveProps(nextProps) {
     if ('details' in nextProps && nextProps.details !== this.props.details) {
       this.setState({ details: nextProps.details });
@@ -47,13 +50,21 @@ class AppointmentDetail extends React.Component {
   }
   // 触发保存 判断为新增还是更新
   handSave() {
-    const { addAppointment, updateAppointment, form, details } = this.props;
+    const { addAppointment, updateAppointment, doctorTimes, form, details } = this.props;
     form.validateFields((err, values) => {
       if (!err) {
+        // 拼接开始时间
+        const { time, visitPlanIds = [] } = values;
+
+        const startTime = (doctorTimes.find(({ id }) => {
+          return id === visitPlanIds[0];
+        }) || {}).time;
+
+        const newTime = `${time} ${startTime}`;
         if (details.id) {
-          updateAppointment({ ...values });
+          updateAppointment({ ...values, time: newTime }, details.id);
         } else {
-          addAppointment({ ...values });
+          addAppointment({ ...values, time: newTime });
         }
       }
     });
@@ -69,7 +80,7 @@ class AppointmentDetail extends React.Component {
     if (patientName !== '') {
       patentTimer = setTimeout(() => {
         getPatientList({ name: newPatientName });
-      }, 1000);
+      }, 500);
     }
   }
   // 查询医生
@@ -82,22 +93,18 @@ class AppointmentDetail extends React.Component {
     }
     if (doctorName !== '') {
       doctorTimer = setTimeout(() => {
-        getDoctorList({ name: newDoctorName });
-      }, 1000);
+        getDoctorList({ name: newDoctorName, status: 1, is_show: 1 });
+      }, 500);
     }
   }
   // 病人选中，判断是否是关系人
   handlePatientChange(value) {
-    const { form, patientList } = this.props;
-
-    const patient = patientList.find(({ relationId, customerId }) => {
-      return value == relationId || value == customerId;
+    const { patientList } = this.props;
+    const patient = patientList.find(({ customerId }) => {
+      return value == customerId;
     }) || {};
-
-    const customerId = patient.isPatient ? patient.customerId : patient.relationId;
-    form.setFieldsValue({ customerId });
+    this.setState({ relationinfo: { relationId: patient.relationId, relationName: patient.relationName } });
   }
-
   // 选中医生，查询可选日期
   handleDoctorChange(value) {
     const { getDoctorDates, form, updateState } = this.props;
@@ -105,15 +112,16 @@ class AppointmentDetail extends React.Component {
     updateState({ doctorDates: [], doctorTimes: [] });
     getDoctorDates({ doctorId: value });
   }
-
   // 选中日期，查询可用时间段
   handleDateChange(value) {
-    const { form, getDoctorTimes } = this.props;
+    const { form, doctorDates, getDoctorTimes } = this.props;
     const { doctorId } = form.getFieldsValue(['doctorId']);
-    form.setFieldsValue({ visitPlanIds: [] });
+    const hospitalId = (doctorDates.find(({ date }) => {
+      return date === value;
+    }) || {}).hospitalId;
+    form.setFieldsValue({ visitPlanIds: [], hospitalId });
     getDoctorTimes({ id: doctorId, date: value });
   }
-
   // 选中就诊时长，改变时间段
   handleTimeChange(value) {
     const { form } = this.props;
@@ -123,14 +131,25 @@ class AppointmentDetail extends React.Component {
   }
   // 页面渲染
   render() {
-    const { details } = this.state;
+    const { details, relationinfo = {} } = this.state;
     const { onDelete, form, projectList, patientList, doctorList,
       doctorDates, doctorTimes, hospitalList } = this.props;
     const { getFieldDecorator } = form;
-
-    // todo 就诊人与预约人至今的关系？？？
-    const patientOptions = patientList.map(({ isPatient, relationName, customerName, relationId, customerId }) => {
-      return <Option key={`${customerId || relationId}`} value={`${customerId || relationId}`}>{relationName || customerName}</Option>;
+    // 就诊人与预约人至今的关系
+    const patientOptions = patientList.map(({ isPatient, relationName, customerName, customerId, phone, relationPhone }) => {
+      if (isPatient == true) {
+        return <Option key={`${customerId}`} value={`${customerId}`}>{customerName} ({phone})</Option>;
+      } else {
+        if (relationName) {
+          return <Option key={`${customerId}`} value={`${customerId}`}>{customerName} ({relationName}：{relationPhone})</Option>;
+        } else {
+          return <Option key={`${customerId}`} value={`${customerId}`}>{customerName}</Option>;
+        }
+      }
+    });
+    // 医生列表
+    const doctorOptions = doctorList.map(({ id, realName }) => {
+      return <Option key={id} value={`${id}`}>{realName}</Option>;
     });
 
     const popconfirmProps = {
@@ -145,7 +164,7 @@ class AppointmentDetail extends React.Component {
         <Form layout="inline">
           <FormItem label="就诊人姓名">
             {getFieldDecorator('patientId', {
-              initialValue: numToStr(details.patientId),
+              initialValue: formatSelectValue(details.patientId),
               rules: [{ required: true, whitespace: true, message: '就诊人不能为空' }]
             })(
               <Select
@@ -154,6 +173,7 @@ class AppointmentDetail extends React.Component {
                 showArrow={false}
                 filterOption={false}
                 placeholder="请选择就诊人"
+                notFoundContent="无匹配结果"
                 onSearch={this.handleSearchPatent}
                 // onBlur={this.handleSearchPatent}
                 onChange={this.handlePatientChange}
@@ -162,28 +182,42 @@ class AppointmentDetail extends React.Component {
               </Select>
             )}
           </FormItem>
-          <FormItem label="预约人姓名">
-            {getFieldDecorator('customerId', {
-              initialValue: details.customerId && `${details.customerId}`,
-            })(
-              <Input placeholder="选填" />
-            )}
-          </FormItem>
+          {relationinfo && relationinfo.relationId ?
+            <FormItem label="预约人姓名">
+              {getFieldDecorator('customerId', {
+                initialValue: formatSelectValue(relationinfo.relationId),
+              })(
+                <Select placeholder="请选择就诊人，预约人将自动填写" disabled>
+                  <Option key={relationinfo.relationId} value={`${relationinfo.relationId}`}>{relationinfo.relationName}</Option>
+                </Select>
+              )}
+            </FormItem>
+            :
+            <FormItem label="预约人姓名">
+              {getFieldDecorator('customerId', {
+                initialValue: formatSelectValue(details.customerId),
+              })(
+                <Select placeholder="请选择就诊人，预约人将自动填写" disabled>
+                  <Option key={details.customerId} value={`${details.customerId}`}>{details.customerName}</Option>
+                </Select>
+              )}
+            </FormItem>
+          }
           <FormItem label="预约项目">
             {getFieldDecorator('itemClassId', {
-              initialValue: numToStr(details.itemClassId),
+              initialValue: formatSelectValue(details.itemClassId),
               rules: [{ required: true, whitespace: true, message: '预约项目不能为空' }]
             })(
               <Select placeholder="请选择" >
                 {projectList.map(({ id, className }) => {
-                  return <Option key={`${id}`} value={`${id}`}>{className}</Option>;
+                  return <Option key={id} value={`${id}`}>{className}</Option>;
                 })}
               </Select>
             )}
           </FormItem>
           <FormItem label="初/复诊">
             {getFieldDecorator('type', {
-              initialValue: numToStr(details.type),
+              initialValue: formatSelectValue(details.type),
               rules: [{ required: true, whitespace: true, message: '初/复诊不能为空' }]
             })(
               <Select placeholder="请选择" >
@@ -193,72 +227,68 @@ class AppointmentDetail extends React.Component {
           </FormItem>
           <FormItem label="医生">
             {getFieldDecorator('doctorId', {
-              initialValue: numToStr(details.doctorId),
+              initialValue: formatSelectValue(details.doctorId),
               rules: [{ required: true, whitespace: true, message: '医生不能为空' }]
             })(
               <Select
-                // showSearch
-                // defaultActiveFirstOption={false}
-                // placeholder="请选择医生"
-                // onSearch={this.handleSearchDoctor}
+                showSearch
+                defaultActiveFirstOption={false}
+                showArrow={false}
+                filterOption={false}
+                placeholder="请选择医生"
+                notFoundContent="无匹配结果"
+                onSearch={this.handleSearchDoctor}
                 // onBlur={this.handleSearchDoctor}
                 onChange={this.handleDoctorChange}
               >
-                {doctorList.map(({ id, realName }) => {
-                  return <Option key={`${id}`} value={`${id}`}>{realName}</Option>;
-                })}
+                {doctorOptions}
               </Select>
             )}
           </FormItem>
           <FormItem label="就诊日期">
             {getFieldDecorator('time', {
-              initialValue: numToStr(details.time),
+              initialValue: formatSelectValue(details.time),
               rules: [{ required: true, whitespace: true, message: '就诊日期不能为空' }]
             })(
-              <Select
-                placeholder="请选择就诊日期"
-                onChange={this.handleDateChange}
-              >
-                {doctorDates.map(({ date }) => {
-                  return <Option key={`${date}`} value={`${date}`}>{date}</Option>;
+              <Select placeholder="请选择就诊日期" onChange={this.handleDateChange}>
+                {doctorDates.map(({ status, date }) => {
+                  if (status == 1) {
+                    return <Option key={date} value={`${date}`} disabled>{date}(已约满)</Option>;
+                  } else {
+                    return <Option key={date} value={`${date}`}>{date}</Option>;
+                  }
                 })}
               </Select>
             )}
           </FormItem>
           <FormItem label="项目所需时长">
             {getFieldDecorator('timeCost', {
-              initialValue: numToStr(details.timeCost || 15),
-              rules: [{ required: true, whitespace: true, message: '就诊日期不能为空' }]
+              initialValue: formatSelectValue(details.timeCost || 15),
+              rules: [{ required: true, whitespace: true, message: '就诊时长不能为空' }]
             })(
-              <Select
-                placeholder="请选择项目所需时长"
-                onChange={this.handleTimeChange}
-              >
+              <Select placeholder="请选择项目所需时长" onChange={this.handleTimeChange}>
                 {projectTimes.map(({ value, label }) => {
-                  return <Option key={`${value}`} value={`${value}`}>{label}</Option>;
+                  return <Option key={value} value={`${value}`}>{label}</Option>;
                 })}
               </Select>
             )}
           </FormItem>
           <FormItem label="就诊时间">
             {getFieldDecorator('visitPlanIds', {
-              initialValue: details.visitPlanIds || [],
+              initialValue: formatSelectValue(details.visitPlanIds || []),
               rules: [{ required: true, message: '就诊时间段不能为空' }]
             })(
-              <TagPicker timeLength={details.timeCost} timeInterval={15} doctorTimes={doctorTimes} />
+              <TagPicker timeLength={details.timeCost || 15} timeInterval={15} doctorTimes={doctorTimes} />
             )}
           </FormItem>
           <FormItem label="诊所名称">
             {getFieldDecorator('hospitalId', {
-              initialValue: numToStr(details.hospitalId),
+              initialValue: formatSelectValue(details.hospitalId),
             })(
-              <Select
-                placeholder="诊所名称"
-                disabled
-              >
+              <Select placeholder="诊所名称" disabled>
                 {
                   hospitalList.map(({ value, label }) => {
-                    return <Option key={`${value}`} value={`${value}`}>{label}</Option>;
+                    return <Option key={value} value={`${value}`}>{label}</Option>;
                   })
                 }
               </Select>
@@ -266,18 +296,18 @@ class AppointmentDetail extends React.Component {
           </FormItem>
           <FormItem label="预约状态">
             {getFieldDecorator('status', {
-              initialValue: numToStr(details.status),
+              initialValue: formatSelectValue(details.status),
             })(
               <Select placeholder="请选择" >
                 {appointmentStatus.map(({ label, value }) => {
-                  return <Option key={`${value}`} value={`${value}`}>{label}</Option>;
+                  return <Option key={value} value={`${value}`}>{label}</Option>;
                 })}
               </Select>
             )}
           </FormItem>
           <FormItem label="备注">
             {getFieldDecorator('remark', {
-              initialValue: numToStr(details.remark),
+              initialValue: formatSelectValue(details.remark),
             })(
               <Input type="textarea" placeholder="请输入" />
             )}

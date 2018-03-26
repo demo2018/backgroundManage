@@ -137,7 +137,6 @@ class ClinicDetail extends React.Component {
     };
     return (
       <div className={styles.clinicDetail}>
-        <h3 className="title"> 新建诊所 </h3>
         <div className="baseInfo part">
           <div className="title"><h3>基本信息</h3></div>
           <div className="content">
@@ -283,7 +282,7 @@ class ClinicDetail extends React.Component {
                   )}
                 </FormItem>
               </Row>
-              <div className="imgWraper">
+              <div className="imgWraper leftimgWraper">
                 <div className="uploadWrapper">
                   <Upload
                     name="file"
@@ -296,7 +295,7 @@ class ClinicDetail extends React.Component {
                   >
                     {this.renderImage('hosQualificat')}
                   </Upload>
-                  <h4>医生头像</h4>
+                  <h4>诊所资质</h4>
                 </div>
               </div>
               <div className="imgWraper">
@@ -312,7 +311,7 @@ class ClinicDetail extends React.Component {
                   >
                     {this.renderImage('eiaQualificat')}
                   </Upload>
-                  <h4>医生头像</h4>
+                  <h4>环评资质</h4>
                 </div>
               </div>
               <Row>

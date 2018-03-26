@@ -37,7 +37,7 @@ export const fields = [
     sorter: true,
   },
   {
-    key: 'establishDate',
+    key: 'createTime',
     name: '合作日期',
     type: 'datetime',
     sorter: true,

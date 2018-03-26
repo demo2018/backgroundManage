@@ -47,14 +47,30 @@ export default Model.extend({
       const { data: { content, totalElements } } = yield callWithLoading(services.feedback.getDatas, formatFormData(search));
       yield update({ datas: content, total: totalElements });
     },
-    * fetchTypes({ payload }, { select, update, callWithLoading }) {
-      const { search } = yield select(({ feedbackList }) => feedbackList);
-      const types = yield callWithLoading(services.feedback.getTypes, search);
-      yield update({ types });
+    // 获取随访相关数据
+    * getManager({ param }, { update, callWithLoading }) {
+      const { data } = yield callWithLoading(services.feedback.getFollow, param);
+      const { data: { content } } = yield callWithLoading(services.feedback.getManager);
+      yield update({ followList: data, managerList: content });
+    },
+    // 添加回访
+    * addFollow({ payload: { param } }, { update, callWithLoading }) {
+      yield callWithLoading(services.feedback.addFollow, { ...param }, { successMsg: '操作成功' });
+      yield update({ selecteRecord: {}, followModalVisible: false });
+    },
+    // // 更新回访
+    // * editFollow({ payload: { param, id } }, { update, callWithLoading }) {
+    //   yield callWithLoading(services.feedback.editFollow, { param, id }, { successMsg: '操作成功' });
+    //   yield update({ selecteRecord: {}, followModalVisible: false });
+    // },
+    // 删除回访
+    * delFollow({ param }, { update, callWithLoading }) {
+      yield callWithLoading(services.feedback.delFollow, param, { successMsg: '操作成功' });
+      yield update({ selecteRecord: {}, followModalVisible: false });
     },
     // 删除
-    * doDelete({ payload: { param } }, { put, callWithLoading }) {
-      yield callWithLoading(services.feedback.doDelete, { ...param }, { successMsg: '操作成功' });
+    * doDelete({ param }, { put, callWithLoading }) {
+      yield callWithLoading(services.feedback.doDelete, param, { successMsg: '操作成功' });
       yield put({ type: 'fetchDatas' });
     },
   },

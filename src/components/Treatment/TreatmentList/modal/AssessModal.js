@@ -4,51 +4,57 @@ const { CheckableTag } = Tag;
 
 class CheckBoxTag extends React.Component {
   state = { checked: false };
-  handleChange = (checked) => {
-    this.setState({ checked });
-  }
   render() {
-    return <CheckableTag className="checkBoxTag" {...this.props} checked={this.state.checked} onChange={this.handleChange} />;
+    return <CheckableTag className="checkBoxTag" {...this.props} checked={this.state.checked} />;
   }
 }
 
-class GoodsModifyLogs extends React.Component {
+class AssessModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
-  handleOk() {
-    const { onOK } = this.props;
-    const values = this.state;
-    onOK(values);
+
+  getlist() {
+    const { selecteRecord, tagList } = this.props;
+    const tags = selecteRecord && selecteRecord.comment && selecteRecord.comment.tags;
+    const tagslist = tagList
+      .filter(({ id }) => {
+        return tags.includes(id) || tags.includes(`${id}`);
+      })
+      .map(({ name }) => {
+        return name;
+      });
+    return tagslist.map((index) => {
+      return <CheckBoxTag key={index} className="evaluate">{tagslist}</CheckBoxTag>;
+    });
   }
+
   handleChange(key, value) {
     if (value.target) {
       value = value.target.value;
     }
     this.setState({ [key]: value });
   }
+
   render() {
-    const search = this.state;
-    const { onCancel } = this.props;
+    const { onCancel, selecteRecord, onOk } = this.props;
     const modalOpts = {
-      title: '患者好评',
+      title: '患者评价',
       width: 550,
       visible: true,
       maskClosable: false,
-      onOk: () => { this.handleOk(); },
+      onOk,
       onCancel,
     };
+
     return (
-      <Modal {...modalOpts} className={styles.visitModal}>
+      <Modal {...modalOpts} className={styles.assessModal}>
         <Form >
           <Row>
-            <CheckBoxTag>医生很专业，有耐心</CheckBoxTag>
-            <CheckBoxTag>客户经理nice</CheckBoxTag>
-            <CheckBoxTag>诊所高端大气上档次</CheckBoxTag>
-            <CheckBoxTag>极致体验，完美经历</CheckBoxTag>
+            {this.getlist()}
           </Row>
-          <Row><span>提出表扬！</span></Row>
+          <Row><span className="praising">{selecteRecord.comment.content}</span></Row>
           <Row>
             <Checkbox
               onChange={this.onChange}
@@ -61,4 +67,4 @@ class GoodsModifyLogs extends React.Component {
   }
 }
 
-export default GoodsModifyLogs;
+export default AssessModal;
