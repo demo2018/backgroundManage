@@ -1,0 +1,57 @@
+.followModal {
+  :global {
+    .ant-form-item {
+      display: block;
+      margin-bottom: 15px;
+    }
+    .ant-form-item-label {
+      min-width: 100px;
+    }
+    .ant-form-item-control-wrapper {
+      vertical-align: middle;
+      min-width: 340px;
+    }
+    .textAreaWraper {
+      .ant-form-item-label {
+        vertical-align: top;
+      }
+      textarea {
+        min-height: 100px;
+      }
+    }
+    .viewSteps{
+      text-align: right;
+      color: #108ee9;
+    }
+  }
+}
+.follow {
+  max-height: 400px;
+  overflow-y: auto;
+  :global{
+    .followStep{
+      position: relative;
+      margin: 10px 0;
+      padding: 15px 0;
+      border: 1px solid #ddd;
+      .ant-form-item-label {
+        min-width: 100px;
+      }
+      .onStep{
+        position: absolute;
+        bottom: 14px;
+        right: 20px;
+        display: inline-block;
+        line-height: 32px;
+        a{
+          margin-left: 10px;
+        }
+        .delete{color: red;}
+      }
+    }
+    .followStep.noFollow{text-indent: 2em;}
+    .stepTime{
+      text-align: right;
+    }
+  }
+}
