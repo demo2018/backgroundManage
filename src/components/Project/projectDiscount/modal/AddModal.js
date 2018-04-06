@@ -65,12 +65,9 @@ class AddModal extends React.Component {
             </FormItem>
             <FormItem label="排序" >
               {getFieldDecorator('rank', {
-                initialValue: selecteRecord.rank,
-                rules: [{
-                  required: true, message: '该字段不能为空',
-                }],
+                initialValue: selecteRecord.rank || 0,
               })(
-                <Input />
+                <Input placeholder="请输入排序序号" />
                 )}
             </FormItem>
           </Row>
@@ -79,6 +76,5 @@ class AddModal extends React.Component {
     );
   }
 }
-
 
 export default Form.create()(AddModal);

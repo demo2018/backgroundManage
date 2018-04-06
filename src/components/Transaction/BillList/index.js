@@ -1,4 +1,4 @@
-import { Table, Button, Modal } from 'antd';
+import { Table, Button, Modal, message } from 'antd';
 import tableUtil from 'utils/tableUtil';
 import SearchBar from './SearchBar.js';
 import AddModal from './modal/AddModal.js';
@@ -13,6 +13,7 @@ class ProjectClassify extends React.Component {
       modalVisible: false,
     };
   }
+
   getInitalColumns(fields) {
     const { search: { sortField, ordination } } = this.props;
 
@@ -41,17 +42,18 @@ class ProjectClassify extends React.Component {
   }
   // 判断是否选中医生
   handleVerify(handleFn) {
-    return () => {
-      const { selected = [] } = this.props;
-      if (selected.length) {
-        handleFn();
-      } else {
-        Modal.warning({
-          title: '操作提示',
-          content: '请先选择医生，然后进行操作！',
-        });
-      }
-    };
+    message.warning('开发中');
+    // return () => {
+    //   const { selected = [] } = this.props;
+    //   if (selected.length) {
+    //     handleFn();
+    //   } else {
+    //     Modal.warning({
+    //       title: '操作提示',
+    //       content: '请先选择医生，然后进行操作！',
+    //     });
+    //   }
+    // };
   }
   // 页面排序监听事件
   handleTableSortChange({ current }, sort, { field, order }) {
@@ -67,6 +69,7 @@ class ProjectClassify extends React.Component {
   handleClear() {
     this.props.onUpdateState({ selected: [] });
   }
+
   renderTableTitle() {
     const { selected = [] } = this.props;
     return (<p>已选择<span style={{ color: 'red', padding: '0 4px' }}>{selected.length}</span>项
@@ -75,7 +78,7 @@ class ProjectClassify extends React.Component {
   }
   // 页面渲染
   render() {
-    const { types, datas, total, search, loading, addModalVisible, downFile, onUpdateState, tabKey, onTabChange, onSearch, onReset, selecteRecord, itemList, getFields, selected = [], billInfo = [] } = this.props;
+    const { types, datas, total, search, loading, addModalVisible, downFile, onUpdateState, onTabChange, onSearch, onReset, selecteRecord, itemList, getFields, selected = [], billInfo = [] } = this.props;
     const { pn, ps } = search;
     const fields = getFields(itemList); // 这样fileds就是动态生成的
     const columns = this.getInitalColumns(fields);
@@ -95,6 +98,7 @@ class ProjectClassify extends React.Component {
         this.props.onUpdateState({ selected: selectedRowKeys });
       },
     };
+
     const tableProps = {
       dataSource: datas,
       columns,
@@ -110,7 +114,6 @@ class ProjectClassify extends React.Component {
 
     const searchBarProps = {
       itemList,
-      tabKey,
       onTabChange,
       search,
       types,
@@ -125,11 +128,12 @@ class ProjectClassify extends React.Component {
       },
       billInfo,
     };
+
     return (
       <div>
         <SearchBar {...searchBarProps} />
         <div className="btnGroup">
-          <Button onClick={this.handleVerify(downFile)}>导出数据</Button>
+          <Button onClick={() => this.handleVerify(downFile)}>导出数据</Button>
         </div>
         <Table {...tableProps} />
         {addModalVisible && <AddModal {...addModalProps} />}

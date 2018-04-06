@@ -21,10 +21,10 @@ class AddModal extends React.Component {
     const { onOK, onAdds, form, selecteRecord } = this.props;
     form.validateFieldsAndScroll((err, values) => {
       if (!err && !selecteRecord.id) {
-        onAdds({ ...values, roleIds: [values.roleIds] });
+        onAdds(values);
       }
       if (!err && selecteRecord.id) {
-        onOK({ ...values, roleIds: [values.roleIds] }, selecteRecord.id);
+        onOK(values, selecteRecord.id);
       }
     });
   }
@@ -34,7 +34,7 @@ class AddModal extends React.Component {
     const { getFieldDecorator } = form;
 
     const modalOpts = {
-      title: selecteRecord.id ? '编辑折扣' : '新增折扣',
+      title: selecteRecord.id ? '编辑管理员' : '新增管理员',
       visible: true,
       maskClosable: false,
       onOk: this.handleOk,
@@ -86,8 +86,8 @@ class AddModal extends React.Component {
                 )}
             </FormItem>
             <FormItem label="所属角色" >
-              {getFieldDecorator('roleIds', {
-                initialValue: formatSelectValue(selecteRecord.roleIds),
+              {getFieldDecorator('roleId', {
+                initialValue: formatSelectValue(selecteRecord.roleId),
                 rules: [{
                   required: true, message: '角色不能为空！',
                 }],

@@ -46,6 +46,7 @@ export const customeFields = [
     name: '操作'
   }
 ];
+
 export const memberFields = [
   {
     key: 'realName',

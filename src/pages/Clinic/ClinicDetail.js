@@ -1,4 +1,5 @@
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import { createNestPage } from 'utils/common';
 import ClinicDetail from 'components/Clinic/ClinicDetail';
 
@@ -22,6 +23,10 @@ function mapDispatchToProps(dispatch) {
     updateDatas(param, id) {
       dispatch({ type: 'clinicDetail/updateDatas', payload: { param, id } });
     },
+    // 返回列表页面
+    goback() {
+      dispatch(routerRedux.push('/clinic/clinicList'));
+    }
   };
 }
 

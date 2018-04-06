@@ -4,7 +4,7 @@ const { post } = http.create('disease');
 const { get } = http.create('disease');
 // const { put } = http.create('disease');
 const { del } = http.create('disease');
-
+// 获取反馈列表接口
 export function getDatas(param) {
   return post(`/bhyy/core/opinion/search?page=${param.page}&size=${param.size}&sort=${param.sort}`, param);
 }
@@ -28,6 +28,7 @@ export function addFollow(param) {
 export function delFollow(param) {
   return del(`/bhyy/core/opinionRecord/${param}`);
 }
+// 删除反馈信息接口
 export function doDelete(param) {
   return del(`/bhyy/core/opinion/${param}`);
 }

@@ -7,6 +7,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 let patentTimer = null;
 let doctorTimer = null;
+let newPlanIds = null;
 
 const projectTimes = [
   {
@@ -59,12 +60,18 @@ class AppointmentDetail extends React.Component {
         const startTime = (doctorTimes.find(({ id }) => {
           return id === visitPlanIds[0];
         }) || {}).time;
-
-        const newTime = `${time} ${startTime}`;
-        if (details.id) {
-          updateAppointment({ ...values, time: newTime }, details.id);
+        // 如没有进行时间点操作 防止回传undefined 保存原始数据时间
+        const newTime = startTime ? `${time} ${startTime}` : details.time;
+        // 如没有进行时间点操作 防止回传字符串 保存原始占用时间点
+        if (values.visitPlanIds instanceof Array) {
+          newPlanIds = values.visitPlanIds;
         } else {
-          addAppointment({ ...values, time: newTime });
+          newPlanIds = details.visitPlanIds;
+        }
+        if (details.id) {
+          updateAppointment({ ...values, time: newTime, visitPlanIds: newPlanIds, doctorConfigId: this.state.doctorConfigId ? this.state.doctorConfigId : details.doctorConfigId }, details.id);
+        } else {
+          addAppointment({ ...values, time: newTime, visitPlanIds: newPlanIds, doctorConfigId: this.state.doctorConfigId ? this.state.doctorConfigId : details.doctorConfigId });
         }
       }
     });
@@ -103,23 +110,24 @@ class AppointmentDetail extends React.Component {
     const patient = patientList.find(({ customerId }) => {
       return value == customerId;
     }) || {};
-    this.setState({ relationinfo: { relationId: patient.relationId, relationName: patient.relationName } });
+    this.setState({ relationinfo: { relationId: patient.isPatient ? patient.customerId : patient.relationId, relationName: patient.isPatient ? patient.customerName : patient.relationName } });
   }
   // 选中医生，查询可选日期
   handleDoctorChange(value) {
     const { getDoctorDates, form, updateState } = this.props;
     form.setFieldsValue({ visitPlanIds: [], time: undefined });
     updateState({ doctorDates: [], doctorTimes: [] });
-    getDoctorDates({ doctorId: value });
+    getDoctorDates({ id: value });
   }
   // 选中日期，查询可用时间段
   handleDateChange(value) {
     const { form, doctorDates, getDoctorTimes } = this.props;
     const { doctorId } = form.getFieldsValue(['doctorId']);
-    const hospitalId = (doctorDates.find(({ date }) => {
+    const hospitalInfo = doctorDates.find(({ date }) => {
       return date === value;
-    }) || {}).hospitalId;
-    form.setFieldsValue({ visitPlanIds: [], hospitalId });
+    }) || {};
+    this.setState({ doctorConfigId: hospitalInfo.id, });
+    form.setFieldsValue({ visitPlanIds: [], hospitalId: `${hospitalInfo.hospitalId}` });
     getDoctorTimes({ id: doctorId, date: value });
   }
   // 选中就诊时长，改变时间段
@@ -132,8 +140,7 @@ class AppointmentDetail extends React.Component {
   // 页面渲染
   render() {
     const { details, relationinfo = {} } = this.state;
-    const { onDelete, form, projectList, patientList, doctorList,
-      doctorDates, doctorTimes, hospitalList } = this.props;
+    const { onDelete, form, projectList, patientList, doctorList, doctorDates, doctorTimes, hospitalList, goback } = this.props;
     const { getFieldDecorator } = form;
     // 就诊人与预约人至今的关系
     const patientOptions = patientList.map(({ isPatient, relationName, customerName, customerId, phone, relationPhone }) => {
@@ -148,12 +155,12 @@ class AppointmentDetail extends React.Component {
       }
     });
     // 医生列表
-    const doctorOptions = doctorList.map(({ id, realName }) => {
-      return <Option key={id} value={`${id}`}>{realName}</Option>;
+    const doctorOptions = doctorList.map(({ id, realName, phone }) => {
+      return <Option key={id} value={`${id}`}>{realName} ({phone})</Option>;
     });
 
     const popconfirmProps = {
-      title: '确认删除该患者?',
+      title: '确认删除该预约?',
       okText: '确定',
       cancelText: '取消',
     };
@@ -198,7 +205,7 @@ class AppointmentDetail extends React.Component {
                 initialValue: formatSelectValue(details.customerId),
               })(
                 <Select placeholder="请选择就诊人，预约人将自动填写" disabled>
-                  <Option key={details.customerId} value={`${details.customerId}`}>{details.customerName}</Option>
+                  <Option key={details.customerId} value={`${details.customerId}`}>{details.customerName} ({details.customerPhone})</Option>
                 </Select>
               )}
             </FormItem>
@@ -247,7 +254,7 @@ class AppointmentDetail extends React.Component {
           </FormItem>
           <FormItem label="就诊日期">
             {getFieldDecorator('time', {
-              initialValue: formatSelectValue(details.time),
+              initialValue: formatSelectValue(details.date),
               rules: [{ required: true, whitespace: true, message: '就诊日期不能为空' }]
             })(
               <Select placeholder="请选择就诊日期" onChange={this.handleDateChange}>
@@ -287,8 +294,8 @@ class AppointmentDetail extends React.Component {
             })(
               <Select placeholder="诊所名称" disabled>
                 {
-                  hospitalList.map(({ value, label }) => {
-                    return <Option key={value} value={`${value}`}>{label}</Option>;
+                  hospitalList.map(({ id, name }) => {
+                    return <Option key={id} value={`${id}`}>{name}</Option>;
                   })
                 }
               </Select>
@@ -296,7 +303,7 @@ class AppointmentDetail extends React.Component {
           </FormItem>
           <FormItem label="预约状态">
             {getFieldDecorator('status', {
-              initialValue: formatSelectValue(details.status),
+              initialValue: formatSelectValue(details.status || 1),
             })(
               <Select placeholder="请选择" >
                 {appointmentStatus.map(({ label, value }) => {
@@ -314,7 +321,11 @@ class AppointmentDetail extends React.Component {
           </FormItem>
           <div className="btnGroup">
             <Button type="primary" onClick={() => { this.handSave(); }}>保存</Button>
-            {details.id ? <Popconfirm {...popconfirmProps} onConfirm={() => { onDelete(details.id); }}><Button type="danger" ghost>删除</Button></Popconfirm> : ''}
+            {details.id ?
+              <Popconfirm {...popconfirmProps} onConfirm={() => { onDelete(details.id); }}><Button type="danger" ghost>删除</Button></Popconfirm>
+              :
+              <Button onClick={goback}>取消</Button>
+            }
           </div>
         </Form>
       </div >

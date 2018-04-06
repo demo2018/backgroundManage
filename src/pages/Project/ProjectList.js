@@ -25,9 +25,13 @@ function mapDispatchToProps(dispatch) {
       dispatch({ type: 'projectList/resetSearch' });
       dispatch({ type: 'projectList/fetchDatas' });
     },
+    // 变更排序事件
+    rankChange(id, param) {
+      dispatch({ type: 'projectList/rankChange', payload: { id, param } });
+    },
     // 删除项目
     onDelete(param) {
-      dispatch({ type: 'projectList/doDelete', payload: { param } });
+      dispatch({ type: 'projectList/doDelete', param });
     },
     // 跳转到详情页面
     toDetail(id) {

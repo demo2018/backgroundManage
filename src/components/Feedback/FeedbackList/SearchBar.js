@@ -21,6 +21,7 @@ class SearchBar extends React.Component {
     this.handleSearch = this.handleSearch.bind(this);
     this.handleReset = this.handleReset.bind(this);
   }
+
   componentWillReceiveProps(nextProps) {
     if ('search' in nextProps && nextProps.search !== this.props.search) {
       this.setState({ ...getStateBySearch(nextProps.search) });
@@ -35,16 +36,19 @@ class SearchBar extends React.Component {
     delete values.date;
     onSearch({ ...values, pn: 1 });
   }
+  // 触发重置事件
   handleReset() {
     const { onReset } = this.props;
     onReset && onReset();
   }
+  // 监听页面value值变更事件
   handleChange(key, value) {
     if (value.target) {
       value = value.target.value;
     }
     this.setState({ [key]: value });
   }
+  // 页面渲染
   render() {
     const search = this.state;
     return (
@@ -84,4 +88,5 @@ class SearchBar extends React.Component {
     );
   }
 }
+
 export default Form.create()(SearchBar);

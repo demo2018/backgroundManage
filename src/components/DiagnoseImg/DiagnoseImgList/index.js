@@ -4,19 +4,19 @@ import SearchBar from './SearchBar.js';
 import { ORDER_SUFFIX } from 'configs/constants';
 
 const { getColumns } = tableUtil;
-
+// 页面参数初始化
 class DiagnoseImgList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      modalVisible: false,
     };
   }
+
   getInitalColumns(fields) {
     const { toDetail, onDelete, search: { sortField, ordination } } = this.props;
 
     const popconfirmProps = {
-      title: '确认删除该预约?',
+      title: '确认删除该图片影像?',
       okText: '确定',
       cancelText: '取消',
     };
@@ -27,14 +27,14 @@ class DiagnoseImgList extends React.Component {
         sortOrder: `${ordination.toLocaleLowerCase()}${ORDER_SUFFIX}`
       },
       {
-        key: 'id',
+        key: 'option',
         name: '操作',
         width: 200,
         render: (value, record) => {
           return (<div>
             <a onClick={() => { toDetail(record.id); }}>编辑</a>
             <span className="ant-divider"></span>
-            <Popconfirm {...popconfirmProps} onConfirm={() => { onDelete({ id: record.id }); }}>
+            <Popconfirm {...popconfirmProps} onConfirm={() => { onDelete(record.id); }}>
               <a>删除</a>
             </Popconfirm>
           </div >);
@@ -43,9 +43,11 @@ class DiagnoseImgList extends React.Component {
 
     return getColumns(fields).enhance(extraFields).values();
   }
+  // 列表清空事件
   handleClear() {
     this.props.onUpdateState({ selected: [] });
   }
+  // 页面排序监听事件
   handleTableSortChange({ current }, sort, { field, order }) {
     const { onSearch, search } = this.props;
     if (current == search.pn && order) {
@@ -55,15 +57,16 @@ class DiagnoseImgList extends React.Component {
       });
     }
   }
+
   renderTableTitle() {
     const { selected = [] } = this.props;
     return (<p>已选择<span style={{ color: 'red', padding: '0 4px' }}>{selected.length}</span>项
       <a style={{ marginLeft: 10 }} onClick={() => { this.handleClear(); }}>清空</a>
     </p>);
   }
+  // 页面渲染
   render() {
-    const { fields, types, datas, total, search, loading,
-      toAdd, onSearch, onReset, selected = [] } = this.props;
+    const { fields, types, datas, total, search, loading, toAdd, onSearch, onReset, selected = [] } = this.props;
     const { pn, ps } = search;
     const columns = this.getInitalColumns(fields);
 
@@ -82,6 +85,7 @@ class DiagnoseImgList extends React.Component {
         this.props.onUpdateState({ selected: selectedRowKeys });
       },
     };
+
     const tableProps = {
       dataSource: datas,
       columns,

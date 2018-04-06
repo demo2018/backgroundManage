@@ -1,21 +1,21 @@
 import Model from 'utils/model';
 import services from 'services';
 import { fields } from './fields';
+import { formatFormData } from 'utils/common';
 import { PAGE_SIZE } from 'configs/constants';
 
 const initialSearch = {
-  realName: '',
-  phone: '',
-  recommendName: '',
-  doctorId: '',
-  source: null,
-  hospitalName: '',
-  adept: '',
-  status: null,
-  addDate: '',
+  customerName: '', // 患者姓名
+  phone: '', // 患者电话
+  doctorName: '', // 医生姓名
+  status: '', // 状态
+  type: '', // 奖励类型
+  number: '', // 奖励金额范围
+  startDate: '', // 开始时间
+  endDate: '', // 结束时间
   pn: 1,
   ps: PAGE_SIZE,
-  sortField: 'referralId', // 排序字段
+  sortField: 'id', // 排序字段
   ordination: 'DESC' // 排序方式
 };
 
@@ -25,37 +25,7 @@ export default Model.extend({
   state: {
     fields,
     search: initialSearch,
-    datas: [{
-      'doctorId': 11685,
-      'realName': '詹医生',
-      'phone': '13812345678',
-      'hospitalName': '牙科医院',
-      'source': '0',
-      'status': '2',
-      'rank': '5',
-      'addDate': '2018-01-11',
-      'is_show': '1'
-    }, {
-      'doctorId': 9849,
-      'realName': '宋医生',
-      'phone': '13887654321',
-      'hospitalName': '牙科医院',
-      'source': '0',
-      'status': '0',
-      'rank': '5',
-      'addDate': '2018-01-14',
-      'is_show': '0'
-    }, {
-      'doctorId': 5649,
-      'realName': '赵医生',
-      'phone': '13866666666',
-      'hospitalName': '牙科医院',
-      'source': '1',
-      'status': '3',
-      'rank': '5',
-      'addDate': '2018-02-11',
-      'is_show': '1'
-    }],
+    datas: [],
     total: 0,
     types: [],
     selected: [],
@@ -75,26 +45,20 @@ export default Model.extend({
   },
 
   effects: {
+    // 获取转诊列表
     * fetchDatas({ payload }, { select, update, callWithLoading }) {
       const { search } = yield select(({ referralList }) => referralList);
-      const { datas, total } = yield callWithLoading(services.referral.getDatas, search);
-      yield update({ datas, total });
+      const { data: { content, totalElements } } = yield callWithLoading(services.referral.getDatas, formatFormData({ ...search, sortField: 'r.' + search.sortField }));
+      yield update({ datas: content, total: totalElements });
     },
-    * sendMsg({ payload }, { select, update, callWithLoading }) {
-      const { selected } = yield select(({ referralList }) => referralList);
-      yield callWithLoading(services.referral.sendMsg, { selected: selected.join(',') }, { successMsg: '操作成功' });
-    },
-    * downFile({ payload }, { select, update, callWithLoading }) {
+    * downFile({ payload }, { select, callWithLoading }) {
       const { selected } = yield select(({ referralList }) => referralList);
       yield callWithLoading(services.referral.downFile, { selected: selected.join(',') });
     },
-    * downReport({ payload }, { select, update, callWithLoading }) {
+    // 发送转诊报告
+    * downReport({ payload }, { select, callWithLoading }) {
       const { selected } = yield select(({ referralList }) => referralList);
-      yield callWithLoading(services.referral.downReport, { selected: selected.join(',') });
-    },
-    * doDelete({ payload: { param } }, { put, callWithLoading }) {
-      yield callWithLoading(services.referral.doDelete, { ...param }, { successMsg: '操作成功' });
-      yield put({ type: 'fetchDatas' });
+      yield callWithLoading(services.referral.downReport, selected, { successMsg: '操作成功' });
     },
   },
 

@@ -10,10 +10,19 @@
         margin-bottom: 0;
         border-left: none;
         h3 {
-          color: #108ee9;
-          font-size: 16px;
-          padding-left: 10px;
-          border-left: 3px solid #108ee9;
+          position: relative;
+            color: #108ee9;
+            font-size: 16px;
+            padding-left: 10px;
+            &:before{
+              display: block;
+              content: '';
+              position: absolute;
+              left: 0;
+              top: 5px;
+              width: 3px;
+              height: 16px;
+            }
         }
       }
     }

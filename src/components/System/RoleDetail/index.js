@@ -3,93 +3,51 @@ import styles from './roleDetail.less';
 
 const FormItem = Form.Item;
 const TreeNode = Tree.TreeNode;
-const treeData = [{
-  title: '预约管理',
-  key: '预约管理',
-  children: [
-    { title: '查看预约', key: '查看预约', },
-    { title: '新增预约', key: '新增预约', },
-    { title: '编辑预约', key: '编辑预约', },
-    { title: '搜索预约', key: '搜索预约', }
-  ],
-}, {
-  title: '就诊管理',
-  key: '就诊管理',
-  children: [
-    { title: '查看就诊', key: '查看就诊', },
-    { title: '新增就诊', key: '新增就诊', },
-    { title: '编辑就诊', key: '编辑就诊', },
-    { title: '搜索就诊', key: '搜索就诊', },
-    { title: '就诊评价', key: '就诊评价', },
-    { title: '查看就诊评价', key: '查看就诊评价', },
-    { title: '随访', key: '随访', },
-    { title: '查看随访记录', key: '查看随访记录', }
-  ],
-}, {
-  title: '客户管理',
-  key: '客户管理',
-}, {
-  title: '病历管理',
-  key: '病历管理',
-}, {
-  title: '影像管理',
-  key: '影像管理',
-}, {
-  title: '医生管理',
-  key: '医生管理',
-}, {
-  title: '交易管理',
-  key: '交易管理',
-}];
-
-
+// 页面参数初始化
 class RoleDetail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      details: props.details,
+      menuId: [],
       expandedKeys: [], // 展开指定的树节点
       autoExpandParent: true,  // 是否自动展开父节点
-      checkedKeys: ['0-0-0'],  // 选中复选框的树节点
-      selectedKeys: [],  // （受控）设置选中的树节点
-      details: props.details,
+      checkedKeys: [],  // 选中复选框的树节点
     };
   }
+
   componentWillReceiveProps(nextProps) {
     if ('details' in nextProps && nextProps.details !== this.props.details) {
       this.setState({ details: nextProps.details });
     }
   }
+
   onExpand = (expandedKeys) => {  // 展开/收起节点时触发
-    console.log('onExpand', arguments);
-    // if not set autoExpandParent to false, if children expanded, parent can not collapse.
-    // or, you can remove all expanded children keys.
     this.setState({
       expandedKeys,
       autoExpandParent: false,
     });
   }
+  // 点击选中事件
   onCheck = (checkedKeys) => {
     console.log('onCheck', checkedKeys);
-    this.setState({ checkedKeys });
+    this.setState({ checkedKeys, menuId: checkedKeys });
   }
-  onSelect = (selectedKeys, info) => {  // 	点击树节点触发
-    console.log('onSelect', info);
-    this.setState({ selectedKeys });
-  }
-
   // 触发提交 判断是新增还是修改
   handleSave() {
-    const { form, details } = this.props;
+    const { form, details, addDatas, updateDatas } = this.props;
+    const { menuId } = this.state;
     const { validateFieldsAndScroll } = form;
     validateFieldsAndScroll((err, values) => {
       if (!err && !details.id) {
-        // onAdds({ ...values, roleIds: [values.roleIds] });
+        addDatas({ ...values, menuIds: menuId && menuId[0] ? menuId : details.menuIds });
       }
       if (!err && details.id) {
-        // onOK({ ...values, roleIds: [values.roleIds] }, selecteRecord.id);
+        updateDatas({ ...values, menuIds: menuId && menuId[0] ? menuId : details.menuIds }, details.id);
       }
     });
   }
+
   renderTreeNodes = (data) => {
     return data.map((item) => {
       if (item.children) {
@@ -102,16 +60,24 @@ class RoleDetail extends React.Component {
       return <TreeNode {...item} />;
     });
   }
+  // 页面渲染
   render() {
-    const { form, details, goback } = this.props;
+    const { form, details, goback, menuList } = this.props;
     const { getFieldDecorator } = form;
+    const treeData = menuList;
+    const { menuIds } = details;
+
+    const menu = (menuIds || []).map((index) => {
+      return index.toString();
+    });
+
     return (
       <div className={styles.roleDetail}>
         <h3 className="title"> {details.id ? '更新角色' : '新增角色'} </h3>
         <Form layout="inline">
           <FormItem label="角色名称">
-            {getFieldDecorator('phone', {
-              initialValue: details.phone,
+            {getFieldDecorator('name', {
+              initialValue: details.name,
               rules: [{ required: true, whitespace: true, message: '不能为空' }]
             })(
               <Input placeholder="请输入名称" />
@@ -124,9 +90,8 @@ class RoleDetail extends React.Component {
               expandedKeys={this.state.expandedKeys}
               autoExpandParent={this.state.autoExpandParent}
               onCheck={this.onCheck}
-              checkedKeys={this.state.checkedKeys}
+              checkedKeys={this.state.checkedKeys && this.state.checkedKeys[0] ? this.state.checkedKeys : menu}
               onSelect={this.onSelect}
-              selectedKeys={this.state.selectedKeys}
             >
               {this.renderTreeNodes(treeData)}
             </Tree>
@@ -140,4 +105,5 @@ class RoleDetail extends React.Component {
     );
   }
 }
+
 export default Form.create()(RoleDetail);

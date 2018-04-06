@@ -1,10 +1,14 @@
 import { Row, Form, Input, Select, Button, Tag, Modal } from 'antd';
-import { getServer } from 'utils/common';
+import { getServer, formatDate } from 'utils/common';
 import styles from './doctorAudit.less';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-
+const formatSelectValue = (value) => {
+  if (value || value === 0) {
+    return `${value}`;
+  }
+};
 class DoctorAudits extends React.Component {
   constructor(props) {
     super(props);
@@ -12,8 +16,10 @@ class DoctorAudits extends React.Component {
     this.state = {
       previewVisible: false,
       previewImage: '',
+      visible: false,
     };
     this.handleAudit = this.handleAudit.bind(this);
+    this.handleDoctorChange = this.handleDoctorChange.bind(this);
   }
   // 渲染擅长项目
   getAdepts() {
@@ -53,6 +59,7 @@ class DoctorAudits extends React.Component {
       }
     });
   }
+  // 触发关闭预览
   handleCancel = () => this.setState({ previewVisible: false })
   // 点击预览图片
   handlePreview = (file) => {
@@ -61,6 +68,14 @@ class DoctorAudits extends React.Component {
       previewImage: `${disease}/bhyy/core/image/${file}`,
       previewVisible: true,
     });
+  }
+  //  选择审核失败时显示必填项：失败原因
+  handleDoctorChange(value) {
+    if (value == 2) {
+      this.setState({ visible: true });
+    } else {
+      this.setState({ visible: false });
+    }
   }
   // 处理图片地址
   renderImage(imageUrlKey) {
@@ -71,12 +86,12 @@ class DoctorAudits extends React.Component {
   // 渲染页面
   render() {
     const { form, details, goback } = this.props;
-    const { previewVisible, previewImage, } = this.state;
+    const { previewVisible, previewImage, visible } = this.state;
     const { getFieldDecorator } = form;
     return (
       <div className={styles.doctorAudit}>
         <div className="baseInfo part">
-          <div className="title">
+          <div className="head">
             <h3>基本信息</h3>
           </div>
           <div className="content">
@@ -109,7 +124,7 @@ class DoctorAudits extends React.Component {
                 <Row>
                   <div className="filedItem">
                     <span className="filedName">出生日期</span>
-                    <span className="filedValue">{details.birthday}</span>
+                    <span className="filedValue">{formatDate(details.birthday)}</span>
                   </div>
                   <div className="filedItem">
                     <span className="filedName">年龄</span>
@@ -119,7 +134,7 @@ class DoctorAudits extends React.Component {
                 <Row>
                   <div className="filedItem">
                     <span className="filedName">第一执业机构</span>
-                    <span className="filedValue">{details.age}</span>
+                    <span className="filedValue">{details.hospitalName}</span>
                   </div>
                   {/* <div className="filedItem">
                     <span className="filedName">职称</span>
@@ -177,7 +192,7 @@ class DoctorAudits extends React.Component {
           </div>
         </div>
         <div className="auditInfo part">
-          <div className="title"><h3>认证信息</h3></div>
+          <div className="head"><h3>认证信息</h3></div>
           <div className="content">
             <div className="imgWraper">
               {this.renderImage('idIcon')}
@@ -197,40 +212,39 @@ class DoctorAudits extends React.Component {
             </div>
           </div>
         </div>
-
-
         <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
           <img alt="example" style={{ width: '100%' }} src={previewImage} />
         </Modal>
-
         <div className="audit part">
           <Form layout="inline">
-            <FormItem
-              label="审核结果"
-            >
+            <FormItem label="审核结果" >
               {getFieldDecorator('status', {
-                initialValue: `${details.status}`,
+                initialValue: formatSelectValue(details.status),
                 rules: [{
                   required: true, message: '请确定审核结果！',
                 }],
               })(
-                <Select >
-                  <Option value="0">待审核</Option>
+                <Select placeholder="请选择" onChange={this.handleDoctorChange}>
+                  <Option value="4">待审核</Option>
                   <Option value="1">审核成功</Option>
                   <Option value="2">审核失败</Option>
                 </Select>
               )}
             </FormItem>
-            <FormItem label="原因" >
-              {getFieldDecorator('failureReason', {
-                initialValue: details.failureReason,
-                rules: [{
-                  required: true, message: '请说明原因！',
-                }],
-              })(
-                <Input />
-              )}
-            </FormItem>
+            {
+              visible
+                ? <FormItem label="原因" >
+                  {getFieldDecorator('failureReason', {
+                    initialValue: details.failureReason,
+                    rules: [{
+                      required: true, message: '请说明原因！',
+                    }],
+                  })(
+                    <Input placeholder="请输入原因" />
+                    )}
+                </FormItem>
+                : null
+            }
           </Form>
           <div className="btnGroup">
             <Button type="primary" onClick={this.handleAudit}>保存</Button>

@@ -1,14 +1,28 @@
 import Model from 'utils/model';
 import services from 'services';
-import { routerRedux } from 'dva/router';
+import { PAGE_SIZE } from 'configs/constants';
+import { datefields as fields } from './fields';
+import { formatFormData } from 'utils/common';
+
+const initialSearch = {
+  pn: 1,
+  ps: PAGE_SIZE,
+  sortField: 'date', // 排序字段
+  ordination: 'DESC' // 排序方式
+};
 
 export default Model.extend({
   namespace: 'doctorPlans',
 
   state: {
+    fields,
     id: '',
+    search: initialSearch,
     details: {},
-    hospitalList: []
+    total: 0,
+    selected: [],
+    hospitalList: [],
+    datelists: []
   },
 
   subscriptions: {
@@ -34,18 +48,30 @@ export default Model.extend({
     // 获取医生详情
     * fetchDetail({ payload }, { select, update, callWithLoading }) {
       const { id } = yield select(({ doctorPlans }) => doctorPlans);
+      const { search } = yield select(({ doctorPlans }) => doctorPlans);
       const { data } = yield callWithLoading(services.doctor.getInfo, id);
-      yield update({ details: data });
+      const { data: { content } } = yield callWithLoading(services.doctor.getDatelists, { ...formatFormData(search), doctorId: id });
+      yield update({ details: data, datelists: content });
     },
-    // 更新医生详情
-    * updateDatas({ payload: { param, id } }, { put, callWithLoading }) {
-      yield callWithLoading(services.doctor.saveDatas, { param, id }, { successMsg: '操作成功' });
+    // 安排出诊时间
+    * toPlans({ param }, { put, callWithLoading }) {
+      yield callWithLoading(services.doctor.toPlans, param, { successMsg: '操作成功' });
       yield put({ type: 'fetchDetail' });
     },
-    // 新增医生详情
-    * toPlans({ param }, { put, callWithLoading }) {
-      const { data } = yield callWithLoading(services.doctor.toPlans, param, { successMsg: '操作成功' });
-      // yield put(routerRedux.push(`/doctor/detail/${data}`));
+    // 删除出诊时间
+    * onDeletes({ param }, { put, callWithLoading }) {
+      yield callWithLoading(services.doctor.delPlans, param, { successMsg: '操作成功' });
+      yield put({ type: 'fetchDetail' });
     },
+  },
+
+  reducers: {
+    // 如果改变查询条件(非切换分页), 则将pn重置为1
+    updateSearch(state, { payload: { search } }) {
+      return {
+        ...state,
+        search: { ...state.search, pn: 1, ...search }
+      };
+    }
   }
 });

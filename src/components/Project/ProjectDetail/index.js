@@ -1,16 +1,10 @@
-import { Row, Form, Input, Select, message, Button, Upload, Icon } from 'antd';
+import { Row, Form, Input, InputNumber, Select, message, Button, Upload, Icon } from 'antd';
 import styles from './projectDetail.less';
 import { getServer, getUploadPicUrl } from 'utils/common';
 
 const FormItem = Form.Item;
 const TextArea = Input.TextArea;
 const Option = Select.Option;
-
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
 
 const imgTypeReg = /\/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/;
 // 页面参数初始化
@@ -65,6 +59,7 @@ class ProjectDetail extends React.Component {
       }
     });
   }
+
   handleUploadChange(uploadName) {
     return (info) => {
       const { imageUrl: oldImg, loading: oldLoading } = this.state;
@@ -95,6 +90,7 @@ class ProjectDetail extends React.Component {
       // reader.readAsDataURL(info.file);
     };
   }
+
   renderUploadButton(uploadName) {
     const { loading } = this.state;
     return (
@@ -119,13 +115,13 @@ class ProjectDetail extends React.Component {
   }
   // 页面渲染
   render() {
-    const { form, toList, details } = this.props;
+    const { form, toList, details, doctorClassList, patientClassList } = this.props;
     const { getFieldDecorator } = form;
 
     return (
       <div className={styles.projectDetail}>
         <div className="baseInfo part">
-          <div className="title"><h3>基本信息</h3></div>
+          <div className="head"><h3>基本信息</h3></div>
           <div className="content">
             <div className="imgWraper">
               <div className="uploadWrapper">
@@ -177,7 +173,7 @@ class ProjectDetail extends React.Component {
                         required: true, message: '该字段不能为空',
                       }],
                     })(
-                      <Input placeholder="请输入" />
+                      <InputNumber placeholder="请输入" />
                     )}
                   </FormItem>
                 </Row>
@@ -187,10 +183,7 @@ class ProjectDetail extends React.Component {
                       initialValue: details.doctorClass,
                     })(
                       <Select placeholder="请选择" >
-                        <Option value="jack">Jack</Option>
-                        <Option value="lucy">Lucy</Option>
-                        <Option value="disabled" disabled>Disabled</Option>
-                        <Option value="Yiminghe">yiminghe</Option>
+                        {doctorClassList.map(({ id, className }) => (<Option key={id} value={`${id}`}>{className}</Option>))}
                       </Select>
                     )}
                   </FormItem>
@@ -201,11 +194,17 @@ class ProjectDetail extends React.Component {
                       initialValue: details.patientClass,
                     })(
                       <Select placeholder="请选择" >
-                        <Option value="jack">Jack</Option>
-                        <Option value="lucy">Lucy</Option>
-                        <Option value="disabled" disabled>Disabled</Option>
-                        <Option value="Yiminghe">yiminghe</Option>
+                        {patientClassList.map(({ id, className }) => (<Option key={id} value={`${id}`}>{className}</Option>))}
                       </Select>
+                    )}
+                  </FormItem>
+                </Row>
+                <Row>
+                  <FormItem label="排序" >
+                    {getFieldDecorator('rank', {
+                      initialValue: details.rank || 0,
+                    })(
+                      <Input placeholder="请输入排序序号" />
                     )}
                   </FormItem>
                 </Row>

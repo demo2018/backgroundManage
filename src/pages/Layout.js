@@ -2,7 +2,6 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import { Breadcrumb, Icon } from 'antd';
 import { Link } from 'react-router';
-import menus from 'configs/menus';
 import qs from 'qs';
 import cookie from 'js-cookie';
 import HLayout from 'components/HLayout';
@@ -14,7 +13,7 @@ function Layout({
   params,
   layout,
 }) {
-  const { siteName, nav } = layout;
+  const { siteName, nav, menus } = layout;
   const boxList = [];
   const username = cookie.get('username');
   const props = {

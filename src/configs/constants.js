@@ -100,7 +100,13 @@ export const sourceStatus = [
     label: '市场活动'
   }, {
     value: 3,
-    label: '市场注册'
+    label: '企业活动'
+  }, {
+    value: 4,
+    label: '后台录入'
+  }, {
+    value: 5,
+    label: '其他'
   }
 ];
 
@@ -130,6 +136,9 @@ export const doctorSource = [
   }, {
     value: 1,
     label: '医生推荐'
+  }, {
+    value: 2,
+    label: '后台录入'
   }
 ];
 
@@ -217,13 +226,13 @@ export const followType = [
   }
 ];
 
-export const followStatus = [
+export const sendStatus = [
   {
     value: 0,
-    label: '未跟进'
+    label: '未发送'
   }, {
     value: 1,
-    label: '已跟进'
+    label: '已发送'
   }
 ];
 
@@ -270,6 +279,98 @@ export const saleType = [
   }
 ];
 
+export const referralStatus = [
+  {
+    value: 0,
+    label: '转诊中已扫码'
+  }, {
+    value: 1,
+    label: '转诊中咨询中'
+  }, {
+    value: 2,
+    label: '转诊中已注册'
+  }, {
+    value: 3,
+    label: '转诊中已预约'
+  }, {
+    value: 4,
+    label: '转诊中已就诊'
+  }, {
+    value: 5,
+    label: '转诊成功未支付'
+  }, {
+    value: 6,
+    label: '转诊成功已支付'
+  }, {
+    value: 7,
+    label: '取消预约'
+  }
+];
+
+export const weekDay = [
+  {
+    value: 0,
+    label: '星期日'
+  }, {
+    value: 1,
+    label: '星期一'
+  }, {
+    value: 2,
+    label: '星期二'
+  }, {
+    value: 3,
+    label: '星期三'
+  }, {
+    value: 4,
+    label: '星期四'
+  }, {
+    value: 5,
+    label: '星期五'
+  }, {
+    value: 6,
+    label: '星期六'
+  }
+];
+
+export const bookStatus = [
+  {
+    value: 0,
+    label: '未约满'
+  }, {
+    value: 1,
+    label: '已约满'
+  }
+];
+
+export const rebateType = [
+  {
+    value: 0,
+    label: '现金'
+  }, {
+    value: 1,
+    label: '薄荷币'
+  }
+];
+
+export const rebateNum = [
+  {
+    value: 0,
+    label: '0~50'
+  }, {
+    value: 1,
+    label: '50~100'
+  }, {
+    value: 2,
+    label: '100~200'
+  }, {
+    value: 3,
+    label: '200~500'
+  }, {
+    value: 4,
+    label: '500以上'
+  }
+];
+
 // 成年牙齿症状
 export const adultSymptoms = [
   { label: 'C龋坏', value: 'C龋坏' },
@@ -306,7 +407,7 @@ export const childSymptoms = [
   { label: 'U未见萌出', value: 'U未见萌出' },
   { label: 'RT根管治疗后', value: 'RT根管治疗后' },
   { label: 'M缺失', value: 'M缺失' },
-  { label: 'CF全冠', value: 'CV瓷贴面' },
+  { label: 'CF全冠', value: 'CF全冠' },
   { label: 'F填充物', value: 'F填充物' },
   { label: 'SR间隙保持器', value: 'SR间隙保持器' },
 ];
@@ -318,6 +419,7 @@ export const mixSymptoms = [
   { label: 'SC继发龋', value: 'SC继发龋' },
   { label: 'R扭转牙', value: 'R扭转牙' },
   { label: 'PFS窝沟封闭', value: 'PFS窝沟封闭' },
+  { label: 'U未见萌出', value: 'U未见萌出' },
   { label: 'RT根管治疗后', value: 'RT根管治疗后' },
   { label: 'M缺失', value: 'M缺失' },
   { label: 'CF全冠', value: 'CF全冠' },
@@ -327,4 +429,25 @@ export const mixSymptoms = [
   { label: 'AC根尖囊肿', value: 'AC根尖囊肿' },
   { label: 'RC残冠', value: 'RC残冠' },
   { label: 'RT残根', value: 'RT残根' },
+];
+
+export const commonSymptoms = [
+  { label: '反颌', value: '反颌' },
+  { label: '唇颊向', value: '唇颊向' },
+  { label: '低位', value: '低位' },
+  { label: '下颌后退', value: '下颌后退' },
+  { label: '舌腭向', value: '舌腭向' },
+  { label: '高位', value: '高位' },
+  { label: '开颌', value: '开颌' },
+  { label: '拥挤', value: '拥挤' },
+  { label: '锁颌', value: '锁颌' },
+  { label: '內翻', value: '內翻' },
+  { label: '多生牙', value: '多生牙' },
+  { label: '正？反', value: '正？反' },
+  { label: '外翻', value: '外翻' },
+  { label: '发育不良', value: '发育不良' },
+  { label: '先天缺失', value: '先天缺失' },
+  { label: '早失牙', value: '早失牙' },
+  { label: '滞留乳牙', value: '滞留乳牙' },
+  { label: '未见萌出', value: '未见萌出' },
 ];

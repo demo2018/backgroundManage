@@ -21,7 +21,7 @@ class BaseInfo extends React.Component {
     };
     return (
       <div className="reportInfo part">
-        <div className="title">
+        <div className="head">
           <h3>初筛报告</h3>
         </div>
         <div className="content">

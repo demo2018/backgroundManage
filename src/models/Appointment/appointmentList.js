@@ -19,7 +19,7 @@ const initialSearch = {
   endTime: '', // 结束时间
   pn: 1,
   ps: PAGE_SIZE,
-  sortField: 'appointId', // 排序字段
+  sortField: 'time', // 排序字段
   ordination: 'DESC' // 排序方式
 };
 
@@ -59,7 +59,7 @@ export default Model.extend({
     // 获取列表信息
     * fetchDatas({ payload }, { select, update, callWithLoading }) {
       const { search } = yield select(({ appointmentList }) => appointmentList);
-      const { data: { content, totalElements } } = yield callWithLoading(services.appointment.getDatas, formatFormData(search));
+      const { data: { content, totalElements } } = yield callWithLoading(services.appointment.getDatas, formatFormData({ ...search, sortField: 'a.' + search.sortField }));
       yield update({ datas: content, total: totalElements });
     },
     // 删除

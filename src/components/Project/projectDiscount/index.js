@@ -1,7 +1,8 @@
-import { Table, Button, Popconfirm } from 'antd';
+import { Table, Button, Popconfirm, Input, Icon } from 'antd';
 import tableUtil from 'utils/tableUtil';
 import SearchBar from './SearchBar.js';
 import AddModal from './modal/AddModal.js';
+import styles from './projectDiscount.less';
 import { ORDER_SUFFIX } from 'configs/constants';
 
 const { getColumns } = tableUtil;
@@ -11,11 +12,12 @@ class ProjectClassify extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      modalVisible: false,
     };
   }
+
   getInitalColumns(fields) {
     const { onUpdateState, onDelete, search: { sortField, ordination } } = this.props;
+    const { editable, rankValue } = this.state;
 
     const popconfirmProps = {
       title: '确认删除该折扣?',
@@ -40,9 +42,58 @@ class ProjectClassify extends React.Component {
             </Popconfirm>
           </div >);
         }
-      }];
+      }, {
+        key: 'rank',
+        name: '排序',
+        sorter: true,
+        render: (text, record) => {
+          return (
+            <div className="editable-cell">
+              {
+                editable == record.id ?
+                  <div className="editable-cell-input-wrapper">
+                    <Input
+                      value={rankValue}
+                      onChange={this.handleChange}
+                      onPressEnter={() => { this.check(record.id); }}
+                    />
+                    <Icon
+                      type="check"
+                      className="editable-cell-icon-check"
+                      onClick={() => { this.check(record.id); }}
+                    />
+                  </div>
+                  :
+                  <div className="editable-cell-text-wrapper">
+                    {record.rank || ' '}
+                    <Icon
+                      type="edit"
+                      className="editable-cell-icon"
+                      onClick={() => { this.edit({ id: record.id, rank: record.rank }); }}
+                    />
+                  </div>
+              }
+            </div>
+          );
+        },
+      }
+    ];
 
     return getColumns(fields).enhance(extraFields).values();
+  }
+  // 实时修改排序值
+  handleChange = (e) => {
+    const rankValue = e.target.value;
+    this.setState({ rankValue });
+  }
+  // 点击确定修改
+  check = (id) => {
+    this.setState({ editable: '' });
+    this.props.rankChange(id, this.state.rankValue);
+  }
+  // 点击触发编辑
+  edit = (info) => {
+    this.setState({ editable: info.id, rankValue: info.rank });
   }
   // 列表清空事件
   handleClear() {
@@ -58,6 +109,7 @@ class ProjectClassify extends React.Component {
       });
     }
   }
+
   renderTableTitle() {
     const { selected = [] } = this.props;
     return (<p>已选择<span style={{ color: 'red', padding: '0 4px' }}>{selected.length}</span>项
@@ -113,11 +165,12 @@ class ProjectClassify extends React.Component {
         onUpdateState({ selecteRecord: {}, addModalVisible: false });
       }
     };
+
     return (
-      <div>
+      <div className={styles.projectDiscount}>
         <SearchBar {...searchBarProps} />
         <div className="btnGroup">
-          <Button type="primary" icon="plus" onClick={() => { onUpdateState({ selecteRecord: {}, addModalVisible: true }); }}>新增分类</Button>
+          <Button type="primary" icon="plus" onClick={() => { onUpdateState({ selecteRecord: {}, addModalVisible: true }); }}>新增折扣</Button>
         </div>
         <Table {...tableProps} />
         {addModalVisible && <AddModal {...addModalProps} />}

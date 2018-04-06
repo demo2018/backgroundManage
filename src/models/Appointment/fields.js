@@ -15,7 +15,7 @@ export const getFields = (enums = []) => {
       sorter: true,
     },
     {
-      key: 'customerName',
+      key: 'patientName',
       name: '就诊人姓名'
     },
     {
@@ -42,6 +42,20 @@ export const getFields = (enums = []) => {
       name: '预约状态',
       enums: appointmentStatus,
       sorter: true,
+      render: (value) => {
+        if (value == 0) {
+          return <p><span className="status determine"></span>未确认</p>;
+        } else if (value == 1) {
+          return <p><span className="status success"></span>已确认</p>;
+        } else if (value == 2) {
+          return <p><span className="status on"></span>就诊中</p>;
+        } else if (value == 3) {
+          return <p><span className="status done"></span>已完成</p>;
+        } else if (value == 4) {
+          return <p><span className="status cancel"></span>已取消</p>;
+        }
+      }
+
     },
     {
       key: 'time',

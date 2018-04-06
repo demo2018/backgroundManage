@@ -11,10 +11,15 @@ export default Model.extend({
     siderFold: false,
     isNavbar: document.body.clientWidth < 769,
     clusters: [],
+    menus: [],
     clusterUuid: '',
   },
 
-  subscriptions: {},
+  subscriptions: {
+    setupSubscriber({ dispatch }) {
+      dispatch({ type: 'getMenulist' });
+    }
+  },
 
   effects: {
     *login({ payload }, { call, put }) {
@@ -43,6 +48,22 @@ export default Model.extend({
       if (payload.openKeys) {
         cookie.set('openKeys', payload.openKeys);
       }
+    },
+    *getMenulist({ payload }, { call, update }) {
+      // const result = yield call(services.layout.login, { ...payload });
+      const { data } = yield call(services.layout.getMenus);
+      let list = [];
+      for (let i = 0; i < data.length; i++) {
+        list[i] = { key: data[i].key, title: data[i].name, path: data[i].url, icon: data[i].icon };
+        if (data[i].children && data[i].children[0]) {
+          let childrenlist = [];
+          for (let j = 0; j < data[i].children.length; j++) {
+            childrenlist[j] = { key: data[i].children[j].key, title: data[i].children[j].name, path: data[i].children[j].url };
+          }
+          list[i] = { key: data[i].key, title: data[i].name, path: data[i].url, icon: data[i].icon, children: childrenlist };
+        }
+      }
+      yield update({ menus: list });
     },
   },
 

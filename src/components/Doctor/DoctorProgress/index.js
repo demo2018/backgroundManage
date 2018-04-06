@@ -6,7 +6,7 @@ class CustomerDetail extends React.Component {
     super(props);
     this.state = {};
   }
-
+  // 页面渲染
   render() {
     return (
       <div className={styles.doctorProgress}>

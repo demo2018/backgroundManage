@@ -7,10 +7,10 @@ const Option = Select.Option;
 
 // 处理起止时间格式
 const getStateBySearch = (search = {}) => {
-  const { startTime, endTime } = search;
+  const { startDate, endDate } = search;
   return {
     ...search,
-    time: getDateRangeValue(startTime, endTime),
+    time: getDateRangeValue(startDate, endDate),
   };
 };
 // 搜索框初始化
@@ -21,6 +21,7 @@ class SearchBar extends React.Component {
     this.handleSearch = this.handleSearch.bind(this);
     this.handleReset = this.handleReset.bind(this);
   }
+
   componentWillReceiveProps(nextProps) {
     if ('search' in nextProps && nextProps.search !== this.props.search) {
       this.setState({ ...getStateBySearch(nextProps.search) });
@@ -30,8 +31,8 @@ class SearchBar extends React.Component {
   handleSearch() {
     const { onSearch } = this.props;
     const values = this.state;
-    values.startTime = formatDate(values.time[0]);
-    values.endTime = formatDate(values.time[1]);
+    values.startDate = formatDate(values.time[0]);
+    values.endDate = formatDate(values.time[1]);
     delete values.time;
     onSearch({ ...values, pn: 1 });
   }
@@ -62,12 +63,12 @@ class SearchBar extends React.Component {
               <Input value={search.phone} onChange={(value) => { this.handleChange('phone', value); }} placeholder="请输入" />
             </FormItem>
             <FormItem label="角色">
-              <Select value={`${search.roleIds}`} onChange={(value) => { this.handleChange('roleIds', value); }} placeholder="请选择" >
+              <Select value={`${search.roleId}`} onChange={(value) => { this.handleChange('roleId', value); }} placeholder="请选择" >
                 <Option value="">全部</Option>
                 {roleList.map(({ id, name }) => (<Option key={id} value={`${id}`}>{name}</Option>))}
               </Select>
             </FormItem>
-            <FormItem label="就诊时间">
+            <FormItem label="日期">
               <RangePicker value={search.time} onChange={(value) => { this.handleChange('time', value); }} />
             </FormItem>
             <div className="btnGroup">
@@ -80,4 +81,5 @@ class SearchBar extends React.Component {
     );
   }
 }
+
 export default Form.create()(SearchBar);

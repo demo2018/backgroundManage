@@ -1,4 +1,4 @@
-import { Table, Button, Popconfirm, Modal } from 'antd';
+import { Table, Button, Popconfirm, Modal, message } from 'antd';
 import { toString } from 'utils/common';
 import tableUtil from 'utils/tableUtil';
 import BaseInfo from './BaseInfo.js';
@@ -15,7 +15,6 @@ const getDetailByStates = (details = {}) => {
     birthday: birthday ? toString(birthday, 'YYYY-MM-DD') : undefined, // 日期组件只支持传入moment对象
   };
 };
-
 // 页面参数初始化
 class CustomerDetail extends React.Component {
   constructor(props) {
@@ -25,11 +24,13 @@ class CustomerDetail extends React.Component {
       modalVisible: false,
     };
   }
+
   componentWillReceiveProps(nextProps) {
     if ('details' in nextProps && nextProps.details !== this.props.details) {
       this.setState({ newDetails: getDetailByStates(nextProps.details) });
     }
   }
+
   getInitalColumns(fields) {
     const { onUpdateState, onDeletes } = this.props;
 
@@ -56,7 +57,7 @@ class CustomerDetail extends React.Component {
     ];
     return getColumns(fields).enhance(extraFields).values();
   }
-  // 触发提交
+  // 触发提交 判断是新增还是更新
   toSubmit() {
     const { onAddCustomer, onUpdateCustomer } = this.props;
     const { newDetails } = this.state;
@@ -82,6 +83,7 @@ class CustomerDetail extends React.Component {
       onUpdateState({ selectRecord: {}, addModalVisible: true });
     }
   }
+
   renderTableTitle() {
     const { selected = [] } = this.props;
     return (<p>已选择<span style={{ color: 'red', padding: '0 4px' }}>{selected.length}</span>项
@@ -90,7 +92,7 @@ class CustomerDetail extends React.Component {
   }
   // 页面渲染
   render() {
-    const { fields = [], datas, details, loading, addModalVisible, onUpdateState, downFile, onAdd, onUpdate, onDelete, selected = [], selectRecord } = this.props;
+    const { fields = [], datas, details, loading, addModalVisible, onUpdateState, downFile, onAdd, onUpdate, onDelete, selected = [], selectRecord, goback } = this.props;
     const { newDetails } = this.setState;
     const columns = this.getInitalColumns(fields);
 
@@ -109,9 +111,7 @@ class CustomerDetail extends React.Component {
       bordered: true,
       pagination: false,
       rowSelection,
-      title: this.renderTableTitle.bind(this),
-      onChange: ({ current }, sort, { field, order }) =>
-        this.handleTableSortChange({ current }, sort, { field, order })
+      title: this.renderTableTitle.bind(this)
     };
 
     const baseInfoProps = {
@@ -142,12 +142,17 @@ class CustomerDetail extends React.Component {
         <BaseInfo {...baseInfoProps} />
         <div className="btnGroup">
           <Button type="primary" icon="plus" onClick={() => { this.handleMember(); }}>添加成员</Button>
-          <Button onClick={downFile}>导出数据</Button>
+          {/* <Button onClick={downFile}>导出数据</Button> */}
+          <Button onClick={() => { message.warning('开发中'); }}>导出数据</Button>
         </div>
         <Table {...tableProps} />
         <div className="pageBtns">
           <Button type="primary" onClick={() => { this.toSubmit(); }}>提交</Button>
-          {details.id ? <Popconfirm {...popconfirmProps} onConfirm={() => { onDelete(details.id); }}><Button type="danger" ghost>删除</Button></Popconfirm> : ''}
+          {details.id ?
+            <Popconfirm {...popconfirmProps} onConfirm={() => { onDelete(details.id); }}><Button type="danger" ghost>删除</Button></Popconfirm>
+            :
+            <Button onClick={goback}>取消</Button>
+          }
         </div>
         {addModalVisible && <AddModal {...modalProps} />}
       </div >

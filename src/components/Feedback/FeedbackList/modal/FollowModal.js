@@ -89,6 +89,7 @@ class FollowModal extends React.Component {
     const { stepVisible, followInfo = {} } = this.state;
     const { onCancel, selecteRecord, followList, managerList, form } = this.props;
     const { getFieldDecorator } = form;
+
     const modalOpts = {
       title: '意见反馈跟进',
       visible: true,
@@ -96,6 +97,7 @@ class FollowModal extends React.Component {
       onOk: this.handleOk,
       onCancel,
     };
+
     return (
       <Modal {...modalOpts}>
         <div className={styles.followModal}>

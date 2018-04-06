@@ -43,6 +43,7 @@ app.model(require('./models/project/projectDiscount'));
 app.model(require('./models/transaction/billList'));
 
 app.model(require('./models/referral/referralList'));
+app.model(require('./models/referral/referralDetail'));
 
 app.model(require('./models/clinic/clinicList'));
 app.model(require('./models/clinic/clinicDetail'));

@@ -14,7 +14,7 @@ class AssessModal extends React.Component {
     super(props);
     this.state = {};
   }
-
+  // 初始化评价标签
   getlist() {
     const { selecteRecord, tagList } = this.props;
     const tags = selecteRecord && selecteRecord.comment && selecteRecord.comment.tags;
@@ -29,14 +29,14 @@ class AssessModal extends React.Component {
       return <CheckBoxTag key={index} className="evaluate">{tagslist}</CheckBoxTag>;
     });
   }
-
+  // 监听页面value值变更事件
   handleChange(key, value) {
     if (value.target) {
       value = value.target.value;
     }
     this.setState({ [key]: value });
   }
-
+  // 渲染页面
   render() {
     const { onCancel, selecteRecord, onOk } = this.props;
     const modalOpts = {

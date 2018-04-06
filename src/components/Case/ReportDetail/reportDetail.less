@@ -4,15 +4,26 @@
         margin-top: -1px;
         font-size: 14px;
         border: 1px solid #dedede;
-        .title {
+        .head {
           padding: 10px 20px;
+          margin-bottom: 20px;
           border-left: none;
           border-bottom: 1px solid #dedede;
           h3 {
+            position: relative;
             color: #108ee9;
             font-size: 16px;
-            padding-left: 10px;
-            border-left: 3px solid #108ee9;
+            padding-left: 15px;
+            &:before{
+              display: block;
+              content: '';
+              position: absolute;
+              left: 0;
+              top: 5px;
+              width: 3px;
+              height: 16px;
+              background-color: #108ee9;
+            }
           }
         }
         .ant-form-item {
@@ -35,55 +46,80 @@
         }
       }
       .subPart {
-        padding: 0 22px;
-        margin-bottom: 20px;
-        .subTitle {
-          padding: 10px 0px;
-          h3 {
-            font-size: 16px;
-            padding-left: 15px;
-          }
-        }
-        .subContent {
-          margin: 0 15px;
-          .contenTitle {
-            padding: 10px;
-            border-bottom: 1px solid #dedede;
-          }
-          textarea {
-            min-height: 120px;
-          }
-        }
-        .partBorder {
-          border: 1px solid #dedede;
-          textarea {
-            border: none;
-          }
+      padding: 0 22px;
+      margin-bottom: 20px;
+      .subTitle {
+        padding: 10px 0px;
+        h3 {
+          font-size: 16px;
+          padding-left: 15px;
         }
       }
-      .toothInfo {
-        .subContent {
+      .subContent {
+        .contenTitle {
           display: flex;
-          padding: 20px;
-          .toothPickerWrapper {
-            width: 500px;
+          padding: 10px;
+          border-bottom: 1px solid #dedede;
+          align-items: center;
+          p {
+            display: inline-block;
+            margin-right: 20px;
           }
-          .toothInfoWrapper {
-            width: 600px;
-            .toothType{
-            }
-            h3 {
-              margin: 20px 0 10px;
-              font-size: 16px;
-            }
-            .ant-checkbox-wrapper{
-              min-width: 120px;
-              margin-bottom: 8px;
-              font-size: 14px;
-            }
+        }
+        textarea {
+          min-height: 120px;
+        }
+      }
+      .partBorder {
+        border: 1px solid #dedede;
+        textarea {
+          border: none;
+        }
+      }
+    }
+      .toothInfo {
+      .toothType {
+        border: 1px solid #dedede;
+        padding: 10px 75px;
+      }
+      .subContent {
+        display: flex;
+        border: 1px solid #dedede;
+        margin-top: -1px;
+        .toothPickerWrapper {
+          width: 450px;
+          padding: 20px;
+          border-right: 1px solid #dedede;
+        }
+        .toothInfoWrapper {
+          flex: 1;
+          max-width: 600px;
+          padding: 20px;
+          >div{
+            margin-bottom: 20px;
+          }
+          .ant-btn {
+            margin-top: 15px;
+          }
+          h3 {
+            margin: 0 0 10px;
+            font-size: 16px;
+          }
+          .ant-checkbox-wrapper {
+            min-width: 120px;
+            margin-bottom: 8px;
+            font-size: 14px;
           }
         }
       }
+      .toothSelected{
+        .filedItem{
+          display: inline-block;
+          min-width: 45%;
+        }
+      }
+
+    }
       .btnGroup {
         padding: 30px 0;
         text-align: center;

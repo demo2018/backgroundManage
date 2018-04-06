@@ -24,6 +24,7 @@ class SearchBar extends React.Component {
     this.handleReset = this.handleReset.bind(this);
     this.handleTabChange = this.handleTabChange.bind(this);
   }
+
   componentWillReceiveProps(nextProps) {
     if ('search' in nextProps && nextProps.search !== this.props.search) {
       this.setState({ ...nextProps.search });
@@ -87,4 +88,5 @@ class SearchBar extends React.Component {
     );
   }
 }
+
 export default Form.create()(SearchBar);

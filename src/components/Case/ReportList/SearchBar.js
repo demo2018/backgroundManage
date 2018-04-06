@@ -1,38 +1,53 @@
 import { Form, Button, Row, Input, Select, DatePicker } from 'antd';
-import { treatmentStatus, treatmentType } from 'configs/constants';
+import { genderType, sendStatus } from 'configs/constants';
+import { formatDate, getDateRangeValue } from 'utils/common';
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RangePicker = DatePicker.RangePicker;
-
+// 处理起止时间格式
+const getStateBySearch = (search = {}) => {
+  const { startDate, endDate } = search;
+  return {
+    ...search,
+    date: getDateRangeValue(startDate, endDate),
+  };
+};
+// 搜索框初始化
 class SearchBar extends React.Component {
   constructor(props) {
     super(props);
-    this.state = props.search;
+    this.state = getStateBySearch(props.search);
     this.handleSearch = this.handleSearch.bind(this);
     this.handleReset = this.handleReset.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     if ('search' in nextProps && nextProps.search !== this.props.search) {
-      this.setState({ ...nextProps.search });
+      this.setState({ ...getStateBySearch(nextProps.search) });
     }
   }
+  // 触发搜索事件
   handleSearch() {
     const { onSearch } = this.props;
     const values = this.state;
+    values.startDate = formatDate(values.date[0]);
+    values.endDate = formatDate(values.date[1]);
+    delete values.date;
     onSearch({ ...values, pn: 1 });
   }
+  // 触发重置事件
   handleReset() {
     const { onReset } = this.props;
     onReset && onReset();
   }
-  handleChange(key) {
-    return (value) => {
-      if (value.target) {
-        value = value.target.value;
-      }
-      this.setState({ [key]: value });
-    };
+  // 监听页面value值变更事件
+  handleChange(key, value) {
+    if (value.target) {
+      value = value.target.value;
+    }
+    this.setState({ [key]: value });
   }
+  // 页面渲染
   render() {
     const search = this.state;
     return (
@@ -41,26 +56,31 @@ class SearchBar extends React.Component {
           <Form layout="inline">
             <Row>
               <FormItem label="初筛报告ID">
-                <Input value={search.name1} onChange={this.handleChange('name1')} placeholder="请输入" />
+                <Input value={search.id} onChange={(value) => { this.handleChange('id', value); }} placeholder="请输入" />
               </FormItem>
               <FormItem label="姓名">
-                <Input value={search.name2} onChange={this.handleChange('name2')} placeholder="请输入" />
+                <Input value={search.name} onChange={(value) => { this.handleChange('name', value); }} placeholder="请输入" />
               </FormItem>
               <FormItem label="手机号">
-                <Input value={search.name3} onChange={this.handleChange('name3')} placeholder="请输入" />
+                <Input value={search.phone} onChange={(value) => { this.handleChange('phone', value); }} placeholder="请输入" />
               </FormItem>
               <FormItem label="性别">
-                <Select value={search.treatmentStatus1} onChange={this.handleChange('treatmentStatus1')} placeholder="请选择" >
-                  {treatmentStatus.map(({ label, value }) => (<Option key={value} value={value}>{label}</Option>))}
+                <Select value={`${search.gender}`} onChange={(value) => { this.handleChange('gender', value); }} placeholder="请选择" >
+                  <Option value="">全部</Option>
+                  {genderType.map(({ label, value }) => (<Option key={value} value={`${value}`}>{label}</Option>))}
                 </Select>
               </FormItem>
-              <FormItem label="日期">
-                <RangePicker value={search.treatmentStatus2} onChange={this.handleChange('treatmentStatus2')} />
+              <FormItem label="状态">
+                <Select value={`${search.isSend}`} onChange={(value) => { this.handleChange('isSend', value); }} placeholder="请选择" >
+                  <Option value="">全部</Option>
+                  {sendStatus.map(({ label, value }) => (<Option key={value} value={`${value}`}>{label}</Option>))}
+                </Select>
               </FormItem>
               <FormItem label="机构名称">
-                <Select value={search.treatmentStatus3} onChange={this.handleChange('treatmentStatus3')} placeholder="请选择" >
-                  {treatmentStatus.map(({ label, value }) => (<Option key={value} value={value}>{label}</Option>))}
-                </Select>
+                <Input value={search.orgName} onChange={(value) => { this.handleChange('orgName', value); }} placeholder="请输入" />
+              </FormItem>
+              <FormItem label="日期">
+                <RangePicker value={search.date} onChange={(value) => { this.handleChange('date', value); }} />
               </FormItem>
               <div className="btnGroup">
                 <Button type="primary" onClick={() => { this.handleSearch(); }}>查询</Button>
@@ -73,4 +93,5 @@ class SearchBar extends React.Component {
     );
   }
 }
+
 export default Form.create()(SearchBar);

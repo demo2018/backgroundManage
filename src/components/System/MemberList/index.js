@@ -14,6 +14,7 @@ class MemberList extends React.Component {
       modalVisible: false,
     };
   }
+
   getInitalColumns(fields) {
     const { onUpdateState, onDelete, search: { sortField, ordination } } = this.props;
 
@@ -58,6 +59,7 @@ class MemberList extends React.Component {
       });
     }
   }
+
   renderTableTitle() {
     const { selected = [] } = this.props;
     return (<p>已选择<span style={{ color: 'red', padding: '0 4px' }}>{selected.length}</span>项
@@ -86,6 +88,7 @@ class MemberList extends React.Component {
         this.props.onUpdateState({ selected: selectedRowKeys });
       },
     };
+
     const tableProps = {
       dataSource: datas,
       columns,
@@ -115,6 +118,7 @@ class MemberList extends React.Component {
         onUpdateState({ selecteRecord: {}, addModalVisible: false });
       }
     };
+
     return (
       <div>
         <SearchBar {...searchBarProps} />

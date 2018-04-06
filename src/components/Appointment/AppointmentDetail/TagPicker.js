@@ -13,6 +13,7 @@ class TagPicker extends React.Component {
     timeInterval: 15,
     onChange: noop,
   }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -25,7 +26,7 @@ class TagPicker extends React.Component {
       this.setState({ value: nextProps.value });
     }
   }
-
+  // 处理时间点选中状态及赋值
   handleSelect(key, index) {
     return () => {
       const { timeLength, timeInterval, onChange, doctorTimes } = this.props;
@@ -40,10 +41,9 @@ class TagPicker extends React.Component {
       const timeCounts = window.parseInt(timeLength / timeInterval) || 1;
       let isOk = true;
       const selectedKeys = [];
-      selectedKeys.push(key);
 
       // 验证时间段的可用性
-      for (let timeIndex = index; timeIndex < (index + timeCounts + 1); timeIndex++) {
+      for (let timeIndex = index; timeIndex < (index + timeCounts); timeIndex++) {
         const { id, status } = doctorTimes[timeIndex] || {};
         selectedKeys.push(id);
         if (status === disabled || status === undefined) {

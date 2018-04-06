@@ -6,8 +6,7 @@ import { formatFormData } from 'utils/common';
 
 const initialSearch = {
   name: '', // 诊所名称
-  prov: '', // 诊所地址ID
-  city: '', // 诊所地址ID
+  site: '', // 诊所地址
   leader: '', // 诊所负责人
   telephone: '', // 诊所电话
   date: '', // 时间
@@ -17,7 +16,7 @@ const initialSearch = {
   endDate: '', // 结束时间
   pn: 1,
   ps: PAGE_SIZE,
-  sortField: 'id', // 排序字段
+  sortField: 'rank', // 排序字段
   ordination: 'DESC' // 排序方式
 };
 
@@ -50,12 +49,17 @@ export default Model.extend({
     // 获取列表信息
     * fetchDatas({ payload }, { select, update, callWithLoading }) {
       const { search } = yield select(({ clinicList }) => clinicList);
-      const { data: { content, totalElements } } = yield callWithLoading(services.clinic.getDatas, formatFormData(search));
+      const { data: { content, totalElements } } = yield callWithLoading(services.clinic.getDatas, formatFormData({ ...search, prov: search.site && search.site[0] ? search.site[0] : '', city: search.site && search.site[1] ? search.site[1] : '', area: search.site && search.site[2] ? search.site[2] : '', site: '' }));
       yield update({ datas: content, total: totalElements });
     },
     // 删除诊所
-    * doDelete({ payload: { param } }, { put, callWithLoading }) {
-      yield callWithLoading(services.clinic.doDelete, { ...param }, { successMsg: '操作成功' });
+    * doDelete({ param }, { put, callWithLoading }) {
+      yield callWithLoading(services.clinic.doDelete, param, { successMsg: '操作成功' });
+      yield put({ type: 'fetchDatas' });
+    },
+    // 变更诊所排序
+    * rankChange({ payload: { id, param } }, { put, callWithLoading }) {
+      yield callWithLoading(services.clinic.rankChange, { id, param }, { successMsg: '操作成功' });
       yield put({ type: 'fetchDatas' });
     },
   },

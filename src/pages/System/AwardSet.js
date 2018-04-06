@@ -10,17 +10,10 @@ function mapStateToProps({ awardSet }) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onUpdateState(payload) {
-      dispatch({ type: 'awardSet/updateState', payload: { ...payload } });
+    // 触发设置保存
+    toSet(param) {
+      dispatch({ type: 'awardSet/doEdit', param });
     },
-    onSearch(search) {
-      dispatch({ type: 'awardSet/updateSearch', payload: { search } });
-      dispatch({ type: 'awardSet/fetchDatas' });
-    },
-    onReset() {
-      dispatch({ type: 'awardSet/resetSearch' });
-      dispatch({ type: 'awardSet/fetchDatas' });
-    }
   };
 }
 

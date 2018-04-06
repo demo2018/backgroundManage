@@ -24,8 +24,7 @@ export const fields = [
   },
   {
     key: 'rank',
-    name: '排序',
-    sorter: true,
+    name: '排序'
   },
   {
     key: 'option',

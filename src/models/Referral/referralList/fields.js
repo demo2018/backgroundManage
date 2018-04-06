@@ -1,13 +1,13 @@
-import { doctorStatus } from 'configs/constants';
+import { referralStatus } from 'configs/constants';
 
 export const fields = [
   {
-    key: 'referralId',
+    key: 'id',
     name: '转诊ID',
     sorter: true,
   },
   {
-    key: 'realName',
+    key: 'customerName',
     name: '患者姓名'
   },
   {
@@ -21,28 +21,28 @@ export const fields = [
   {
     key: 'status',
     name: '状态',
-    enums: doctorStatus,
+    enums: referralStatus,
     sorter: true,
   },
   {
-    key: 'addDate',
+    key: 'operationTime',
     name: '操作时间',
     type: 'datetime',
     sorter: true,
   },
   {
-    key: 'award',
+    key: 'type',
     name: '奖励方式',
-    enums: doctorStatus,
+    enums: referralStatus,
     sorter: true,
   },
   {
-    key: 'number',
+    key: 'num',
     name: '金额/数量',
     sorter: true,
   },
   {
-    key: 'id',
+    key: 'option',
     name: '操作'
   }
 ];

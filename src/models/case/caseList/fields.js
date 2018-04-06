@@ -1,48 +1,50 @@
-import { treatmentType, treatmentStatus } from 'configs/constants';
+import { genderType, sendStatus, treatmentType } from 'configs/constants';
 
 export const fields = [
   {
-    key: 'treatmentId',
-    name: '就诊病例ID'
+    key: 'id',
+    name: '就诊病例ID',
+    sorter: true
   },
   {
-    key: 'name',
+    key: 'customerName',
     name: '姓名'
   },
   {
-    key: 'phone',
-    name: '性别'
+    key: 'gender',
+    name: '性别',
+    enums: genderType
   },
   {
-    key: 'treatmentItem',
-    name: '手机号'
+    key: 'phone',
+    name: '手机号码'
   },
   {
     key: 'type',
-    name: '就诊时间',
-    type: 'datetime'
+    name: '初／复诊',
+    enums: treatmentType
+  },
+  {
+    key: 'itemName',
+    name: '诊疗项目'
   },
   {
     key: 'doctorName',
-    name: '初／复诊',
-    enums: treatmentStatus
+    name: '医生'
   },
   {
-    key: 'treatmentStatus',
-    name: '诊疗项目',
-    enums: treatmentStatus
-  },
-  {
-    key: 'treatmentStatus2',
-    name: '医生',
-    enums: treatmentStatus
-  },
-  {
-    key: 'status',
+    key: 'isSend',
     name: '状态',
+    enums: sendStatus,
+    sorter: true
   },
   {
-    key: 'id',
+    key: 'time',
+    name: '就诊时间',
+    sorter: true
+  },
+  {
+    key: 'option',
     name: '操作'
   }
 ];

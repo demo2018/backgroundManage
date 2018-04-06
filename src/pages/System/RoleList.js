@@ -11,23 +11,21 @@ function mapStateToProps({ roleList }) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    // 更新事件
     onUpdateState(payload) {
       dispatch({ type: 'roleList/updateState', payload: { ...payload } });
     },
+    // 搜索事件
     onSearch(search) {
       dispatch({ type: 'roleList/updateSearch', payload: { search } });
       dispatch({ type: 'roleList/fetchDatas' });
     },
+    // 重置事件
     onReset() {
       dispatch({ type: 'roleList/resetSearch' });
       dispatch({ type: 'roleList/fetchDatas' });
     },
-    onAdd(param) {
-      dispatch({ type: 'roleList/doAdd', payload: { param } });
-    },
-    onEdit(param, id) {
-      dispatch({ type: 'roleList/doEdit', payload: { param, id } });
-    },
+    // 删除角色
     onDelete(param) {
       dispatch({ type: 'roleList/doDelete', param });
     },

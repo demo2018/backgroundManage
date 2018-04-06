@@ -10,7 +10,7 @@
     "start": "dora -p 8090 --plugins \"proxy?port=8091&watchDirs=./mock,webpack?disableNpmInstall,webpack-hmr\"",
     "dev": "export DEPLOY_ENV=dev || set DEPLOY_ENV=dev&& rimraf dist/dev && atool-build -o dist/dev",
     "qa": "export DEPLOY_ENV=qa || set DEPLOY_ENV=qa&& rimraf dist/qa && atool-build --no-compress -o dist/qa",
-    "prod": "export NODE_ENV=production || set NODE_ENV=production&& atool-build -o dist/prod/20180323"
+    "prod": "export NODE_ENV=production || set NODE_ENV=production&& atool-build -o dist/prod/20180404"
   },
   "dependencies": {
     "antd": "^2.9.0",

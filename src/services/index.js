@@ -12,6 +12,8 @@ import * as label from './label';
 import * as feedback from './feedback';
 import * as tag from './tag';
 import * as system from './system';
+import * as diagnoseImg from './diagnoseImg';
+import * as casehistory from './case';
 
 export default {
   layout,
@@ -27,5 +29,7 @@ export default {
   label,
   feedback,
   tag,
-  system
+  system,
+  diagnoseImg,
+  casehistory
 };

@@ -11,8 +11,8 @@ export function login(param) {
 export function logout() {
   return get('/bhyy/user/logout');
 }
-// // 获取菜单权限
-// export function getMenus(param) {
-//   return permission.post('/permission/web/get-user-menus', param);
-// }
+// 获取菜单权限
+export function getMenus() {
+  return get('/bhyy/core/sysMenu');
+}
 

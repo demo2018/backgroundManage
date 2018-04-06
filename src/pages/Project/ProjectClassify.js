@@ -29,6 +29,10 @@ function mapDispatchToProps(dispatch) {
       dispatch({ type: 'projectClassify/resetSearch' });
       dispatch({ type: 'projectClassify/fetchDatas' });
     },
+    // 变更排序事件
+    rankChange(id, param) {
+      dispatch({ type: 'projectClassify/rankChange', payload: { id, param } });
+    },
     // 新增项目详情
     onAdd(param) {
       dispatch({ type: 'projectClassify/doAdd', param });

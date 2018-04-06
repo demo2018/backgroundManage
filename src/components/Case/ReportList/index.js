@@ -16,7 +16,7 @@ class ProjectList extends React.Component {
     const { toDetail, onDelete, search: { sortField, ordination } } = this.props;
 
     const popconfirmProps = {
-      title: '确认删除该预约?',
+      title: '确认删除该初筛报告?',
       okText: '确定',
       cancelText: '取消',
     };
@@ -27,14 +27,14 @@ class ProjectList extends React.Component {
         sortOrder: `${ordination.toLocaleLowerCase()}${ORDER_SUFFIX}`
       },
       {
-        key: 'id',
+        key: 'option',
         name: '操作',
         width: 200,
         render: (value, record) => {
           return (<div>
             <a onClick={() => { toDetail(record.id); }}>编辑</a>
             <span className="ant-divider"></span>
-            <Popconfirm {...popconfirmProps} onConfirm={() => { onDelete({ id: record.id }); }}>
+            <Popconfirm {...popconfirmProps} onConfirm={() => { onDelete(record.id); }}>
               <a>删除</a>
             </Popconfirm>
           </div >);
@@ -62,8 +62,7 @@ class ProjectList extends React.Component {
     </p>);
   }
   render() {
-    const { fields, types, datas, total, search, loading,
-      toAdd, onSearch, onReset, selected = [] } = this.props;
+    const { fields, types, datas, total, search, loading, toAdd, onSearch, onReset, selected = [] } = this.props;
     const { pn, ps } = search;
     const columns = this.getInitalColumns(fields);
 

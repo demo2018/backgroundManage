@@ -22,6 +22,7 @@ class SearchBar extends React.Component {
     this.handleSearch = this.handleSearch.bind(this);
     this.handleReset = this.handleReset.bind(this);
   }
+
   componentWillReceiveProps(nextProps) {
     if ('search' in nextProps && nextProps.search !== this.props.search) {
       this.setState({ ...getStateBySearch(nextProps.search) });
@@ -34,7 +35,19 @@ class SearchBar extends React.Component {
     values.startTime = formatDate(values.createTime[0]);
     values.endTime = formatDate(values.createTime[1]);
     delete values.createTime;
-    onSearch({ ...values, pn: 1 });
+    if (values.age == 0 && values.age != '') {
+      onSearch({ ...values, pn: 1, startAge: 0, endAge: 5 });
+    } else if (values.age == 1) {
+      onSearch({ ...values, pn: 1, startAge: 6, endAge: 14 });
+    } else if (values.age == 2) {
+      onSearch({ ...values, pn: 1, startAge: 15, endAge: 30 });
+    } else if (values.age == 3) {
+      onSearch({ ...values, pn: 1, startAge: 30, endAge: 60 });
+    } else if (values.age == 4) {
+      onSearch({ ...values, pn: 1, startAge: 60, endAge: 150 });
+    } else {
+      onSearch({ ...values, pn: 1, startAge: '', endAge: '' });
+    }
   }
   // 触发重置事件
   handleReset() {
@@ -57,7 +70,7 @@ class SearchBar extends React.Component {
           <Form layout="inline">
             <Row>
               <FormItem label="姓名">
-                <Input value={search.realName} onChange={(value) => { this.handleChange('realName', value); }} placeholder="请输入" />
+                <Input value={search.name} onChange={(value) => { this.handleChange('name', value); }} placeholder="请输入" />
               </FormItem>
               <FormItem label="手机号码">
                 <Input value={search.phone} onChange={(value) => { this.handleChange('phone', value); }} placeholder="请输入" />
@@ -97,4 +110,5 @@ class SearchBar extends React.Component {
     );
   }
 }
+
 export default Form.create()(SearchBar);

@@ -3,7 +3,7 @@ import { payType, payStatus, saleType } from 'configs/constants';
 export const getFields = (enums = []) => {
   const itemLists = enums.map(({ id, className }) => (
     {
-      value: id,
+      value: `${id}`,
       label: className
     }
   ));

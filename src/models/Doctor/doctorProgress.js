@@ -1,6 +1,5 @@
 import Model from 'utils/model';
 import services from 'services';
-import { routerRedux } from 'dva/router';
 
 export default Model.extend({
   namespace: 'doctorProgress',
@@ -29,16 +28,6 @@ export default Model.extend({
       const { id } = yield select(({ doctorDetail }) => doctorDetail);
       const { data } = yield callWithLoading(services.doctor.getInfo, id);
       yield update({ details: data });
-    },
-    // 更新医生详情
-    * updateDatas({ payload: { param, id } }, { put, callWithLoading }) {
-      yield callWithLoading(services.doctor.saveDatas, { param, id }, { successMsg: '操作成功' });
-      yield put({ type: 'fetchDetail' });
-    },
-    // 新增医生详情
-    * addDatas({ payload: { param } }, { put, callWithLoading }) {
-      const { data } = yield callWithLoading(services.doctor.addDatas, param, { successMsg: '操作成功' });
-      yield put(routerRedux.push(`/doctor/detail/${data}`));
     },
   }
 });

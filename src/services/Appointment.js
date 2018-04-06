@@ -27,7 +27,7 @@ export function doDelete(param) {
 }
 // 查询项目列表
 export function getProjectList() {
-  return get('/bhyy/core/itemClass', { page: 0, size: 1000, type: 1 });
+  return get('/bhyy/core/itemClass', { type: 1 });
 }
 // 查询病人列表
 export function getPatientList(param) {
@@ -37,13 +37,13 @@ export function getPatientList(param) {
 export function getDoctorList(param) {
   return post('/bhyy/core/doctor/search', { ...param });
 }
-// 查询全部医生列表
-export function getAllDoctorList() {
-  return get('/bhyy/core/doctor', { page: 0, size: 1000, type: 1 });
+// 查询全部诊所列表
+export function getHospital(param) {
+  return post('/bhyy/core/hospital/search', param);
 }
 // 查询医生日期
 export function getDoctorDates(param) {
-  return get('/bhyy/core/doctorConfig', param);
+  return get('/bhyy/core/doctorConfig/id', param);
 }
 // 查询医生时间
 export function getDoctorTimes({ id, date }) {

@@ -1,6 +1,4 @@
 import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
-import { createNestPage } from 'utils/common';
 import DoctorProgress from 'components/Doctor/DoctorProgress';
 
 function mapStateToProps({ doctorProgress }) {
@@ -11,6 +9,7 @@ function mapStateToProps({ doctorProgress }) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    // 更新事件
     onUpdateState(payload) {
       dispatch({ type: 'doctorProgress/updateState', payload: { ...payload } });
     },

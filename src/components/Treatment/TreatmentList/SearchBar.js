@@ -34,7 +34,19 @@ class SearchBar extends React.Component {
     values.startTime = formatDate(values.time[0]);
     values.endTime = formatDate(values.time[1]);
     delete values.time;
-    onSearch({ ...values, pn: 1 });
+    if (values.age == 0 && values.age != '') {
+      onSearch({ ...values, pn: 1, startAge: 0, endAge: 5 });
+    } else if (values.age == 1) {
+      onSearch({ ...values, pn: 1, startAge: 6, endAge: 14 });
+    } else if (values.age == 2) {
+      onSearch({ ...values, pn: 1, startAge: 15, endAge: 30 });
+    } else if (values.age == 3) {
+      onSearch({ ...values, pn: 1, startAge: 30, endAge: 60 });
+    } else if (values.age == 4) {
+      onSearch({ ...values, pn: 1, startAge: 60, endAge: 150 });
+    } else {
+      onSearch({ ...values, pn: 1, startAge: '', endAge: '' });
+    }
   }
   // 触发重置事件
   handleReset() {

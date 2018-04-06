@@ -1,6 +1,8 @@
 import Login from './Login';
 import Layout from './Layout';
 
+import Welcome from './Welcome/Welcome';
+
 import AppointmentList from './Appointment/AppointmentList';
 import AppointmentDetail from './Appointment/AppointmentDetail';
 
@@ -51,6 +53,7 @@ import AwardSet from './System/AwardSet';
 export default {
   Login,
   Layout,
+  Welcome,
   AppointmentList,
   AppointmentDetail,
   TreatmentList,

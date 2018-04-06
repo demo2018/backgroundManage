@@ -14,7 +14,7 @@ class BaseInfo extends React.Component {
     const { getFieldDecorator } = form;
     return (
       <div className="baseInfo part">
-        <div className="title"><h3>基本信息</h3></div>
+        <div className="head"><h3>基本信息</h3></div>
         <div className="content">
           <Form layout="inline">
             <FormItem label="姓名">

@@ -5,7 +5,7 @@ import { PAGE_SIZE } from 'configs/constants';
 import { formatFormData } from 'utils/common';
 
 const initialSearch = {
-  billID: '', // 账单号
+  billId: '', // 账单号
   patientName: '', // 患者姓名
   phone: '', // 手机号
   doctorName: '', // 医生姓名
@@ -33,8 +33,7 @@ export default Model.extend({
     types: [],
     selected: [],
     selecteRecord: {},
-    assessModalVisible: false,
-    visitModalVisible: false,
+    addModalVisible: false,
     itemList: []
   },
 
@@ -53,22 +52,27 @@ export default Model.extend({
   },
 
   effects: {
-    // 获取枚举值
+    // 获取项目列表
     * fetchEnums({ payload }, { update, callWithLoading }) {
       const { data: { content } } = yield callWithLoading(services.transaction.getItems, { type: 1, status: 1 });
       yield update({ itemList: content || [] });
     },
-    // 获取列表数据
+    // 获取账单列表
     * fetchDatas({ payload }, { select, update, callWithLoading }) {
       const { search } = yield select(({ billList }) => billList);
-      const { data: { content, totalElements } } = yield callWithLoading(services.transaction.getDatas, formatFormData(search));
+      const { data: { content, totalElements } } = yield callWithLoading(services.transaction.getDatas, formatFormData({ ...search, sortField: 'b.' + search.sortField }));
       yield update({ datas: content, total: totalElements });
     },
     // 获取账单详情
     * getBillinfo({ param }, { update, callWithLoading }) {
       const { data } = yield callWithLoading(services.transaction.getBillinfo, param);
       yield update({ billInfo: data.items });
-    }
+    },
+    // 导出账单数据
+    * downFile({ payload }, { select, callWithLoading }) {
+      const { selected } = yield select(({ billList }) => billList);
+      yield callWithLoading(services.transaction.downFile, { selected: selected.join(',') });
+    },
   },
 
   reducers: {

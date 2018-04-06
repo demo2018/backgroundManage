@@ -11,7 +11,7 @@ const initialSearch = {
   endTime: '', // 结束时间
   pn: 1,
   ps: PAGE_SIZE,
-  sortField: 'status', // 排序字段
+  sortField: 'rank', // 排序字段
   ordination: 'DESC' // 排序方式
 };
 
@@ -26,8 +26,7 @@ export default Model.extend({
     types: [],
     selected: [],
     selecteRecord: {},
-    assessModalVisible: false,
-    visitModalVisible: false,
+    addModalVisible: false,
   },
 
   subscriptions: {
@@ -49,6 +48,11 @@ export default Model.extend({
       const { search } = yield select(({ labelList }) => labelList);
       const { data: { content, totalElements } } = yield callWithLoading(services.label.getDatas, formatFormData(search));
       yield update({ datas: content, total: totalElements });
+    },
+    // 变更标签排序
+    * rankChange({ payload: { id, param } }, { put, callWithLoading }) {
+      yield callWithLoading(services.label.rankChange, { id, param }, { successMsg: '操作成功' });
+      yield put({ type: 'fetchDatas' });
     },
     // 新增
     * doAdd({ payload: { param } }, { put, update, callWithLoading }) {

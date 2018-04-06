@@ -1,11 +1,10 @@
 import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
 import { createNestPage } from 'utils/common';
-import BillList from 'components/Transaction/BillList';
+import BillProrata from 'components/Transaction/BillProrata';
 
-function mapStateToProps({ billList }) {
+function mapStateToProps({ billProrata }) {
   return {
-    ...billList,
+    ...billProrata,
   };
 }
 
@@ -21,17 +20,8 @@ function mapDispatchToProps(dispatch) {
     onReset() {
       dispatch({ type: 'billList/resetSearch' });
       dispatch({ type: 'billList/fetchDatas' });
-    },
-    onAdd(param) {
-      dispatch({ type: 'billList/doAdd', payload: { param } });
-    },
-    onEdit(param) {
-      dispatch({ type: 'billList/doEdit', payload: { param } });
-    },
-    onDelete(param) {
-      dispatch({ type: 'billList/doDelete', payload: { param } });
-    },
+    }
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(createNestPage(BillList));
+export default connect(mapStateToProps, mapDispatchToProps)(createNestPage(BillProrata));

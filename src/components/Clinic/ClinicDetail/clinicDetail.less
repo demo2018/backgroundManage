@@ -1,7 +1,32 @@
 .clinicDetail {
   border: 1px solid #dedede;
-  padding: 20px;
+  border-top: none;
   :global {
+     .head {
+          padding: 10px 20px;
+          border-left: none;
+          border-top: 1px solid #dedede;
+          border-bottom: 1px solid #dedede;
+          h3 {
+            position: relative;
+            color: #108ee9;
+            font-size: 16px;
+            padding-left: 14px;
+            &:before{
+              display: block;
+              content: '';
+              position: absolute;
+              left: 0;
+              top: 4px;
+              width: 3px;
+              height: 16px;
+              background-color: #108ee9;
+            }
+          }
+        } 
+        .content{
+          padding: 20px;
+        } 
     .ant-form-item {
       display: block;
       margin-bottom: 20px;

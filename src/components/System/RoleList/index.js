@@ -12,6 +12,7 @@ class RoleList extends React.Component {
       modalVisible: false,
     };
   }
+
   getInitalColumns(fields) {
     const { toDetail, onDelete, search: { sortField, ordination } } = this.props;
 
@@ -56,6 +57,7 @@ class RoleList extends React.Component {
       });
     }
   }
+
   renderTableTitle() {
     const { selected = [] } = this.props;
     return (<p>已选择<span style={{ color: 'red', padding: '0 4px' }}>{selected.length}</span>项
@@ -83,6 +85,7 @@ class RoleList extends React.Component {
         this.props.onUpdateState({ selected: selectedRowKeys });
       },
     };
+
     const tableProps = {
       dataSource: datas,
       columns,

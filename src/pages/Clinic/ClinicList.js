@@ -25,9 +25,13 @@ function mapDispatchToProps(dispatch) {
       dispatch({ type: 'clinicList/resetSearch' });
       dispatch({ type: 'clinicList/fetchDatas' });
     },
+    // 变更排序事件
+    rankChange(id, param) {
+      dispatch({ type: 'clinicList/rankChange', payload: { id, param } });
+    },
     // 删除事件
     onDelete(param) {
-      dispatch({ type: 'clinicList/doDelete', payload: { param } });
+      dispatch({ type: 'clinicList/doDelete', param });
     },
     // 跳转到详情页
     toDetail(id) {

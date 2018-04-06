@@ -11,7 +11,7 @@ const initialSearch = {
   endTime: '', // 结束时间
   pn: 1,
   ps: PAGE_SIZE,
-  sortField: 'status', // 排序字段
+  sortField: 'rank', // 排序字段
   ordination: 'DESC' // 排序方式
 };
 
@@ -26,8 +26,7 @@ export default Model.extend({
     types: [],
     selected: [],
     selecteRecord: {},
-    assessModalVisible: false,
-    visitModalVisible: false,
+    addModalVisible: false,
   },
 
   subscriptions: {
@@ -47,12 +46,19 @@ export default Model.extend({
     // 获取列表数据
     * fetchDatas({ payload }, { select, update, callWithLoading }) {
       const { search } = yield select(({ tagList }) => tagList);
-      const { data: { content, totalElements } } = yield callWithLoading(services.tag.getDatas, formatFormData(search));
+      const id = localStorage.getItem('typeId');
+      const { data: { content, totalElements } } = yield callWithLoading(services.tag.getDatas, { ...formatFormData(search), typeId: id });
       yield update({ datas: content, total: totalElements });
+    },
+    // 变更子标签排序
+    * rankChange({ payload: { id, param } }, { put, callWithLoading }) {
+      yield callWithLoading(services.tag.rankChange, { id, param }, { successMsg: '操作成功' });
+      yield put({ type: 'fetchDatas' });
     },
     // 新增
     * doAdd({ payload: { param } }, { put, update, callWithLoading }) {
-      yield callWithLoading(services.tag.doAdd, param, { successMsg: '操作成功' });
+      const id = localStorage.getItem('typeId');
+      yield callWithLoading(services.tag.doAdd, { ...param, typeId: id }, { successMsg: '操作成功' });
       yield update({ selecteRecord: {}, addModalVisible: false });
       yield put({ type: 'fetchDatas' });
     },

@@ -12,7 +12,8 @@ export default function ({ history }) {
   return (<Router history={history}>
     <Route path="/login" component={pages.Login} />
     <Route path="/" component={pages.Layout} onEnter={isLogin}>
-      <IndexRedirect to="/appointment/appointmentList" />
+      <IndexRedirect to="/welcome" />
+      <Route path="/welcome" component={pages.Welcome} breadcrumbName="欢迎" />>
 
       <Route path="/appointment/appointmentList" component={pages.AppointmentList} breadcrumbName="预约管理" >
         <Route path="/appointment/add" component={pages.AppointmentDetail} breadcrumbName="新建预约" />

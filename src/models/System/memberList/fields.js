@@ -1,8 +1,8 @@
 export const getFields = (enums = []) => {
-  const roleList = enums.map(({ id, className }) => (
+  const roleList = enums.map(({ id, name }) => (
     {
       value: id,
-      label: className
+      label: name
     }
   ));
 
@@ -21,10 +21,9 @@ export const getFields = (enums = []) => {
       name: '手机号'
     },
     {
-      key: 'roleIds',
+      key: 'roleId',
       name: '角色',
-      enums: roleList,
-      sorter: true,
+      enums: roleList
     },
     {
       key: 'createTime',

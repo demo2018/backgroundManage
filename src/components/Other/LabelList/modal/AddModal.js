@@ -3,13 +3,14 @@ import styles from './AddModal.less';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
-
+// 页面参数初始化
 class AddModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
     this.handleOk = this.handleOk.bind(this);
   }
+  // 触发提交 判断是新增还是修改
   handleOk() {
     const { onOK, onAdds, form, selecteRecord } = this.props;
     form.validateFieldsAndScroll((err, values) => {
@@ -21,11 +22,13 @@ class AddModal extends React.Component {
       }
     });
   }
+  // 页面渲染
   render() {
     const { form, onCancel, selecteRecord } = this.props;
     const { getFieldDecorator } = form;
+
     const modalOpts = {
-      title: selecteRecord.id ? '编辑banner' : '新增banner',
+      title: selecteRecord.id ? '编辑标签类型' : '新增标签类型',
       visible: true,
       maskClosable: false,
       onOk: this.handleOk,
@@ -59,12 +62,18 @@ class AddModal extends React.Component {
                 </RadioGroup>
                 )}
             </FormItem>
+            <FormItem label="排序" >
+              {getFieldDecorator('rank', {
+                initialValue: selecteRecord.rank || 0,
+              })(
+                <Input placeholder="请输入排序序号" />
+                )}
+            </FormItem>
           </Row>
         </Form>
       </Modal>
     );
   }
 }
-
 
 export default Form.create()(AddModal);

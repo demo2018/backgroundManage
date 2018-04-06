@@ -18,8 +18,7 @@ export const fields = [
   },
   {
     key: 'childCount',
-    name: '关联项目数',
-    sorter: true,
+    name: '关联项目数'
   },
   {
     key: 'status',
@@ -29,8 +28,7 @@ export const fields = [
   },
   {
     key: 'rank',
-    name: '排序',
-    sorter: true,
+    name: '排序'
   },
   {
     key: 'option',

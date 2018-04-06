@@ -48,6 +48,11 @@ export default Model.extend({
       const { data: { content, totalElements } } = yield callWithLoading(services.project.itemDatas, { search: formatFormData(search), tabKey });
       yield update({ datas: content, total: totalElements });
     },
+    // 变更项目分类排序
+    * rankChange({ payload: { id, param } }, { put, callWithLoading }) {
+      yield callWithLoading(services.project.rankChangeClass, { id, param }, { successMsg: '操作成功' });
+      yield put({ type: 'fetchDatas' });
+    },
     // 新增
     * doAdd({ param }, { put, update, callWithLoading }) {
       yield callWithLoading(services.project.doAdd, param, { successMsg: '操作成功' });

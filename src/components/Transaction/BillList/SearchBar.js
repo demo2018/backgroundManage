@@ -21,6 +21,7 @@ class SearchBar extends React.Component {
     this.handleSearch = this.handleSearch.bind(this);
     this.handleReset = this.handleReset.bind(this);
   }
+
   componentWillReceiveProps(nextProps) {
     if ('search' in nextProps && nextProps.search !== this.props.search) {
       this.setState({ ...getStateBySearch(nextProps.search) });
@@ -76,7 +77,7 @@ class SearchBar extends React.Component {
             <FormItem label="按项目">
               <Select value={`${search.itemName}`} onChange={(value) => { this.handleChange('itemName', value); }} placeholder="请选择" >
                 <Option value="">全部</Option>
-                {itemList.map(({ id, className }) => (<Option key={id} value={`${id}`}>{className}</Option>))}
+                {itemList.map(({ id, className }) => (<Option key={id} value={`${className}`}>{className}</Option>))}
               </Select>
             </FormItem>
             <FormItem label="按状态">
@@ -107,4 +108,5 @@ class SearchBar extends React.Component {
     );
   }
 }
+
 export default Form.create()(SearchBar);

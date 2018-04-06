@@ -23,7 +23,7 @@ function mapDispatchToProps(dispatch) {
       dispatch({ type: 'caseList/fetchDatas' });
     },
     onDelete(param) {
-      dispatch({ type: 'caseList/doDelete', payload: { param } });
+      dispatch({ type: 'caseList/doDelete', param });
     },
     toDetail(id) {
       dispatch(routerRedux.push(`/case/detail/${id}`));

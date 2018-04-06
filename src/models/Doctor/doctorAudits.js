@@ -1,5 +1,6 @@
 import Model from 'utils/model';
 import services from 'services';
+import { routerRedux } from 'dva/router';
 
 export default Model.extend({
   namespace: 'doctorAudits',
@@ -46,7 +47,8 @@ export default Model.extend({
     // 审核医生状态
     * toAudit({ payload: { param, id } }, { put, callWithLoading }) {
       yield callWithLoading(services.doctor.toAudit, { param, id }, { successMsg: '操作成功' });
-      yield put({ type: 'fetchDetails' });
+      // yield put({ type: 'fetchDetails' });
+      yield put(routerRedux.push('/doctor/doctorList'));
     },
   }
 });

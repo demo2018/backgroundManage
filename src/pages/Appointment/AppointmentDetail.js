@@ -1,4 +1,5 @@
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import { createNestPage } from 'utils/common';
 import AppointmentDetail from 'components/Appointment/AppointmentDetail';
 
@@ -41,6 +42,10 @@ function mapDispatchToProps(dispatch) {
     // 查询医生时间
     getDoctorTimes(param, resolve) {
       dispatch({ type: 'appointmentDetail/getDoctorTimes', payload: { param, resolve } });
+    },
+    // 返回列表页面
+    goback() {
+      dispatch(routerRedux.push('/appointment/appointmentList'));
     }
   };
 }

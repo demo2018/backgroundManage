@@ -1,5 +1,4 @@
 import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
 import { createNestPage } from 'utils/common';
 import FeedbackList from 'components/Feedback/FeedbackList';
 
@@ -11,13 +10,16 @@ function mapStateToProps({ feedbackList }) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    // 更新事件
     onUpdateState(payload) {
       dispatch({ type: 'feedbackList/updateState', payload: { ...payload } });
     },
+    // 搜索事件
     onSearch(search) {
       dispatch({ type: 'feedbackList/updateSearch', payload: { search } });
       dispatch({ type: 'feedbackList/fetchDatas' });
     },
+    // 重置事件
     onReset() {
       dispatch({ type: 'feedbackList/resetSearch' });
       dispatch({ type: 'feedbackList/fetchDatas' });
@@ -38,11 +40,9 @@ function mapDispatchToProps(dispatch) {
     delFollow(param) {
       dispatch({ type: 'feedbackList/delFollow', param });
     },
+    // 删除反馈信息
     onDelete(param) {
       dispatch({ type: 'feedbackList/doDelete', param });
-    },
-    downFile() {
-      dispatch({ type: 'feedbackList/downFile' });
     }
   };
 }

@@ -5,7 +5,7 @@ import FollowModal from './modal/FollowModal.js';
 import { ORDER_SUFFIX } from 'configs/constants';
 
 const { getColumns } = tableUtil;
-
+// 页面参数初始化
 class FeedbackList extends React.Component {
   constructor(props) {
     super(props);
@@ -13,6 +13,7 @@ class FeedbackList extends React.Component {
       modalVisible: false,
     };
   }
+
   getInitalColumns(fields) {
     const { onDelete, search: { sortField, ordination } } = this.props;
     const popconfirmProps = {
@@ -42,9 +43,11 @@ class FeedbackList extends React.Component {
 
     return getColumns(fields).enhance(extraFields).values();
   }
+  // 列表清空事件
   handleClear() {
     this.props.onUpdateState({ selected: [] });
   }
+
   handleMoreOperation() {
     alert('更多操作！');
   }
@@ -54,6 +57,7 @@ class FeedbackList extends React.Component {
     getManager(state.selecteRecord.id);
     this.props.onUpdateState({ ...state });
   }
+  // 页面排序监听事件
   handleTableSortChange({ current }, sort, { field, order }) {
     const { onSearch, search } = this.props;
     if (current == search.pn && order) {
@@ -63,16 +67,16 @@ class FeedbackList extends React.Component {
       });
     }
   }
+
   renderTableTitle() {
     const { selected = [] } = this.props;
     return (<p>已选择<span style={{ color: 'red', padding: '0 4px' }}>{selected.length}</span>项
       <a style={{ marginLeft: 10 }} onClick={() => { this.handleClear(); }}>清空</a>
     </p>);
   }
-
+  // 页面渲染
   render() {
-    const { fields, types, datas, total, search, loading, onSearch, onReset,
-       onUpdateState, followModalVisible, selecteRecord, addFollow, editFollow, followList, managerList, delFollow, selected = [] } = this.props;
+    const { fields, types, datas, total, search, loading, onSearch, onReset, onUpdateState, followModalVisible, selecteRecord, addFollow, editFollow, followList, managerList, delFollow, selected = [] } = this.props;
     const { pn, ps } = search;
     const columns = this.getInitalColumns(fields);
 

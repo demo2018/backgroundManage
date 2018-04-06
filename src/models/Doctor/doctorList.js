@@ -5,7 +5,7 @@ import { PAGE_SIZE } from 'configs/constants';
 import { formatFormData } from 'utils/common';
 
 const initialSearch = {
-  realName: '', // 姓名
+  name: '', // 姓名
   phone: '', // 手机号
   recommendName: '', // 推荐人姓名
   id: '', // 医生ID
@@ -49,15 +49,21 @@ export default Model.extend({
   },
 
   effects: {
-    // 获取枚举值
+    // 获取擅长项目
     * fetchEnums({ payload }, { update, callWithLoading }) {
       const { data: { content } } = yield callWithLoading(services.doctor.getAdept, { typeId: 3 });
       yield update({ adeptList: content || [] });
     },
+    // 获取医生列表
     * fetchDatas({ payload }, { select, update, callWithLoading }) {
       const { search } = yield select(({ doctorList }) => doctorList);
       const { data: { content, totalElements } } = yield callWithLoading(services.doctor.getDatas, formatFormData(search));
       yield update({ datas: content, total: totalElements });
+    },
+    // 变更医生排序
+    * rankChange({ payload: { id, param } }, { put, callWithLoading }) {
+      yield callWithLoading(services.doctor.rankChange, { id, param }, { successMsg: '操作成功' });
+      yield put({ type: 'fetchDatas' });
     },
     * sendMsg({ payload }, { select, callWithLoading }) {
       const { selected } = yield select(({ doctorList }) => doctorList);
@@ -70,10 +76,6 @@ export default Model.extend({
     * downReport({ payload }, { select, callWithLoading }) {
       const { selected } = yield select(({ doctorList }) => doctorList);
       yield callWithLoading(services.doctor.downReport, { selected: selected.join(',') });
-    },
-    * doDelete({ payload: { param } }, { put, callWithLoading }) {
-      yield callWithLoading(services.doctor.doDelete, { ...param }, { successMsg: '操作成功' });
-      yield put({ type: 'fetchDatas' });
     },
   },
 

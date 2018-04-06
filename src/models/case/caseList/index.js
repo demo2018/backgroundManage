@@ -2,21 +2,21 @@ import Model from 'utils/model';
 import services from 'services';
 import { fields } from './fields';
 import { PAGE_SIZE } from 'configs/constants';
+import { formatFormData } from 'utils/common';
 
 const initialSearch = {
-  name: '',
-  phone: '',
-  treatmentItem: '',
-  doctorName: '',
-  orgName: '',
-  hospitalName: '',
-  treatmentStatus: '',
-  clinicTime: '',
-  age: '',
-  type: '',
+  id: '', // 初筛报告ID
+  name: '', // 姓名
+  phone: '', // 电话
+  gender: '', // 性别
+  isSend: '', // 是否发送
+  type: '', // 初/复诊
+  itemName: '', // 诊疗项目
+  startDate: '', // 开始时间
+  endDate: '', // 结束时间
   pn: 1,
   ps: PAGE_SIZE,
-  sortField: 'status', // 排序字段
+  sortField: 'time', // 排序字段
   ordination: 'DESC' // 排序方式
 };
 
@@ -26,40 +26,12 @@ export default Model.extend({
   state: {
     fields,
     search: initialSearch,
-    datas: [{
-      'treatmentId': 11685,
-      'name': '张三',
-      'phone': '13812345678',
-      'treatmentItem': '洗牙',
-      'type': '0',
-      'doctorName': '王医生',
-      'treatmentStatus': '0',
-      'clinicTime': '2018-01-11'
-    }, {
-      'treatmentId': 9849,
-      'name': '王五',
-      'phone': '13887654321',
-      'treatmentItem': '洗牙',
-      'type': '0',
-      'doctorName': '赵医生',
-      'treatmentStatus': '1',
-      'clinicTime': '2018-01-14'
-    }, {
-      'treatmentId': 5649,
-      'name': '超四',
-      'phone': '13866666666',
-      'treatmentItem': '洗牙',
-      'type': '1',
-      'doctorName': '李医生',
-      'treatmentStatus': '2',
-      'clinicTime': '2018-02-11'
-    }],
+    datas: [],
     total: 0,
     types: [],
     selected: [],
-    selecteRecord: {},
-    assessModalVisible: false,
-    visitModalVisible: false,
+    itemList: [],
+    selecteRecord: {}
   },
 
   subscriptions: {
@@ -70,21 +42,27 @@ export default Model.extend({
           dispatch({ type: 'resetState' });
           dispatch({ type: 'resetSearch' });
         }
+        dispatch({ type: 'fetchEnums' });
         dispatch({ type: 'fetchDatas' });
       });
     }
   },
 
   effects: {
+    // 获取枚举值
+    * fetchEnums({ payload }, { update, callWithLoading }) {
+      const { data: { content } } = yield callWithLoading(services.casehistory.getProjectList);
+      yield update({ itemList: content || [] });
+    },
     // 获取列表数据
     * fetchDatas({ payload }, { select, update, callWithLoading }) {
       const { search } = yield select(({ caseList }) => caseList);
-      const { datas, total } = yield callWithLoading(services.doctor.getDatas, search);
-      yield update({ datas, total });
+      const { data: { content, totalElements } } = yield callWithLoading(services.casehistory.getDatas, { ...formatFormData(search) });
+      yield update({ datas: content, total: totalElements });
     },
     // 删除
-    * doDelete({ payload: { param } }, { put, callWithLoading }) {
-      yield callWithLoading(services.treatment.doDelete, { ...param }, { successMsg: '操作成功' });
+    * doDelete({ param }, { put, callWithLoading }) {
+      yield callWithLoading(services.casehistory.doDelete, param, { successMsg: '操作成功' });
       yield put({ type: 'fetchDatas' });
     },
   },

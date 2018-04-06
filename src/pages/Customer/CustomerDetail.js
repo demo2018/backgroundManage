@@ -1,4 +1,5 @@
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import { createNestPage } from 'utils/common';
 import CustomerDetail from 'components/Customer/CustomerDetail';
 
@@ -37,6 +38,10 @@ function mapDispatchToProps(dispatch) {
     // 删除关系客户
     onDeletes(param) {
       dispatch({ type: 'customerDetail/delMember', param });
+    },
+    // 返回列表页面
+    goback() {
+      dispatch(routerRedux.push('/customer/customerList'));
     },
     downFile() {
       dispatch({ type: 'customerDetail/downFile' });

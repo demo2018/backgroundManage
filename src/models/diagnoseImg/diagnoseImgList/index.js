@@ -1,22 +1,18 @@
 import Model from 'utils/model';
 import services from 'services';
 import { fields } from './fields';
+import { formatFormData } from 'utils/common';
 import { PAGE_SIZE } from 'configs/constants';
 
 const initialSearch = {
-  name: '',
-  phone: '',
-  treatmentItem: '',
-  doctorName: '',
-  orgName: '',
-  hospitalName: '',
-  treatmentStatus: '',
-  clinicTime: '',
-  age: '',
-  type: '',
+  customerName: '', // 姓名
+  phone: '', // 电话
+  gender: '', // 性别
+  startTime: '', // 开始时间
+  endTime: '', // 结束时间
   pn: 1,
   ps: PAGE_SIZE,
-  sortField: 'status', // 排序字段
+  sortField: 'filmTime', // 排序字段
   ordination: 'DESC' // 排序方式
 };
 
@@ -31,8 +27,6 @@ export default Model.extend({
     types: [],
     selected: [],
     selecteRecord: {},
-    assessModalVisible: false,
-    visitModalVisible: false,
   },
 
   subscriptions: {
@@ -52,12 +46,12 @@ export default Model.extend({
     // 获取列表数据
     * fetchDatas({ payload }, { select, update, callWithLoading }) {
       const { search } = yield select(({ diagnoseImgList }) => diagnoseImgList);
-      const { datas, total } = yield callWithLoading(services.doctor.getDatas, search);
-      yield update({ datas, total });
+      const { data: { content, totalElements } } = yield callWithLoading(services.diagnoseImg.getDatas, formatFormData(search));
+      yield update({ datas: content, total: totalElements });
     },
     // 删除
-    * doDelete({ payload: { param } }, { put, callWithLoading }) {
-      yield callWithLoading(services.treatment.doDelete, { ...param }, { successMsg: '操作成功' });
+    * doDelete({ param }, { put, callWithLoading }) {
+      yield callWithLoading(services.diagnoseImg.doDelete, param, { successMsg: '操作成功' });
       yield put({ type: 'fetchDatas' });
     },
   },

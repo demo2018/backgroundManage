@@ -36,15 +36,18 @@ export default Model.extend({
     // 更新诊所详情
     * updateDatas({ payload: { param, id } }, { put, callWithLoading }) {
       yield callWithLoading(services.clinic.saveDatas, { param, id }, { successMsg: '操作成功' });
-      yield put({ type: 'fetchDetail' });
+      // yield put({ type: 'fetchDetail' });
+      yield put(routerRedux.push('/clinic/clinicList'));
     },
     // 新增诊所详情
     * addDatas({ payload: { param } }, { put, callWithLoading }) {
       const { data } = yield callWithLoading(services.clinic.addDatas, param, { successMsg: '操作成功' });
-      yield put(routerRedux.push(`/clinic/detail/${data}`));
+      // yield put(routerRedux.push(`/clinic/detail/${data}`));
+      yield put(routerRedux.push('/clinic/clinicList'));
     },
   },
 
   reducers: {
+
   }
 });

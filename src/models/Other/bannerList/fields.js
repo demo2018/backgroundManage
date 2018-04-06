@@ -1,4 +1,6 @@
 import { itemStatus } from 'configs/constants';
+import { getServer } from 'utils/common';
+const { disease } = getServer();
 
 export const fields = [
   {
@@ -13,7 +15,7 @@ export const fields = [
   {
     key: 'image',
     name: '图片',
-    render: (text) => <img src={text} /> // 把后台有的banner存成一个数组 取数组里得img，设置img的src={text.img}
+    render: (image) => <img src={`${disease}/bhyy/core/image/${image}`} /> // 把后台有的banner存成一个数组 取数组里得img，设置img的src={text.img}
   },
   {
     key: 'rank',

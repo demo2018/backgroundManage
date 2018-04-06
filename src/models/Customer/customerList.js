@@ -5,7 +5,7 @@ import { PAGE_SIZE } from 'configs/constants';
 import { formatFormData } from 'utils/common';
 
 const initialSearch = {
-  realName: '', // 姓名
+  name: '', // 姓名
   phone: '', // 手机号码
   source: '', // 客户来源
   org: '', // 机构名称

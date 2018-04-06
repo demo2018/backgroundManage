@@ -50,12 +50,14 @@ export default Model.extend({
     // 添加客户信息
     * addCustomer({ payload: { param } }, { put, callWithLoading }) {
       const { data } = yield callWithLoading(services.customer.addDatas, param, { successMsg: '操作成功' });
-      yield put(routerRedux.push(`/customer/detail/${data}`));
+      // yield put(routerRedux.push(`/customer/detail/${data}`));
+      yield put(routerRedux.push('/customer/customerList'));
     },
     // 更新客户信息
     * updateCustomer({ payload: { param } }, { put, callWithLoading }) {
       yield callWithLoading(services.customer.upDatas, param, { successMsg: '操作成功' });
-      yield put({ type: 'fetchDetails' });
+      // yield put({ type: 'fetchDetails' });
+      yield put(routerRedux.push('/customer/customerList'));
     },
     // 添加客户关系详情
     * addMember({ payload: { param, id } }, { put, update, callWithLoading }) {
@@ -86,5 +88,6 @@ export default Model.extend({
   },
 
   reducers: {
+
   }
 });

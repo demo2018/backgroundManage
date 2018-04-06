@@ -65,7 +65,7 @@ export default Model.extend({
     // 获取列表数据
     * fetchDatas({ payload }, { select, update, callWithLoading }) {
       const { search } = yield select(({ treatmentList }) => treatmentList);
-      const { data: { content, totalElements } } = yield callWithLoading(services.treatment.getDatas, formatFormData(search));
+      const { data: { content, totalElements } } = yield callWithLoading(services.treatment.getDatas, formatFormData({ ...search, sortField: 'a.' + search.sortField }));
       yield update({ datas: content, total: totalElements });
     },
     // 删除就诊

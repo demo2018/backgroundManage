@@ -1,4 +1,4 @@
-import { Table, Button, Popconfirm, Modal } from 'antd';
+import { Table, Button, Popconfirm, Modal, message } from 'antd';
 import tableUtil from 'utils/tableUtil';
 import SearchBar from './SearchBar.js';
 import AssessModal from './modal/AssessModal.js';
@@ -46,7 +46,15 @@ class TreatmentList extends React.Component {
             </Popconfirm>
           </div >);
         }
-      }];
+      }, {
+        key: 'phone',
+        name: '手机号码',
+        render: (value, { customerPhone, customerName }) => {
+          return (`${customerPhone}(${customerName})`);
+        },
+      }
+    ];
+
     return getColumns(fields).enhance(extraFields).values();
   }
   // 列表清空事件
@@ -55,29 +63,31 @@ class TreatmentList extends React.Component {
   }
   // 判断是否选择医生
   handleVerify(handleFn) {
-    return () => {
-      const { selected = [] } = this.props;
-      if (selected.length) {
-        handleFn();
-      } else {
-        Modal.warning({
-          title: '操作提示',
-          content: '请先选择医生，然后进行操作！',
-        });
-      }
-    };
+    message.warning('开发中');
+    // return () => {
+    //   const { selected = [] } = this.props;
+    //   if (selected.length) {
+    //     handleFn();
+    //   } else {
+    //     Modal.warning({
+    //       title: '操作提示',
+    //       content: '请先选择医生，然后进行操作！',
+    //     });
+    //   }
+    // };
   }
   // 发送短信事件
   handleSendMsg() {
-    const { selected } = this.props;
-    if (!selected.length) {
-      Modal.warning({
-        title: '操作提示',
-        content: '请先选择客户！',
-      });
-    } else {
-      this.props.onUpdateState({ messageModalVisible: true });
-    }
+    message.warning('开发中');
+    // const { selected } = this.props;
+    // if (!selected.length) {
+    //   Modal.warning({
+    //     title: '操作提示',
+    //     content: '请先选择客户！',
+    //   });
+    // } else {
+    //   this.props.onUpdateState({ messageModalVisible: true });
+    // }
   }
   // 触发查看评价
   toAssess(state) {
@@ -195,7 +205,7 @@ class TreatmentList extends React.Component {
       <div>
         <SearchBar {...searchBarProps} />
         <div className="btnGroup">
-          <Button onClick={this.handleVerify(downFile)}>导出数据</Button>
+          <Button onClick={() => this.handleVerify(downFile)}>导出数据</Button>
           <Button onClick={() => { this.handleSendMsg(); }}>发送健康提醒</Button>
         </div>
         <Table {...tableProps} />

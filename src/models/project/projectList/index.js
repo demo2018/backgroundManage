@@ -23,8 +23,6 @@ export default Model.extend({
     types: [],
     selected: [],
     selecteRecord: {},
-    assessModalVisible: false,
-    visitModalVisible: false,
   },
 
   subscriptions: {
@@ -46,6 +44,11 @@ export default Model.extend({
       const { search } = yield select(({ projectList }) => projectList);
       const { data: { content, totalElements } } = yield callWithLoading(services.project.itemLists, formatFormData(search));
       yield update({ datas: content, total: totalElements });
+    },
+    // 变更项目排序
+    * rankChange({ payload: { id, param } }, { put, callWithLoading }) {
+      yield callWithLoading(services.project.rankItem, { id, param }, { successMsg: '操作成功' });
+      yield put({ type: 'fetchDatas' });
     },
     // 删除
     * doDelete({ param }, { put, callWithLoading }) {

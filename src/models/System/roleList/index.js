@@ -43,18 +43,6 @@ export default Model.extend({
       const { data: { content, totalElements } } = yield callWithLoading(services.system.getRoles, formatFormData(search));
       yield update({ datas: content, total: totalElements });
     },
-    // 新增
-    * doAdd({ payload: { param } }, { put, update, callWithLoading }) {
-      yield callWithLoading(services.system.doAdd, param, { successMsg: '操作成功' });
-      yield update({ selecteRecord: {}, addModalVisible: false });
-      yield put({ type: 'fetchDatas' });
-    },
-    // 编辑
-    * doEdit({ payload: { param, id } }, { put, update, callWithLoading }) {
-      yield callWithLoading(services.system.doEdit, { param, id }, { successMsg: '操作成功' });
-      yield update({ selecteRecord: {}, addModalVisible: false });
-      yield put({ type: 'fetchDatas' });
-    },
     // 删除
     * doDelete({ param }, { update, put, callWithLoading }) {
       yield callWithLoading(services.system.doDelete, param, { successMsg: '操作成功' });

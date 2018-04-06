@@ -1,27 +1,32 @@
+import { genderType } from 'configs/constants';
+
 export const fields = [
   {
-    key: 'treatmentId',
-    name: '影像ID'
+    key: 'id',
+    name: '影像ID',
+    sorter: true
   },
   {
-    key: 'name',
+    key: 'customerName',
     name: '姓名'
   },
   {
-    key: 'phone',
-    name: '性别'
+    key: 'gender',
+    name: '性别',
+    enums: genderType
   },
   {
-    key: 'treatmentItem',
+    key: 'phone',
     name: '手机号'
   },
   {
-    key: 'type',
+    key: 'filmTime',
     name: '拍摄时间',
-    type: 'datetime'
+    type: 'datetime',
+    sorter: true
   },
   {
-    key: 'id',
+    key: 'option',
     name: '操作'
   }
 ];

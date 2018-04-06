@@ -7,7 +7,7 @@ import { formatFormData } from 'utils/common';
 const initialSearch = {
   realName: '', // 管理员名字
   phone: '', // 管理员手机号
-  roleIds: '', // 管理ID
+  roleId: '', // 管理ID
   startTime: '', // 开始时间
   endTime: '', // 结束时间
   pn: 1,
@@ -53,7 +53,7 @@ export default Model.extend({
     // 获取列表数据
     * fetchDatas({ payload }, { select, update, callWithLoading }) {
       const { search } = yield select(({ memberList }) => memberList);
-      const { data: { content, totalElements } } = yield callWithLoading(services.system.getList, formatFormData(search));
+      const { data: { content, totalElements } } = yield callWithLoading(services.system.getList, formatFormData({ ...search, sortField: 'su.' + search.sortField }));
       yield update({ datas: content, total: totalElements });
     },
     // 新增

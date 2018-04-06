@@ -23,8 +23,7 @@ export default Model.extend({
     types: [],
     selected: [],
     selecteRecord: {},
-    assessModalVisible: false,
-    visitModalVisible: false,
+    addModalVisible: false
   },
 
   subscriptions: {
@@ -46,6 +45,11 @@ export default Model.extend({
       const { search } = yield select(({ projectDiscount }) => projectDiscount);
       const { data: { content, totalElements } } = yield callWithLoading(services.project.discountDatas, formatFormData(search));
       yield update({ datas: content, total: totalElements });
+    },
+    // 变更折扣排序
+    * rankChange({ payload: { id, param } }, { put, callWithLoading }) {
+      yield callWithLoading(services.project.rankChangeDiscount, { id, param }, { successMsg: '操作成功' });
+      yield put({ type: 'fetchDatas' });
     },
     // 新增
     * doAdd({ param }, { put, update, callWithLoading }) {

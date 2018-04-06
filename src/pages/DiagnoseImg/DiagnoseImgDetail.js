@@ -14,11 +14,14 @@ function mapDispatchToProps(dispatch) {
     onUpdateState(payload) {
       dispatch({ type: 'diagnoseImgDetail/updateState', payload: { ...payload } });
     },
+    getAppointList(param, resolve) {
+      dispatch({ type: 'diagnoseImgDetail/getAppointList', payload: { param, resolve } });
+    },
     onAdd(param) {
       dispatch({ type: 'diagnoseImgDetail/doAdd', payload: { param } });
     },
-    onEdit(param) {
-      dispatch({ type: 'diagnoseImgDetail/doEdit', payload: { param } });
+    onEdit(param, id) {
+      dispatch({ type: 'diagnoseImgDetail/doEdit', payload: { param, id } });
     },
     toList() {
       dispatch(routerRedux.push('/diagnoseImg/list?notResetState=true '));

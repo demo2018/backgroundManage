@@ -24,6 +24,10 @@ function mapDispatchToProps(dispatch) {
       dispatch({ type: 'projectDiscount/resetSearch' });
       dispatch({ type: 'projectDiscount/fetchDatas' });
     },
+    // 变更排序事件
+    rankChange(id, param) {
+      dispatch({ type: 'projectDiscount/rankChange', payload: { id, param } });
+    },
     // 新增折扣详情
     onAdd(param) {
       dispatch({ type: 'projectDiscount/doAdd', param });

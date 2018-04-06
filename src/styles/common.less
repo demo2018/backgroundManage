@@ -33,7 +33,7 @@
   }
   //查询框
   .searchBar {
-    padding: 10px;
+    padding: 15px;
     border: 1px solid #dedede;
     border-radius: 4px;
     margin-bottom: 10px;
@@ -138,12 +138,22 @@
     background: #f7f7f7;
     padding: 8px;
   }
-  .title{
-    padding: 0px 20px;
+  .title{ 
+    position: relative;
+    padding: 0px 14px;
     margin-bottom: 15px;
     color: #108ee9;
     font-size: 16px;
-    border-left: 3px solid #108ee9;
+     &:before{
+      display: block;
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 5px;
+      width: 3px;
+      height: 16px;
+      background-color: #108ee9;
+    }
   }
 
   .ant-tag.ant-tag-checkable.evaluate{
@@ -156,4 +166,38 @@
     display: inline-block;
     margin: 10px 0;
   }
+  //  排序输入
+  .editable-cell .editable-cell-input-wrapper{
+    padding-right: 10px!important;
+    input{
+      width:50px;
+    }
+  }
+  // 状态
+  p span.status{
+    display: inline-block;
+    margin-right: 15px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    vertical-align: 3px;
+  }
+   p span.status.success{
+     background-color: #52c41a;
+   }
+    p span.status.cancel{
+     background-color: #bcbcbc;
+   }
+    p span.status.determine{
+     background-color: #f5222d;
+   }
+    p span.status.on{
+     background-color: #ffdf25;
+   }
+     p span.status.done{
+     background-color: #49a9ee;
+   }
+    .aside-fixed-wrapper .hlayout-content aside{
+      overflow-y: scroll; 
+    }
 }

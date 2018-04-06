@@ -1,4 +1,4 @@
-import { Table, Button, Popconfirm, Modal } from 'antd';
+import { Table, Button, Popconfirm, Modal, message } from 'antd';
 import tableUtil from 'utils/tableUtil';
 import SearchBar from './SearchBar.js';
 import MessageModal from './modal/MessageModal.js';
@@ -13,6 +13,7 @@ class CustomerList extends React.Component {
       modalVisible: false,
     };
   }
+
   getInitalColumns(fields) {
     const { toCustomerDetail, onDelete, search: { sortField, ordination } } = this.props;
 
@@ -48,29 +49,32 @@ class CustomerList extends React.Component {
   }
   // 判断是否选择医生
   handleVerify(handleFn) {
-    return () => {
-      const { selected = [] } = this.props;
-      if (selected.length) {
-        handleFn();
-      } else {
-        Modal.warning({
-          title: '操作提示',
-          content: '请先选择医生，然后进行操作！',
-        });
-      }
-    };
+
+    message.warning('开发中');
+    // return () => {
+    //   const { selected = [] } = this.props;
+    //   if (selected.length) {
+    //     handleFn();
+    //   } else {
+    //     Modal.warning({
+    //       title: '操作提示',
+    //       content: '请先选择医生，然后进行操作！',
+    //     });
+    //   }
+    // };
   }
   // 发送短信事件
   handleSendMsg() {
-    const { selected } = this.props;
-    if (!selected.length) {
-      Modal.warning({
-        title: '操作提示',
-        content: '请先选择客户！',
-      });
-    } else {
-      this.props.onUpdateState({ messageModalVisible: true });
-    }
+    message.warning('开发中');
+    // const { selected } = this.props;
+    // if (!selected.length) {
+    //   Modal.warning({
+    //     title: '操作提示',
+    //     content: '请先选择客户！',
+    //   });
+    // } else {
+    //   this.props.onUpdateState({ messageModalVisible: true });
+    // }
   }
   // 页面排序监听事件
   handleTableSortChange({ current }, sort, { field, order }) {
@@ -82,6 +86,7 @@ class CustomerList extends React.Component {
       });
     }
   }
+
   renderTableTitle() {
     const { selected = [] } = this.props;
     return (<p>已选择<span style={{ color: 'red', padding: '0 4px' }}>{selected.length}</span>项
@@ -110,6 +115,7 @@ class CustomerList extends React.Component {
         this.props.onUpdateState({ selected: selectedRowKeys });
       },
     };
+
     const tableProps = {
       dataSource: datas,
       columns,
@@ -140,14 +146,12 @@ class CustomerList extends React.Component {
     return (
       <div>
         <SearchBar {...searchBarProps} />
-
         <div className="btnGroup">
           <Button type="primary" icon="plus" onClick={toAddCustomer}>新增</Button>
-          <Button onClick={this.handleVerify(downFile)}>导出数据</Button>
+          <Button onClick={() => this.handleVerify(downFile)}>导出数据</Button>
           <Button onClick={() => { this.handleSendMsg(); }}>发送提醒</Button>
         </div>
         <Table {...tableProps} />
-
         {messageModalVisible && <MessageModal {...modalProps} />}
       </div>
     );

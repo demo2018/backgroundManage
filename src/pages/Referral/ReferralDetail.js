@@ -9,6 +9,7 @@ function mapStateToProps({ referralDetail }) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    // 更新事件
     onUpdateState(payload) {
       dispatch({ type: 'referralDetail/updateState', payload: { ...payload } });
     },

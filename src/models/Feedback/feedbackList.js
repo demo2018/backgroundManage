@@ -5,14 +5,15 @@ import { PAGE_SIZE } from 'configs/constants';
 import { formatFormData } from 'utils/common';
 
 const initialSearch = {
-  name: '',
-  phone: '',
-  date: '',
-  status: '',
-  source: '',
+  name: '', // 姓名
+  phone: '', // 手机号
+  status: '', // 状态
+  source: '', // 来源
+  startTime: '', // 开始时间
+  endTime: '', // 结束时间
   pn: 1,
   ps: PAGE_SIZE,
-  sortField: 'date', // 排序字段
+  sortField: 'createTime', // 排序字段
   ordination: 'DESC' // 排序方式
 };
 
@@ -42,6 +43,7 @@ export default Model.extend({
   },
 
   effects: {
+    // 获取反馈列表
     * fetchDatas({ payload }, { select, update, callWithLoading }) {
       const { search } = yield select(({ feedbackList }) => feedbackList);
       const { data: { content, totalElements } } = yield callWithLoading(services.feedback.getDatas, formatFormData(search));

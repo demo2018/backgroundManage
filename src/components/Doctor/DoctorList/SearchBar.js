@@ -5,15 +5,15 @@ import { formatDate, getDateRangeValue } from 'utils/common';
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
 const Option = Select.Option;
-
+// 处理起止时间格式
 const getStateBySearch = (search = {}) => {
-  const { startTime, endTime } = search;
+  const { startDate, endDate } = search;
   return {
     ...search,
-    addDate: getDateRangeValue(startTime, endTime),
+    addDate: getDateRangeValue(startDate, endDate),
   };
 };
-
+// 搜索框初始化
 class SearchBar extends React.Component {
   constructor(props) {
     super(props);
@@ -21,29 +21,34 @@ class SearchBar extends React.Component {
     this.handleSearch = this.handleSearch.bind(this);
     this.handleReset = this.handleReset.bind(this);
   }
+
   componentWillReceiveProps(nextProps) {
     if ('search' in nextProps && nextProps.search !== this.props.search) {
       this.setState({ ...getStateBySearch(nextProps.search) });
     }
   }
+  // 触发搜索事件
   handleSearch() {
     const { onSearch } = this.props;
     const values = this.state;
-    values.startTime = formatDate(values.addDate[0]);
-    values.endTime = formatDate(values.addDate[1]);
+    values.startDate = formatDate(values.addDate[0]);
+    values.endDate = formatDate(values.addDate[1]);
     delete values.addDate;
     onSearch({ ...values, adept: values.adept == [''] ? '' : [values.adept], pn: 1 });
   }
+  // 触发重置事件
   handleReset() {
     const { onReset } = this.props;
     onReset && onReset();
   }
+  // 监听页面value值变更事件
   handleChange(key, value) {
     if (value.target) {
       value = value.target.value;
     }
     this.setState({ [key]: value });
   }
+  // 页面渲染
   render() {
     const { adeptList } = this.props;
     const search = this.state;
@@ -53,7 +58,7 @@ class SearchBar extends React.Component {
           <Form layout="inline">
             <Row>
               <FormItem label="姓名">
-                <Input value={search.realName} onChange={(value) => { this.handleChange('realName', value); }} placeholder="请输入" />
+                <Input value={search.name} onChange={(value) => { this.handleChange('name', value); }} placeholder="请输入" />
               </FormItem>
               <FormItem label="手机号码">
                 <Input value={search.phone} onChange={(value) => { this.handleChange('phone', value); }} placeholder="请输入" />
@@ -99,4 +104,5 @@ class SearchBar extends React.Component {
     );
   }
 }
+
 export default Form.create()(SearchBar);

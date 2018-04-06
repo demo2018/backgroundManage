@@ -1,6 +1,7 @@
 import { Row, Form, Input, InputNumber, Select, DatePicker, Radio, Checkbox, message, Button, Upload, Icon } from 'antd';
 import styles from './doctorDetail.less';
 import moment from 'moment';
+import { doctorStatus } from 'configs/constants';
 import { getServer, getUploadPicUrl, toString } from 'utils/common';
 
 const FormItem = Form.Item;
@@ -8,6 +9,7 @@ const RadioGroup = Radio.Group;
 const CheckboxGroup = Checkbox.Group;
 const TextArea = Input.TextArea;
 const Option = Select.Option;
+let patentTimer = null;
 
 const options = [
   { label: '内科', value: '内科' },
@@ -20,13 +22,13 @@ const options = [
   { label: '儿童口腔科', value: '儿童口腔科' },
 ];
 
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
-
 const imgTypeReg = /\/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/;
+
+const formatSelectValue = (value) => {
+  if (value || value === 0) {
+    return `${value}`;
+  }
+};
 // 页面参数初始化
 class DoctorDetail extends React.Component {
   constructor(props) {
@@ -51,6 +53,10 @@ class DoctorDetail extends React.Component {
       }
     };
     this.handleSave = this.handleSave.bind(this);
+    this.handleSearchDoctor1 = this.handleSearchDoctor1.bind(this);
+    this.handleSearchDoctor2 = this.handleSearchDoctor2.bind(this);
+    this.handleSearchDoctor3 = this.handleSearchDoctor3.bind(this);
+    this.handleSearchDoctor4 = this.handleSearchDoctor4.bind(this);
   }
   // 图片上传前判断
   beforeUpload(uploadName) {
@@ -75,7 +81,7 @@ class DoctorDetail extends React.Component {
     const { imageUrl } = this.state;
     const { validateFieldsAndScroll } = form;
     validateFieldsAndScroll((err, values) => {
-      const { birthday } = values;
+      const { birthday, doctor1, doctor2, doctor3, doctor4 } = values;
       if (!err && details.id) {
         updateDatas({
           ...values,
@@ -85,22 +91,81 @@ class DoctorDetail extends React.Component {
           jobIcon1: imageUrl.jobIcon1 ? imageUrl.jobIcon1 : details.jobIcon1,
           jobIcon2: imageUrl.jobIcon2 ? imageUrl.jobIcon2 : details.jobIcon2,
           doctorIcon: imageUrl.doctorIcon ? imageUrl.doctorIcon : details.doctorIcon,
-          assistantQr: imageUrl.assistantQr ? imageUrl.assistantQr : details.assistantQr
+          assistantQr: imageUrl.assistantQr ? imageUrl.assistantQr : details.assistantQr,
+          doctorRecommends: [doctor1, doctor2, doctor3, doctor4]
         }, details.id);
       }
       if (!err && !details.id) {
         addDatas({
           ...values,
+          source: 2,
           birthday: birthday ? toString(birthday, 'YYYY-MM-DD') : '',
           icon: imageUrl.icon ? imageUrl.icon : details.icon,
           idIcon: imageUrl.idIcon ? imageUrl.idIcon : details.idIcon,
           jobIcon1: imageUrl.jobIcon1 ? imageUrl.jobIcon1 : details.jobIcon1,
           jobIcon2: imageUrl.jobIcon2 ? imageUrl.jobIcon2 : details.jobIcon2,
           doctorIcon: imageUrl.doctorIcon ? imageUrl.doctorIcon : details.doctorIcon,
-          assistantQr: imageUrl.assistantQr ? imageUrl.assistantQr : details.assistantQr
+          assistantQr: imageUrl.assistantQr ? imageUrl.assistantQr : details.assistantQr,
+          doctorRecommends: [doctor1, doctor2, doctor3, doctor4]
         });
       }
     });
+  }
+  // 查询医生1
+  handleSearchDoctor1(doctor1 = '') {
+    const { getDoctorList } = this.props;
+    const newDoctorName = doctor1.replace(/(^\s*)|(\s*$)/g, '');
+    if (patentTimer) {
+      clearTimeout(patentTimer);
+      patentTimer = null;
+    }
+    if (doctor1 !== '') {
+      patentTimer = setTimeout(() => {
+        getDoctorList({ name: newDoctorName, status: 1, is_show: 1 }, 1);
+      }, 500);
+    }
+  }
+  // 查询医生2
+  handleSearchDoctor2(doctor2 = '') {
+    const { getDoctorList } = this.props;
+    const newDoctorName = doctor2.replace(/(^\s*)|(\s*$)/g, '');
+    if (patentTimer) {
+      clearTimeout(patentTimer);
+      patentTimer = null;
+    }
+    if (doctor2 !== '') {
+      patentTimer = setTimeout(() => {
+        getDoctorList({ name: newDoctorName, status: 1, is_show: 1 }, 2);
+      }, 500);
+    }
+  }
+  // 查询医生3
+  handleSearchDoctor3(doctor3 = '') {
+    const { getDoctorList } = this.props;
+    const newDoctorName = doctor3.replace(/(^\s*)|(\s*$)/g, '');
+    if (patentTimer) {
+      clearTimeout(patentTimer);
+      patentTimer = null;
+    }
+    if (doctor3 !== '') {
+      patentTimer = setTimeout(() => {
+        getDoctorList({ name: newDoctorName, status: 1, is_show: 1 }, 3);
+      }, 500);
+    }
+  }
+  // 查询医生4
+  handleSearchDoctor4(doctor4 = '') {
+    const { getDoctorList } = this.props;
+    const newDoctorName = doctor4.replace(/(^\s*)|(\s*$)/g, '');
+    if (patentTimer) {
+      clearTimeout(patentTimer);
+      patentTimer = null;
+    }
+    if (doctor4 !== '') {
+      patentTimer = setTimeout(() => {
+        getDoctorList({ name: newDoctorName, status: 1, is_show: 1 }, 4);
+      }, 500);
+    }
   }
   handleUploadChange(uploadName) {
     return (info) => {
@@ -156,12 +221,28 @@ class DoctorDetail extends React.Component {
   }
   // 页面渲染
   render() {
-    const { form, details, goback, itemoptions, adeptList } = this.props;
+    const { form, details, goback, itemoptions, adeptList, doctor1List, doctor2List, doctor3List, doctor4List, inviteInfo } = this.props;
     const { getFieldDecorator } = form;
+    // 推荐医生1列表
+    const doctor1Options = doctor1List.map(({ id, realName, phone }) => {
+      return <Option key={`${id}`} value={`${id}`}>{realName} ({phone})</Option>;
+    });
+    // 推荐医生2列表
+    const doctor2Options = doctor2List.map(({ id, realName, phone }) => {
+      return <Option key={`${id}`} value={`${id}`}>{realName} ({phone})</Option>;
+    });
+    // 推荐医生3列表
+    const doctor3Options = doctor3List.map(({ id, realName, phone }) => {
+      return <Option key={`${id}`} value={`${id}`}>{realName} ({phone})</Option>;
+    });
+    // 推荐医生4列表
+    const doctor4Options = doctor4List.map(({ id, realName, phone }) => {
+      return <Option key={`${id}`} value={`${id}`}>{realName} ({phone})</Option>;
+    });
     return (
       <div className={styles.doctorDetail}>
         <div className="baseInfo part">
-          <div className="title"><h3>基本信息</h3></div>
+          <div className="head"><h3>基本信息</h3></div>
           <div className="content">
             <div className="imgWraper">
               <div className="uploadWrapper">
@@ -182,35 +263,29 @@ class DoctorDetail extends React.Component {
             <div className="filedsWraper">
               <Form layout="inline">
                 <Row>
-                  <FormItem
-                    label="姓名"
-                  >
+                  <FormItem label="姓名" >
                     {getFieldDecorator('realName', {
                       initialValue: details.realName,
                       rules: [{
                         required: true, message: '请填写真实姓名！',
                       }],
                     })(
-                      <Input />
+                      <Input placeholder="请输入姓名" />
                     )}
                   </FormItem>
-                  <FormItem
-                    label="手机号码"
-                  >
+                  <FormItem label="手机号码" >
                     {getFieldDecorator('phone', {
                       initialValue: details.phone,
                       rules: [{
                         required: true, message: '手机号码不能为空！',
                       }],
                     })(
-                      <InputNumber />
+                      <InputNumber placeholder="请输入手机号" />
                     )}
                   </FormItem>
                 </Row>
                 <Row>
-                  <FormItem
-                    label="性别"
-                  >
+                  <FormItem label="性别" >
                     {getFieldDecorator('gender', {
                       initialValue: details.gender,
                       rules: [{
@@ -223,19 +298,17 @@ class DoctorDetail extends React.Component {
                       </RadioGroup>
                     )}
                   </FormItem>
-                  <FormItem
-                    label="学历"
-                  >
+                  <FormItem label="学历" >
                     {getFieldDecorator('education', {
-                      initialValue: `${details.education}`,
+                      initialValue: formatSelectValue(details.education),
                       rules: [{
                         required: true, message: '请选择学历！',
                       }],
                     })(
-                      <Select >
+                      <Select placeholder="请选择学历" >
                         <Option value="专科">专科</Option>
                         <Option value="本科">本科</Option>
-                        <Option value="研究生">研究生</Option>
+                        {/* <Option value="研究生">研究生</Option> */}
                         <Option value="硕士">硕士</Option>
                         <Option value="博士">博士</Option>
                       </Select>
@@ -243,9 +316,7 @@ class DoctorDetail extends React.Component {
                   </FormItem>
                 </Row>
                 <Row>
-                  <FormItem
-                    label="出生日期"
-                  >
+                  <FormItem label="出生日期" >
                     {getFieldDecorator('birthday', {
                       initialValue: details.birthday ? moment(details.birthday) : null,
                       rules: [{
@@ -255,30 +326,26 @@ class DoctorDetail extends React.Component {
                       <DatePicker />
                     )}
                   </FormItem>
-                  <FormItem
-                    label="年龄"
-                  >
+                  <FormItem label="年龄" >
                     {getFieldDecorator('age', {
                       initialValue: details.age,
                       rules: [{
                         required: true, message: '请填写年龄！',
                       }],
                     })(
-                      <InputNumber min={0} max={150} />
+                      <InputNumber min={0} max={150} placeholder="请输入年龄" />
                     )}
                   </FormItem>
                 </Row>
                 <Row>
-                  <FormItem
-                    label="第一执业机构"
-                  >
+                  <FormItem label="第一执业机构" >
                     {getFieldDecorator('hospitalName', {
-                      initialValue: `${details.hospitalName}`,
+                      initialValue: details.hospitalName,
                       rules: [{
                         required: true, message: '请填写执业机构！',
                       }],
                     })(
-                      <Input />
+                      <Input placeholder="请输入执业机构" />
                     )}
                   </FormItem>
                   {/* <FormItem
@@ -300,21 +367,17 @@ class DoctorDetail extends React.Component {
                   </FormItem> */}
                 </Row>
                 <Row>
-                  <FormItem
-                    label="执业年限"
-                  >
+                  <FormItem label="执业年限" >
                     {getFieldDecorator('workYear', {
                       initialValue: details.workYear,
                       rules: [{
                         required: true, message: '请填写执业年限！',
                       }],
                     })(
-                      <InputNumber min={0} max={150} />
+                      <InputNumber min={0} max={150} placeholder="请输入执业年限" />
                     )}
                   </FormItem>
-                  <FormItem
-                    label="擅长领域"
-                  >
+                  <FormItem label="擅长领域" >
                     {getFieldDecorator('adepts', {
                       initialValue: details.adepts || [],
                       rules: [{
@@ -326,9 +389,7 @@ class DoctorDetail extends React.Component {
                   </FormItem>
                 </Row>
                 <Row>
-                  <FormItem
-                    label="科室"
-                  >
+                  <FormItem label="科室" >
                     {getFieldDecorator('departments', {
                       initialValue: details.departments || [],
                       rules: [{
@@ -340,9 +401,7 @@ class DoctorDetail extends React.Component {
                   </FormItem>
                 </Row>
                 <Row>
-                  <FormItem
-                    label="服务项目"
-                  >
+                  <FormItem label="服务项目" >
                     {getFieldDecorator('serviceItems', {
                       initialValue: details.serviceItems || [],
                       rules: [{
@@ -354,9 +413,7 @@ class DoctorDetail extends React.Component {
                   </FormItem>
                 </Row>
                 <Row className="textArea">
-                  <FormItem
-                    label="简介"
-                  >
+                  <FormItem label="简介" >
                     {getFieldDecorator('intro', {
                       initialValue: details.intro,
                     })(
@@ -365,20 +422,27 @@ class DoctorDetail extends React.Component {
                   </FormItem>
                 </Row>
                 <Row>
-                  <FormItem
-                    label="邀请人"
-                  >
-                    {getFieldDecorator('recommendId', {
-                      initialValue: details.recommendId,
+                  <FormItem label="邀请人ID" >
+                    {getFieldDecorator('inviteId', {
+                      initialValue: formatSelectValue(details.inviteId),
                     })(
-                      <Input />
+                      <Select placeholder="无" disabled>
+                        <Option key={inviteInfo.id} value={`${inviteInfo.id}`}>{inviteInfo.name} ({inviteInfo.phone})</Option>
+                      </Select>
                     )}
                   </FormItem>
                 </Row>
                 <Row>
-                  <FormItem
-                    label="前端推荐展示"
-                  >
+                  <FormItem label="排序" >
+                    {getFieldDecorator('rank', {
+                      initialValue: details.rank || 0,
+                    })(
+                      <Input placeholder="请输入排序序号" />
+                    )}
+                  </FormItem>
+                </Row>
+                <Row>
+                  <FormItem label="前端推荐展示" >
                     {getFieldDecorator('isRecommend', {
                       initialValue: details.isRecommend,
                     })(
@@ -394,7 +458,7 @@ class DoctorDetail extends React.Component {
           </div>
         </div>
         <div className="auditInfo part">
-          <div className="title"><h3>认证信息</h3></div>
+          <div className="head"><h3>认证信息</h3></div>
           <div className="content">
             <div className="uploadWrapper">
               <Upload
@@ -469,59 +533,100 @@ class DoctorDetail extends React.Component {
           </div>
         </div>
         <div className="referrerInfo part">
-          <div className="title"><h3>推荐医生</h3></div>
+          <div className="head"><h3>推荐医生</h3></div>
           <div className="content">
-            <Form layout="inline">
+            <Form layout="inline" className="recommendDoctor">
               <Row>
-                <FormItem
-                  label="推荐医生1"
-                >
+                <FormItem label="推荐医生1" >
                   {getFieldDecorator('doctor1', {
+                    initialValue: formatSelectValue((details.doctorRecommends || [])[0] || ''),
                   })(
-                    <Input />
+                    <Select
+                      showSearch
+                      defaultActiveFirstOption={false}
+                      showArrow={false}
+                      filterOption={false}
+                      placeholder="请选推荐医生"
+                      notFoundContent="无匹配结果"
+                      onSearch={this.handleSearchDoctor1}
+                      // onBlur={this.handleSearchDoctor1}
+                      // onChange={this.handleDoctor1Change}
+                    >
+                      {doctor1Options}
+                    </Select>
                   )}
                 </FormItem>
-                <FormItem
-                  label="推荐医生1"
-                >
+                <FormItem label="推荐医生2" >
                   {getFieldDecorator('doctor2', {
+                    initialValue: formatSelectValue((details.doctorRecommends || [])[1] || ''),
                   })(
-                    <Input />
+                    <Select
+                      showSearch
+                      defaultActiveFirstOption={false}
+                      showArrow={false}
+                      filterOption={false}
+                      placeholder="请选择就诊人"
+                      notFoundContent="无匹配结果"
+                      onSearch={this.handleSearchDoctor2}
+                      // onBlur={this.handleSearchDoctor2}
+                      // onChange={this.handleDoctor2Change}
+                    >
+                      {doctor2Options}
+                    </Select>
                   )}
                 </FormItem>
               </Row>
               <Row>
-                <FormItem
-                  label="推荐医生3"
-                >
+                <FormItem label="推荐医生3" >
                   {getFieldDecorator('doctor3', {
+                    initialValue: formatSelectValue((details.doctorRecommends || [])[2] || ''),
                   })(
-                    <Input />
+                    <Select
+                      showSearch
+                      defaultActiveFirstOption={false}
+                      showArrow={false}
+                      filterOption={false}
+                      placeholder="请选择就诊人"
+                      notFoundContent="无匹配结果"
+                      onSearch={this.handleSearchDoctor3}
+                      // onBlur={this.handleSearchDoctor3}
+                      // onChange={this.handleDoctor3Change}
+                    >
+                      {doctor3Options}
+                    </Select>
                   )}
                 </FormItem>
-                <FormItem
-                  label="推荐医生4"
-                >
+                <FormItem label="推荐医生4" >
                   {getFieldDecorator('doctor4', {
+                    initialValue: formatSelectValue((details.doctorRecommends || [])[3] || ''),
                   })(
-                    <Input />
+                    <Select
+                      showSearch
+                      defaultActiveFirstOption={false}
+                      showArrow={false}
+                      filterOption={false}
+                      placeholder="请选择就诊人"
+                      notFoundContent="无匹配结果"
+                      onSearch={this.handleSearchDoctor4}
+                      // onBlur={this.handleSearchDoctor4}
+                      // onChange={this.handleDoctor4Change}
+                    >
+                      {doctor4Options}
+                    </Select>
                   )}
                 </FormItem>
               </Row>
               <Row>
-                <FormItem
-                  label="医生助理"
-                >
-                  {getFieldDecorator('doctor5', {
+                <FormItem label="医生助理" >
+                  {getFieldDecorator('assistantName', {
+                    initialValue: details.assistantName,
                   })(
-                    <Input />
+                    <Input placeholder="请输入医生助理" />
                   )}
                 </FormItem>
               </Row>
               <Row>
-                <FormItem
-                  label="是否显示"
-                >
+                <FormItem label="是否显示" >
                   {getFieldDecorator('isShow', {
                     initialValue: details.isShow,
                   })(
@@ -530,6 +635,20 @@ class DoctorDetail extends React.Component {
                       <Radio value={0}>否</Radio>
                     </RadioGroup>
                   )}
+                </FormItem>
+              </Row>
+              <Row>
+                <FormItem label="医生状态" >
+                  {getFieldDecorator('status', {
+                    initialValue: formatSelectValue(details.status) || `${4}`,
+                    rules: [{
+                      required: true, message: '请确定医生状态！',
+                    }],
+                  })(
+                    <Select placeholder="请选择医生状态">
+                      {doctorStatus.map(({ label, value }) => (<Option key={value} value={`${value}`}>{label}</Option>))}
+                    </Select>
+                    )}
                 </FormItem>
               </Row>
             </Form>

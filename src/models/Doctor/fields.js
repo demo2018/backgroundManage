@@ -1,4 +1,4 @@
-import { doctorStatus, doctorSource, isShow } from 'configs/constants';
+import { doctorStatus, doctorSource, isShow, weekDay, bookStatus } from 'configs/constants';
 
 export const fields = [
   {
@@ -33,7 +33,6 @@ export const fields = [
   {
     key: 'rank',
     name: '排序',
-    sorter: true,
   },
   {
     key: 'addDate',
@@ -45,6 +44,47 @@ export const fields = [
     key: 'isShow',
     name: '是否显示',
     enums: isShow
+  },
+  {
+    key: 'option',
+    name: '操作'
+  }
+];
+
+export const datefields = [
+  {
+    key: 'id',
+    name: '出诊ID',
+    sorter: true,
+  },
+  {
+    key: 'date',
+    name: '出诊日期',
+    type: 'date',
+    sorter: true,
+  },
+  {
+    key: 'dayOfWeek',
+    name: '星期',
+    enums: weekDay
+  },
+  {
+    key: 'startTime',
+    name: '初诊时间'
+  },
+  {
+    key: 'endTime',
+    name: '终诊时间'
+  },
+  {
+    key: 'hospitalName',
+    name: '出诊医院'
+  },
+  {
+    key: 'status',
+    name: '状态',
+    enums: bookStatus,
+    sorter: true,
   },
   {
     key: 'option',

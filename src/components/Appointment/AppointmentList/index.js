@@ -12,13 +12,16 @@ class AppointmentList extends React.Component {
       modalVisible: false,
     };
   }
+
   getInitalColumns(fields) {
     const { toDetail, onDelete, search: { sortField, ordination } } = this.props;
+
     const popconfirmProps = {
       title: '确认删除该预约?',
       okText: '确定',
       cancelText: '取消',
     };
+
     const extraFields = [
       {
         key: sortField,
@@ -35,8 +38,15 @@ class AppointmentList extends React.Component {
             </Popconfirm>
           </div>);
         },
+      }, {
+        key: 'phone',
+        name: '手机号码',
+        render: (value, { customerPhone, customerName }) => {
+          return (`${customerPhone}(${customerName})`);
+        },
       }
     ];
+
     return getColumns(fields).enhance(extraFields).values();
   }
   // 列表清空事件

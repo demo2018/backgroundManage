@@ -13,6 +13,7 @@ class AddModal extends React.Component {
     this.state = {};
     this.handleOk = this.handleOk.bind(this);
   }
+  // 触发保存 判断是新增还是更新
   handleOk() {
     const { onOK, onOKs, form, id, selectRecord } = this.props;
     form.validateFieldsAndScroll((err, values) => {
@@ -43,17 +44,17 @@ class AddModal extends React.Component {
               initialValue: selectRecord.realName,
               rules: [{ required: true, message: '请输入关系成员姓名！', }]
             })(
-              <Input />
+              <Input placeholder="请输入姓名" />
             )}
           </FormItem>
           <FormItem label="关系">
             {getFieldDecorator('relation', {
-              initialValue: `${selectRecord.relation}`,
+              initialValue: `${selectRecord.relation || ''}`,
               rules: [
                 { required: true, message: '请选择与您的关系！', }
               ]
             })(
-              <Select>
+              <Select placeholder="请选择关系">
                 {relationStatus.map(({ label, value }) => (<Option key={value} value={`${value}`}>{label}</Option>))}
               </Select>
             )}
@@ -64,23 +65,24 @@ class AddModal extends React.Component {
               rules: [
                 { required: true, message: '请选择性别！', }
               ]
-            })(<RadioGroup >
-              <Radio value={1}>男</Radio>
-              <Radio value={0}>女</Radio>
-            </RadioGroup>)}
+            })(
+              <RadioGroup>
+                <Radio value={1}>男</Radio>
+                <Radio value={0}>女</Radio>
+              </RadioGroup>)}
           </FormItem>
           <FormItem label="年龄">
             {getFieldDecorator('age', {
               initialValue: selectRecord.age,
             })(
-              <Input />
+              <Input placeholder="请输入年龄" />
             )}
           </FormItem>
           <FormItem label="手机号码">
             {getFieldDecorator('phone', {
               initialValue: selectRecord.phone,
             })(
-              <Input />
+              <Input placeholder="请输入手机号码" />
             )}
           </FormItem>
         </Form>
